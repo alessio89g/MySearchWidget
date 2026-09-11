@@ -1,0 +1,5 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+ android:minWidth="280dp" android:minHeight="64dp" android:minResizeWidth="220dp" android:targetCellWidth="4" android:targetCellHeight="1"
+ android:resizeMode="horizontal" android:updatePeriodMillis="0" android:widgetCategory="home_screen"
+ android:initialLayout="@layout/widget" android:previewLayout="@layout/widget" android:description="@string/widget_description"
+ android:configure="com.alessio89g.mysearchwidget.config.ConfigActivity" android:widgetFeatures="reconfigurable"/>

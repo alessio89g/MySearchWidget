@@ -1,0 +1,14 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+ <shortcut android:shortcutId="precise" android:shortcutShortLabel="@string/shortcut_test_label" android:enabled="true">
+  <intent android:action="com.alessio89g.TEST_PRECISE" android:targetPackage="com.alessio89g.mysearchwidget.test" android:targetClass="com.alessio89g.mysearchwidget.ShortcutFixtureActivity"><extra android:name="mode" android:value="precise-mode"/></intent>
+ </shortcut>
+ <shortcut android:shortcutId="disabled" android:shortcutShortLabel="@string/shortcut_test_label" android:enabled="false">
+  <intent android:action="android.intent.action.MAIN" android:targetPackage="com.alessio89g.mysearchwidget.test" android:targetClass="com.alessio89g.mysearchwidget.ShortcutFixtureActivity"/>
+ </shortcut>
+ <shortcut android:shortcutId="private" android:shortcutShortLabel="@string/shortcut_test_label">
+  <intent android:action="android.intent.action.MAIN" android:targetPackage="com.alessio89g.mysearchwidget.test" android:targetClass="com.alessio89g.mysearchwidget.PrivateShortcutFixtureActivity"/>
+ </shortcut>
+ <shortcut android:shortcutId="runtime" android:shortcutShortLabel="@string/shortcut_test_label">
+  <intent android:action="android.intent.action.MAIN" android:targetPackage="com.alessio89g.mysearchwidget.test" android:targetClass="com.alessio89g.mysearchwidget.RuntimeShortcutFixtureActivity"/>
+ </shortcut>
+</shortcuts>

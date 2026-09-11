@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ <application>
+  <activity android:name="com.alessio89g.mysearchwidget.ShortcutFixtureActivity" android:exported="true" android:label="Collaudo scorciatoie">
+   <meta-data android:name="android.app.shortcuts" android:resource="@xml/test_shortcuts"/>
+  </activity>
+  <activity-alias android:name="com.alessio89g.mysearchwidget.ShortcutFixtureAlias" android:targetActivity="com.alessio89g.mysearchwidget.ShortcutFixtureActivity" android:exported="true">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity android:name="com.alessio89g.mysearchwidget.PrivateShortcutFixtureActivity" android:exported="false"/>
+  <activity android:name="com.alessio89g.mysearchwidget.RuntimeShortcutFixtureActivity" android:enabled="false" android:exported="true"/>
+ </application>
+</manifest>

@@ -1,0 +1,122 @@
+MySearchWidget Non-Commercial Source-Available License
+Version 1.1
+
+Copyright (c) 2026 MySearchWidget contributors
+
+This is a custom source-available license. It is not the MIT, GPL, or any
+other OSI-approved open-source license. The English text below governs.
+
+1. Scope and definitions
+
+"Software" means the original MySearchWidget code and documentation made
+available under this license, including modifications to that code and
+works derived from it. Third-party components and assets identified as
+subject to separate terms are excluded and retain their own licenses.
+
+"Non-Commercial" means not intended for or directed toward commercial
+advantage or monetary compensation. Commercial use includes selling or
+licensing the Software for payment, monetizing it through advertising,
+providing it as part of a paid service, and using or incorporating it in
+commercial products, services, or business operations. Personal use,
+non-commercial education, and non-commercial research are permitted.
+
+"Corresponding Source" means the complete preferred form for modifying
+the exact version distributed, including all modifications, source files,
+interface definitions, dependency manifests and version information,
+build scripts, and instructions needed to build and install that version.
+Obfuscated code, decompiled output, or patches alone are not sufficient.
+Unmodified general-purpose build tools and standard system libraries do
+not have to be bundled, but required tools and dependencies must be
+identified with instructions for obtaining them. Private signing keys,
+credentials, and personal data are not required.
+
+2. Permission
+
+Subject to all conditions below, each copyright holder grants you a
+worldwide, royalty-free, non-exclusive permission to use, study, copy,
+modify, create forks and other derivative works of, and redistribute
+their contributions to the Software solely for Non-Commercial purposes.
+Recipients receive the same permissions directly under this license.
+No permission for commercial use is granted by this license.
+
+3. Redistribution, source code and original-project credits
+
+Every redistribution of the Software, whether modified or unmodified,
+in source or executable form, must remain entirely Non-Commercial and
+include this complete license and applicable copyright, attribution,
+license, and third-party notices.
+
+Every redistribution must credit the original MySearchWidget project
+and include this repository URL in its credits:
+
+https://github.com/alessio89g/MySearchWidget
+
+The URL must be clickable when the medium supports links. Place this
+credit in the existing credits or acknowledgments; if none exist, include
+an accompanying CREDITS file. This obligation applies to both modified
+and unmodified redistributions. A fork URL alone does not replace the
+required reference to the original repository.
+
+(a) Unmodified versions
+
+If you redistribute a version without changes to its source code or
+bundled application resources, including an unchanged official APK,
+a link to the original repository in the credits is sufficient: you
+are not required to deliver or separately host the Corresponding Source.
+An otherwise unmodified build from the original source also qualifies;
+changes solely to build-generated metadata or signing certificates do
+not make it a modified version. Adding the license and credit notices
+required by this section does not make a version modified.
+
+(b) Modified versions and derivative works
+
+If you redistribute a modified version or a derivative work, you must:
+
+- include the complete Corresponding Source with the distributed copy,
+  at no additional charge, either in the same archive or in an
+  accompanying source archive delivered together with that copy;
+- license your modifications and derivative works under this same
+  license, without additional restrictions on its granted permissions;
+- clearly identify the version as modified and describe the changes,
+  including the date of modification; and
+- retain the original-project credit and repository URL required above.
+
+For modified versions, a link to the original repository or a fork,
+a promise to provide source later, or an offer available only on request
+does not replace the requirement to deliver the Corresponding Source.
+For a source-only distribution, the distributed source itself satisfies
+this requirement if it is complete as defined in section 1.
+
+You may keep modifications private when you do not redistribute them.
+This does not permit commercial use of private modifications. Independent
+works merely distributed alongside the Software are not required to adopt
+this license; their own licenses continue to apply.
+
+4. Third-party rights and attribution
+
+This license grants rights only in contributions whose copyright holders
+have made them available under these terms. It does not relicense
+third-party fonts, icons, images, libraries, or other separately licensed
+materials. You must comply with their respective terms independently.
+No trademark rights or right to imply endorsement are granted.
+
+5. Termination
+
+Your permissions under this license terminate automatically if you
+violate its conditions. They are reinstated when you cure the violation
+within 30 days of first becoming aware of it, provided you have not
+previously received reinstatement under this provision. Otherwise,
+reinstatement requires permission from the relevant copyright holders.
+Termination does not revoke compliant recipients' own rights under this
+license. No restriction here limits rights that applicable law grants
+you independently of this license.
+
+6. Disclaimer of warranty and limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS
+PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE, WHETHER IN
+AN ACTION OF CONTRACT, TORT, OR OTHERWISE.
