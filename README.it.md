@@ -86,6 +86,23 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 
 La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google e richiedono verifica sul dispositivo. Gli stili della query del widget non modificano l’interfaccia Google.
 
+## Colori originali delle icone — novità della 1.7.0
+
+1. Apri **Aspetto → Logo** oppure **Aspetto → Pulsante N → Icona**.
+2. Disattiva **Icona monocromatica** per usare i colori originali dell’elemento selezionato.
+3. Premi **Salva** per applicare la modifica al widget.
+
+Lo switch è attivo di default, anche caricando configurazioni o backup precedenti.
+Ogni elemento mantiene una scelta indipendente. I colori originali ignorano la
+tinta, il gradiente e l’eventuale trasparenza della tinta salvata, conservando invece
+la trasparenza dell’immagine. Le icone Material hanno normalmente un riempimento
+nero: per adattarle al contrasto del tema, mantieni attiva la modalità monocromatica.
+
+La scelta viene inclusa nei backup. Per importare un backup esportato dalla 1.7.0,
+aggiorna anche l’app sul dispositivo di destinazione. I vecchi backup restano importabili.
+
+Consulta il [changelog](CHANGELOG.md) e scarica la [release 1.7.0](https://github.com/alessio89g/MySearchWidget/releases/tag/v1.7.0).
+
 ## Scorciatoie delle app
 
 Il selettore raggruppa le scorciatoie per app ed esclude le app senza voci disponibili. Alcune azioni possono essere visibili ma disabilitate, con una spiegazione.

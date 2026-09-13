@@ -86,6 +86,23 @@ The initial language is **English**. Tap **EN** to switch to Italian. The automa
 
 Google search opens its search interface; focus and keyboard behavior depend on the installed Google app version and require device testing. The widget’s query styles do not change Google’s interface.
 
+## Original icon colors — new in 1.7.0
+
+1. Open **Appearance → Logo** or **Appearance → Button N → Icon**.
+2. Turn off **Monochrome icon** to use the selected element’s original colors.
+3. Tap **Save** to apply the change to the widget.
+
+The switch defaults to on, including when loading older configurations or backups.
+Each element keeps its own setting. Original colors bypass saved tint, gradient
+and tint opacity while retaining the image’s own transparency. Material symbols
+normally have a black source fill: keep monochrome enabled to adapt them to the
+theme’s contrast.
+
+The setting is included in backups. To import a backup exported by 1.7.0, update
+the app on the receiving device too. Older backups remain importable.
+
+See the [changelog](CHANGELOG.md) and download [release 1.7.0](https://github.com/alessio89g/MySearchWidget/releases/tag/v1.7.0).
+
 ## App shortcuts
 
 The picker groups shortcuts by app and excludes apps without available entries. Some actions may be visible but disabled, with an explanation.
