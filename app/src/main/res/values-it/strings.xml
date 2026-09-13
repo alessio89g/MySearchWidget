@@ -230,4 +230,8 @@
  <string name="google_input_help">Apri la schermata di ricerca dell’app Google pronta alla digitazione, invece di inserire la query in questo widget. È necessaria l’app Google.</string>
  <string name="google_engine_disabled">I motori di ricerca sono disabilitati mentre è attiva la ricerca diretta in Google. Il motore selezionato e quelli personalizzati vengono conservati: disattiva questa opzione per riutilizzarli.</string>
  <string name="google_input_unavailable">Impossibile aprire la ricerca Google. Installa o aggiorna l’app Google, oppure disattiva la ricerca diretta nelle impostazioni del widget.</string>
+
+ <string name="monochrome_icon">Icona monocromatica</string>
+ <string name="icon_color_mode_help">Disattiva per mantenere i colori originali. Le icone Material sono già a colore singolo.</string>
+ <string name="original_colors_help">Colori originali attivi. Tinta e gradienti dell’icona sono disabilitati; le impostazioni salvate sono conservate. Material You resta applicato agli altri elementi.</string>
 </resources>

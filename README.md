@@ -36,7 +36,8 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 - **Custom colors and gradients:** customize the outer capsule, search field, logo, each button background and its icon, with separate values for light and dark themes.
 - Choose colors with a graphical picker, sliders, HEX/RGB codes and presets. Gradients have two colors and a direction adjustable visually or in degrees.
 - Adjust background opacity and corner rounding. Button shapes include circle/square, squircle and flower.
-- Choose built-in icons or import images: imported images are rendered in monochrome and colored according to the icon style.
+- Choose built-in icons or import images. Each logo/button has a **Monochrome icon** switch, enabled by default. Turn it off to preserve imported image colors and transparency, or use the native colors of the Google and Chrome symbols. Material symbols are naturally single-color.
+- Original icon colors take precedence over Material You for that icon only. Manual tint and gradient controls are disabled while original colors are active; saved values return when you switch back to monochrome.
 - Preview the widget on a solid background or a center crop of your home screen wallpaper.
 
 ### Text

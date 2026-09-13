@@ -17,9 +17,9 @@ import com.alessio89g.mysearchwidget.R
 import com.alessio89g.mysearchwidget.i18n.tr
 import kotlin.math.*
 
-@Composable fun PaintControl(label:String,color:String,gradient:Gradient,onColor:(String)->Unit,onGradient:(Gradient)->Unit) {
+@Composable fun PaintControl(label:String,color:String,gradient:Gradient,onColor:(String)->Unit,onGradient:(Gradient)->Unit,disabledReason:String?=null) {
  val enabled=LocalControlsEnabled.current && LocalManualColorsEnabled.current
- if(!enabled)Text(tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
+ if(!enabled)Text(disabledReason ?: tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
  CompositionLocalProvider(LocalControlsEnabled provides enabled){
   Column(Modifier.graphicsLayer {alpha=if(enabled)1f else .45f}){
    PaintControlContent(label,color,gradient,onColor,onGradient)

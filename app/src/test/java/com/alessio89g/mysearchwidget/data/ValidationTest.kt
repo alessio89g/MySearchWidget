@@ -11,6 +11,22 @@ class ValidationTest {
   val config=WidgetConfig(count=3,theme="dark",query=TextStyle(size=21f,weight=700),buttons=WidgetConfig().buttons.mapIndexed {i,s->s.copy(surface=s.surface.copy(rounding=i*25f,shape=if(i==2)"flower" else "circle"))})
   assertEquals(config,Validation.parse(backup(config)).config)
  }
+ @Test fun legacyBackupsKeepMonochromeDefaults() {
+  val legacy=backup().replace("\"monochrome\":true,", "")
+  val c=Validation.parse(legacy).config
+  assertTrue(c.logo.icon.monochrome)
+  assertTrue(c.buttons.all {it.icon.monochrome})
+ }
+ @Test fun originalColorsRoundTripIndependentlyWithoutLosingTint() {
+  val base=WidgetConfig()
+  val original=base.copy(logo=base.logo.copy(icon=base.logo.icon.copy(monochrome=false,dark="#123456",darkGradient=Gradient(true))),buttons=base.buttons.mapIndexed {i,slot->slot.copy(icon=slot.icon.copy(monochrome=i!=1))})
+  val restored=Validation.parse(backup(original)).config
+  assertEquals(original,restored)
+  assertFalse(restored.logo.icon.monochrome)
+  assertTrue(restored.buttons[0].icon.monochrome)
+  assertFalse(restored.buttons[1].icon.monochrome)
+  rejected {Validation.parse(backup().replace("\"monochrome\":true","\"monochrome\":\"false\""))}
+ }
  @Test fun schemaAndRequiredFieldsAreChecked(){
   rejected {Validation.parse("not JSON")}
   rejected {Validation.parse(backup().replace("\"schemaVersion\":1","\"schemaVersion\":99"))}

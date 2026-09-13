@@ -1,29 +1,24 @@
-# Validation of version 1.6.1
+# Validation of version 1.7.0
 
-The Android suite was rerun after updating Google Sans to the official OFL
-14.000 Android static build. The debug build and lint passed. The 7 JVM
-unit tests remain passing (Gradle reused their unchanged results). Adding
-license and credit text files afterward required only APK repackaging.
+- Debug build, 9 JVM tests and lint completed successfully.
+- Lint: 0 errors and 64 warnings.
+- Android suite: 38 tests on an AOSP API 35 emulator.
+- New tests cover default/legacy backup behavior, independent per-icon settings,
+  malformed mode values, original image colors and transparency, stored tint alpha,
+  Material You, gradient bypass, cached bitmap reuse and the configuration switch.
+- Original-color light/dark widget previews were inspected visually.
+- APK version: 1.7.0 (versionCode 12); minimum API 31, target API 37.
+- Debug signing certificate matches the published 1.6.1 release.
 
-| Check | Result |
-| --- | --- |
-| Debug APK, unit tests and lint build | Successful |
-| JVM unit tests | 7 passed; 0 failures; 0 errors |
-| Android instrumentation tests | 33 passed on an AOSP API 35 emulator |
-| Lint | 0 errors; 62 warnings |
-| APK version | 1.6.1 (versionCode 11) |
-| Minimum / target API | 31 / 37 |
+A UI test was adjusted to wait for Compose enabled-state semantics after a
+switch event rather than checking before the UI update was complete.
 
-Covered areas include backup validation, language switching, formatting,
-widget integration, wallpaper access, temporary launcher access and search modes.
+External Google destinations still depend on installed apps and were not
+retested on a physical device. Original monochrome Material vectors retain
+source fill colors (normally black), so use monochrome tint when contrast is needed.
 
-The AOSP emulator does not include the Google app. Exact keyboard/focus behavior
-inside Google and external shortcut destinations still require testing with the
-installed app versions on a physical device. Launcher sizing and palette refresh
-behavior can vary by launcher and manufacturer.
-
-The release APK is debug signed. Its SHA-256 is:
+APK SHA-256:
 
 ```text
-05760279f9d5a6bae29d919a84817f176d92a3afb058139663dd0d99e0991dd7
+e725a6ffd792ddba81e15d3168cf4f13302331345b65e1f08d7c8471407be528
 ```

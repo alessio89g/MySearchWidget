@@ -45,6 +45,11 @@ class DisabledSettingsTest {
   }
   error("Could not scroll to $value")
  }
+ private fun assertEnabled(value:String) {
+  val deadline=SystemClock.uptimeMillis()+5000
+  while(!actionable(scrollTo(value)).isEnabled && SystemClock.uptimeMillis()<deadline)SystemClock.sleep(100)
+  assertTrue("Expected enabled control: $value",actionable(scrollTo(value)).isEnabled)
+ }
  private fun scenario(block:(ActivityScenario<ConfigActivity>)->Unit) {
   val language=AppLanguage.code;AppLanguage.select("en")
   try {
@@ -75,8 +80,30 @@ class DisabledSettingsTest {
    state.config=state.config.copy(googleInput=false)
   }
   ins.uiAutomation.waitForIdle(200,5000)
-  assertTrue(actionable(wait("Personal engine")).isEnabled)
-  assertTrue(actionable(wait("Add custom engine")).isEnabled)
+  assertEnabled("Personal engine")
+  assertEnabled("Add custom engine")
+ }
+ @Test fun originalIconSwitchOverridesMaterialYouAndKeepsStoredTint()=scenario {scenario->
+  click("Logo")
+  val toggle=actionable(scrollTo("Monochrome icon"))
+  assertTrue(toggle.isEnabled)
+  click("Monochrome icon")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertFalse(state.config.logo.icon.monochrome)
+   assertTrue(state.config.dynamic)
+   assertTrue(state.config.buttons.all {s->s.icon.monochrome})
+   state.config=state.config.copy(dynamic=false,logo=state.config.logo.copy(icon=state.config.logo.icon.copy(dark="#123456")))
+  }
+  ins.uiAutomation.waitForIdle(200,5000)
+  assertFalse(actionable(scrollTo("Icon · dark theme")).isEnabled)
+  scrollTo("Monochrome icon");click("Monochrome icon")
+  assertEnabled("Icon · dark theme")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertTrue(state.config.logo.icon.monochrome)
+   assertEquals("#123456",state.config.logo.icon.dark)
+  }
  }
  @Test fun materialYouDisablesColourAndGradientControlsButKeepsTheirValues()=scenario {scenario->
   click("Bar")
@@ -89,7 +116,7 @@ class DisabledSettingsTest {
    state.config=state.config.copy(dynamic=false)
   }
   ins.uiAutomation.waitForIdle(200,5000)
-  assertTrue(actionable(wait("Background")).isEnabled)
-  assertTrue(actionable(wait("Gradient")).isEnabled)
+  assertEnabled("Background")
+  assertEnabled("Gradient")
  }
 }

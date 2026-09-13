@@ -125,6 +125,7 @@ object Renderer {
   return LinearGradient(r.centerX()-dx*extent,r.centerY()-dy*extent,r.centerX()+dx*extent,r.centerY()+dy*extent,Color.parseColor(g.start),Color.parseColor(g.end),Shader.TileMode.CLAMP)
  }
  private fun drawIcon(canvas:Canvas,c:WidgetConfig,s:IconSpec,r:RectF,color:Int,darkIcon:Boolean) {
+  if(!s.monochrome){drawIconSolid(canvas,c,s,r,color);return}
   val gr=if(darkIcon) s.darkGradient else s.lightGradient
   if(c.dynamic || !gr.enabled){drawIconSolid(canvas,c,s,r,color);return}
   val layer=canvas.saveLayer(r,null)
@@ -133,10 +134,10 @@ object Renderer {
   canvas.restoreToCount(layer)
  }
  private fun drawIconSolid(canvas:Canvas,c:WidgetConfig,s:IconSpec,r:RectF,color:Int) {
-  val p=Paint(3).apply { this.color=color }
+  val p=Paint(3).apply { this.color=if(s.monochrome)color else Color.WHITE }
   val asset=c.assets[s.asset]
   if(asset!=null) { Assets.bitmap(asset)?.let { b ->
-   p.colorFilter=PorterDuffColorFilter(color,PorterDuff.Mode.SRC_IN)
+   if(s.monochrome)p.colorFilter=PorterDuffColorFilter(color,PorterDuff.Mode.SRC_IN)
    val scale=min(r.width()/b.width,r.height()/b.height);val w=b.width*scale;val h=b.height*scale
    canvas.drawBitmap(b,null,RectF(r.centerX()-w/2,r.centerY()-h/2,r.centerX()+w/2,r.centerY()+h/2),p)
   };return }
@@ -144,15 +145,40 @@ object Renderer {
   when(s.name) {
    "Google" -> {
     val path=PathParser().parsePathString("M12,2 C6.48,2 2,6.48 2,12 C2,17.52 6.48,22 12,22 C17.77,22 21.6,17.95 21.6,12.23 C21.6,11.52 21.54,10.84 21.42,10.18 L12,10.18 L12,14.06 L17.38,14.06 C16.67,16.67 14.8,18 12,18 C8.69,18 6,15.31 6,12 C6,8.69 8.69,6 12,6 C13.47,6 14.79,6.5 15.83,7.48 L18.7,4.61 C16.95,2.98 14.68,2 12,2 Z").toPath().asAndroidPath()
-    canvas.drawPath(path,p)
+    if(s.monochrome)canvas.drawPath(path,p) else {
+     // Keep the existing G silhouette, with its four native brand colors.
+     canvas.save();canvas.clipPath(path)
+     p.color=Color.rgb(234,67,53);canvas.drawPaint(p)
+     p.color=Color.rgb(251,188,5)
+     canvas.drawPath(Path().apply {moveTo(0f,5f);lineTo(6.4f,9.1f);lineTo(6.4f,14.9f);lineTo(0f,19f);close()},p)
+     p.color=Color.rgb(52,168,83)
+     canvas.drawPath(Path().apply {moveTo(0f,19f);lineTo(6.4f,14.9f);lineTo(12f,15f);lineTo(24f,23f);lineTo(0f,23f);close()},p)
+     p.color=Color.rgb(66,133,244)
+     canvas.drawPath(Path().apply {moveTo(12f,10.18f);lineTo(24f,10.18f);lineTo(24f,23f);lineTo(12f,15f);close()},p)
+     canvas.restore()
+    }
    }
    "Chrome" -> {
+    if(!s.monochrome) {
+     // Native red/yellow/green blades and blue center, independent of theme.
+     canvas.save();canvas.clipPath(Path().apply {addCircle(12f,12f,11f,Path.Direction.CW)})
+     val colors=intArrayOf(Color.rgb(234,67,53),Color.rgb(251,188,5),Color.rgb(52,168,83))
+     for(i in 0..2) {
+      canvas.save();canvas.rotate(i*120f,12f,12f);p.color=colors[i]
+      canvas.drawPath(Path().apply {moveTo(12f,12f);lineTo(9.4f,7.5f);lineTo(30f,7.5f);lineTo(30f,-10f);lineTo(-10f,-10f);lineTo(-10f,12f);close()},p)
+      canvas.restore()
+     }
+     p.color=Color.WHITE;canvas.drawCircle(12f,12f,5f,p)
+     p.color=Color.rgb(66,133,244);canvas.drawCircle(12f,12f,4f,p)
+     canvas.restore()
+    } else {
     val layer=canvas.saveLayer(0f,0f,24f,24f,null)
     canvas.drawCircle(12f,12f,11f,p)
     p.style=Paint.Style.STROKE;p.strokeWidth=1.1f;p.xfermode=PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
     canvas.drawCircle(12f,12f,4.5f,p)
     for(i in 0..2) { canvas.save();canvas.rotate(i*120f,12f,12f);canvas.drawLine(12f,7.5f,23f,7.5f,p);canvas.restore() }
     p.xfermode=null;canvas.restoreToCount(layer)
+    }
    }
    else -> {
     val vector=IconCatalog.vector(s.name,s.outline)
@@ -162,7 +188,10 @@ object Renderer {
       is VectorGroup -> group(node)
       is VectorPath -> {
        val path=PathParser().addPathNodes(node.pathData).toPath().asAndroidPath()
-       p.style=Paint.Style.FILL;p.alpha=(255*node.fillAlpha).roundToInt();canvas.drawPath(path,p)
+       p.style=Paint.Style.FILL
+       p.color=if(s.monochrome)color else (node.fill as? androidx.compose.ui.graphics.SolidColor)?.value?.toArgb() ?: Color.BLACK
+       p.alpha=(Color.alpha(p.color)*node.fillAlpha).roundToInt()
+       if(node.fill!=null)canvas.drawPath(path,p)
       }
      };canvas.restore()
     };canvas.scale(24/vector.viewportWidth,24/vector.viewportHeight);group(vector.root)

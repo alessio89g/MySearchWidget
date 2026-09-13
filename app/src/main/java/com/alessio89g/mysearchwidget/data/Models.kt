@@ -11,7 +11,7 @@ import java.util.Base64
 @Serializable data class Surface(val light: Tone = Tone(), val dark: Tone = Tone(), val rounding: Float = 100f, val shape: String = "circle")
 @Serializable data class TextStyle(val font: String = "", val size: Float = 15f, val weight: Int = 400, val light: String = "", val dark: String = "", val italic:Boolean=false,val underline:Boolean=false,val strike:Boolean=false,val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
 @Serializable data class Shortcut(val kind: String = "none", val value: String = "", val label: String = "")
-@Serializable data class IconSpec(val name: String = "Search", val outline: Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
+@Serializable data class IconSpec(val name: String = "Search", val monochrome:Boolean = true, val outline: Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
 @Serializable data class Slot(val icon: IconSpec = IconSpec(), val surface: Surface = Surface(), val tap: Shortcut = Shortcut(), val up: Shortcut = Shortcut(), val down: Shortcut = Shortcut())
 @Serializable data class Asset(val kind: String, val base64: String)
 @Serializable data class WidgetConfig(
@@ -92,6 +92,12 @@ object Validation {
   require(root.keys.containsAll(listOf("config","engine"))) { "Backup incompleto: config o engine assente" }
   val c = root.getValue("config").jsonObject
   require(c.keys.containsAll(listOf("theme","dynamic","placeholder","outer","field","hint","query","engineId","count","logo","buttons","assets"))) { "Configurazione incompleta" }
+  // Optional for older backups, but strictly boolean when present.
+  (listOf(c.getValue("logo"))+c.getValue("buttons").jsonArray).forEach {slot->
+   slot.jsonObject["icon"]?.jsonObject?.get("monochrome")?.let {value->
+    require(value is JsonPrimitive && !value.isString && value.booleanOrNull!=null) { "monochrome must be a boolean" }
+   }
+  }
   val b = Catalog.json.decodeFromString<Backup>(text)
   config(b.config);engine(b.engine)
   require(b.config.engineId == b.engine.id) { "Riferimento al motore incoerente" }

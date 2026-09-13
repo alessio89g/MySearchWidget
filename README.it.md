@@ -36,7 +36,8 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 - **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
 - Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.
 - Regola opacità e arrotondamento degli sfondi. Per i pulsanti scegli tra cerchio/quadrato, squircle e fiore.
-- Scegli icone predefinite o importa immagini: le immagini vengono rese monocromatiche e colorate secondo lo stile dell’icona.
+- Scegli icone predefinite o importa immagini. Logo e pulsanti hanno ciascuno lo switch **Icona monocromatica**, attivo di default. Disattivalo per mantenere colori e trasparenza delle immagini importate o usare i colori nativi dei simboli Google e Chrome. I simboli Material sono già a colore singolo.
+- I colori originali hanno priorità su Material You solo per quell’icona. Tinta e gradienti sono disabilitati mentre i colori originali sono attivi; i valori salvati tornano disponibili riattivando lo stile monocromatico.
 - Visualizza l’anteprima su fondo solido oppure sul ritaglio centrale del wallpaper Home.
 
 ### Testo

@@ -231,4 +231,8 @@
  <string name="google_input_help">Open the Google app search screen ready for typing instead of entering the query in this widget. The Google app must be installed.</string>
  <string name="google_engine_disabled">Search engines are disabled while direct Google search is on. Your selected engine and custom engines are kept; turn this option off to use them again.</string>
  <string name="google_input_unavailable">Google search could not be opened. Install or update the Google app, or turn off direct Google search in the widget settings.</string>
+
+ <string name="monochrome_icon">Monochrome icon</string>
+ <string name="icon_color_mode_help">Turn off to keep original colors. Material icons are naturally single-color.</string>
+ <string name="original_colors_help">Original colors are active. Icon tint and gradients are disabled; saved settings are preserved. Material You still applies to the other elements.</string>
 </resources>

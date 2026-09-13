@@ -55,8 +55,12 @@ import kotlinx.coroutines.withContext
    OutlinedButton(onClick=pickImage){Text(tr(R.string.from_file))}
   }
   Toggle(tr(R.string.outline),value.icon.outline){onChange(value.copy(icon=value.icon.copy(outline=it)))}
-  PaintControl(tr(R.string.icon_dark),value.icon.dark,value.icon.darkGradient,{onChange(value.copy(icon=value.icon.copy(dark=it)))},{onChange(value.copy(icon=value.icon.copy(darkGradient=it)))})
-  PaintControl(tr(R.string.icon_light),value.icon.light,value.icon.lightGradient,{onChange(value.copy(icon=value.icon.copy(light=it)))},{onChange(value.copy(icon=value.icon.copy(lightGradient=it)))})
+  Toggle(tr(R.string.monochrome_icon),value.icon.monochrome){onChange(value.copy(icon=value.icon.copy(monochrome=it)))}
+  Text(tr(R.string.icon_color_mode_help),style=MaterialTheme.typography.bodySmall)
+  CompositionLocalProvider(LocalControlsEnabled provides (LocalControlsEnabled.current && value.icon.monochrome)) {
+  PaintControl(tr(R.string.icon_dark),value.icon.dark,value.icon.darkGradient,{onChange(value.copy(icon=value.icon.copy(dark=it)))},{onChange(value.copy(icon=value.icon.copy(darkGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
+  PaintControl(tr(R.string.icon_light),value.icon.light,value.icon.lightGradient,{onChange(value.copy(icon=value.icon.copy(light=it)))},{onChange(value.copy(icon=value.icon.copy(lightGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
+  }
  }
  if(catalog) {
   var filter by remember {mutableStateOf("")}
