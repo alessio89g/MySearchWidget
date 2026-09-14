@@ -39,9 +39,9 @@ class ButtonShapesTest {
   }
  }
  @Test fun everyShapeRendersInWidgetWithThemesAndGradients() {
-  for(name in Catalog.shapes)for(theme in listOf("light","dark"))for(width in listOf(180,356,600)) {
+  for(name in Catalog.shapes)for(theme in listOf("light","dark"))for(width in listOf(180,356,600))for(rounding in listOf(0f,37f,100f)) {
    val base=WidgetConfig(count=3,theme=theme,dynamic=false)
-   val c=base.copy(buttons=base.buttons.map {it.copy(surface=it.surface.copy(shape=name,light=Tone(gradient=Gradient(true)),dark=Tone(gradient=Gradient(true))))})
+   val c=base.copy(buttons=base.buttons.map {it.copy(surface=it.surface.copy(shape=name,rounding=rounding,light=Tone(gradient=Gradient(true)),dark=Tone(gradient=Gradient(true))))})
    Renderer.render(context,c,width).let {assertTrue(it.width>0);it.recycle()}
   }
  }

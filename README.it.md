@@ -86,15 +86,15 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 
 La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google e richiedono verifica sul dispositivo. Gli stili della query del widget non modificano l’interfaccia Google.
 
-## Forme dei pulsanti — novità della 1.8.0
+## Forme dei pulsanti — novità della 1.8.1
 
 Apri **Aspetto → Pulsante N → Forma pulsante** (la precedente scheda “Cerchio”).
 Il fiore ha un nuovo contorno a quattro lobi; si aggiungono **Clover, Leaf, Pebble, Scallop e Teardrop**.
 Ogni pulsante mantiene la propria forma, con i colori, gradienti e opacità già disponibili.
 
-![Contorni delle forme generati dal rendering Android](assets/screenshots/button-shapes.png)
+![Forme disponibili per i pulsanti](assets/screenshots/button-shapes.png)
 
-Le forme sono vettoriali e vengono usate sia nell’anteprima sia nel widget. La scelta viene salvata nelle configurazioni e nei backup. I vecchi backup restano importabili; le configurazioni con Fiore usano il nuovo contorno. Per importare backup con le nuove forme serve la versione 1.8.0 o successiva.
+L’arrotondamento degli angoli è disponibile solo per **Cerchio / Quadrato**. Le altre forme hanno un contorno fisso. La scelta viene salvata nelle configurazioni e nei backup. I vecchi backup restano importabili; le configurazioni con Fiore usano il nuovo contorno. Per importare backup con le nuove forme serve la versione 1.8.1 o successiva.
 
 ## Colori originali delle icone — novità della 1.7.0
 

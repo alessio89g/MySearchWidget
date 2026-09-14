@@ -104,6 +104,27 @@ class DisabledSettingsTest {
   scrollTo("Clover")
   assertNotNull(wait("Clover"))
  }
+ @Test fun cornerRoundingIsAvailableOnlyForCircleSquare()=scenario {scenario->
+  click("Button 1");click("Button shape")
+  scrollTo("Corner rounding %")
+  for(shape in Catalog.shapes.filter {it!="circle"}) {
+   scenario.onActivity {
+    val state=ViewModelProvider(it)[ConfigState::class.java]
+    state.config=state.config.copy(buttons=state.config.buttons.mapIndexed {i,b->if(i==0)b.copy(surface=b.surface.copy(shape=shape,rounding=37f)) else b})
+   }
+   val label=shape.replaceFirstChar {it.uppercase()}
+   wait(label)
+   ins.uiAutomation.waitForIdle(200,5000)
+   assertNull("Rounding must be hidden for $shape",text("Corner rounding %"))
+  }
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   state.config=state.config.copy(buttons=state.config.buttons.mapIndexed {i,b->if(i==0)b.copy(surface=b.surface.copy(shape="circle")) else b})
+   assertEquals(37f,state.config.buttons[0].surface.rounding)
+  }
+  scrollTo("Corner rounding %")
+  assertNotNull(wait("Corner rounding %"))
+ }
  @Test fun originalIconSwitchOverridesMaterialYouAndKeepsStoredTint()=scenario {scenario->
   click("Logo")
   val toggle=actionable(scrollTo("Monochrome icon"))
