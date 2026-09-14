@@ -1,5 +1,7 @@
 # MySearchWidget
 
+**A vibe coding project, developed with AI assistance.**
+
 **A customizable Android search widget with Material You colors, gradients, rich text and shortcuts to your apps.**
 
 **English** · [Italiano](README.it.md)
@@ -73,7 +75,7 @@ To build the project, see the [build instructions](docs/BUILD.md). Check results
 
 The initial language is **English**. Tap **EN** to switch to Italian. The automatic placeholder is **“Search the web” / “Cerca sul web”**; custom text is not translated automatically.
 
-> The currently produced APK is signed with a **debug key**. Updating an existing installation requires a compatible signature.
+> The APK is signed with a **debug key**. Updating an existing installation requires a compatible signature.
 
 ## Initial settings and disabled controls
 
@@ -82,36 +84,23 @@ The initial language is **English**. Tap **EN** to switch to Italian. The automa
 | Material You colors | On | Manual color and gradient controls are greyed out and disabled. Turn this option off to customize them. |
 | Open Google search when tapping the field | Off | When enabled, search engine management is greyed out and disabled because the Google app handles the search. |
 
-**Your custom settings and saved search engines are not deleted.** They become available again when you turn off the corresponding option. Updates preserve previously saved preferences.
+**Your custom settings and saved search engines are not deleted.** They become available again when you turn off the corresponding option.
 
-Google search opens its search interface; focus and keyboard behavior depend on the installed Google app version and require device testing. The widget’s query styles do not change Google’s interface.
+Google search opens its search interface; focus and keyboard behavior depend on the installed Google app version. The widget’s query styles do not change Google’s interface.
 
-## Button shapes — new in 1.8.1
+## Button shapes
 
-Open **Appearance → Button N → Button shape** (formerly “Circle”).
-Flower now has a soft four-lobed outline; **Clover, Leaf, Pebble, Scallop and Teardrop** are new.
-Each button keeps its own shape, together with the existing colors, gradients and opacity settings.
+In **Appearance → Button N → Button shape**, choose from **Circle / Square, Squircle, Flower, Clover, Leaf, Pebble, Scallop and Teardrop**. Each button has independent shape, color, gradient and opacity settings.
 
 ![Available button shapes](assets/screenshots/button-shapes.png)
 
-Corner rounding is available only for **Circle / Square**. Other shapes have a fixed outline. Shapes persist in configurations and backups. Older backups remain importable; existing Flower configurations use the updated outline. Importing backups with the new shapes requires version 1.8.1 or later.
+Corner rounding is adjustable for **Circle / Square**. Other shapes have a fixed outline.
 
-## Original icon colors — new in 1.7.0
+## Icon colors
 
-1. Open **Appearance → Logo** or **Appearance → Button N → Icon**.
-2. Turn off **Monochrome icon** to use the selected element’s original colors.
-3. Tap **Save** to apply the change to the widget.
+In **Appearance → Logo** and **Appearance → Button N → Icon**, the **Monochrome icon** switch lets you choose between a customizable tint and the icon’s original colors. Monochrome mode is enabled by default, with an independent setting for each element.
 
-The switch defaults to on, including when loading older configurations or backups.
-Each element keeps its own setting. Original colors bypass saved tint, gradient
-and tint opacity while retaining the image’s own transparency. Material symbols
-normally have a black source fill: keep monochrome enabled to adapt them to the
-theme’s contrast.
-
-The setting is included in backups. To import a backup exported by 1.7.0, update
-the app on the receiving device too. Older backups remain importable.
-
-See the [changelog](CHANGELOG.md) and download [release 1.7.0](https://github.com/alessio89g/MySearchWidget/releases/tag/v1.7.0).
+With original colors, the image retains its own transparency and ignores tint, gradient and tint opacity. Material icons normally have a black source fill: monochrome mode lets you adapt them to the theme’s contrast.
 
 ## App shortcuts
 
@@ -154,7 +143,7 @@ Available tags also include `[u]`, `[s]`, `[size=20]`, `[weight=500]`, `[font=de
 ## Compatibility and limitations
 
 - Widget size and placement also depend on your launcher’s grid and resizing behavior.
-- Google actions and app shortcuts depend on installed apps and their versions. Not every destination has been tested on a physical device.
+- Google actions and app shortcuts depend on installed apps and their versions.
 - Background blur is not available.
 - This is an independent project and is not affiliated with Google. Its visual inspiration does not imply support for Circle to Search.
 

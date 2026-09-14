@@ -1,5 +1,7 @@
 # MySearchWidget
 
+**Un progetto di vibe coding, sviluppato con l’assistenza dell’intelligenza artificiale.**
+
 **Un widget di ricerca Android personalizzabile, con colori Material You, gradienti, testo formattato e scorciatoie alle tue app.**
 
 [English](README.md) · **Italiano**
@@ -73,7 +75,7 @@ Per compilare il progetto consulta le [istruzioni di build](docs/BUILD.md). I ri
 
 La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il placeholder automatico è **“Search the web” / “Cerca sul web”**; un testo personalizzato non viene tradotto automaticamente.
 
-> L’APK attualmente prodotto è firmato con una **chiave di debug**. Per aggiornare un’installazione esistente è necessaria una firma compatibile.
+> L’APK è firmato con una **chiave di debug**. Per aggiornare un’installazione esistente è necessaria una firma compatibile.
 
 ## Impostazioni iniziali e controlli disabilitati
 
@@ -82,36 +84,23 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 | Colori Material You | Attivo | Colori e gradienti manuali sono grigi e non modificabili. Disattiva l’opzione per personalizzarli. |
 | Ricerca con l’app Google al tocco del campo | Disattivo | Se attivata, la gestione dei motori di ricerca diventa grigia e non modificabile: la ricerca viene gestita dall’app Google. |
 
-**Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente. Gli aggiornamenti conservano le preferenze già salvate.
+**Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente.
 
-La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google e richiedono verifica sul dispositivo. Gli stili della query del widget non modificano l’interfaccia Google.
+La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google. Gli stili della query del widget non modificano l’interfaccia Google.
 
-## Forme dei pulsanti — novità della 1.8.1
+## Forme dei pulsanti
 
-Apri **Aspetto → Pulsante N → Forma pulsante** (la precedente scheda “Cerchio”).
-Il fiore ha un nuovo contorno a quattro lobi; si aggiungono **Clover, Leaf, Pebble, Scallop e Teardrop**.
-Ogni pulsante mantiene la propria forma, con i colori, gradienti e opacità già disponibili.
+In **Aspetto → Pulsante N → Forma pulsante** puoi scegliere tra **Cerchio / Quadrato, Squircle, Fiore, Clover, Leaf, Pebble, Scallop e Teardrop**. Ogni pulsante ha impostazioni indipendenti di forma, colore, gradiente e opacità.
 
 ![Forme disponibili per i pulsanti](assets/screenshots/button-shapes.png)
 
-L’arrotondamento degli angoli è disponibile solo per **Cerchio / Quadrato**. Le altre forme hanno un contorno fisso. La scelta viene salvata nelle configurazioni e nei backup. I vecchi backup restano importabili; le configurazioni con Fiore usano il nuovo contorno. Per importare backup con le nuove forme serve la versione 1.8.1 o successiva.
+L’arrotondamento degli angoli è regolabile per **Cerchio / Quadrato**. Le altre forme hanno un contorno fisso.
 
-## Colori originali delle icone — novità della 1.7.0
+## Colori delle icone
 
-1. Apri **Aspetto → Logo** oppure **Aspetto → Pulsante N → Icona**.
-2. Disattiva **Icona monocromatica** per usare i colori originali dell’elemento selezionato.
-3. Premi **Salva** per applicare la modifica al widget.
+In **Aspetto → Logo** e **Aspetto → Pulsante N → Icona**, lo switch **Icona monocromatica** permette di scegliere tra una tinta personalizzabile e i colori originali dell’icona. La modalità monocromatica è attiva di default e la scelta è indipendente per ogni elemento.
 
-Lo switch è attivo di default, anche caricando configurazioni o backup precedenti.
-Ogni elemento mantiene una scelta indipendente. I colori originali ignorano la
-tinta, il gradiente e l’eventuale trasparenza della tinta salvata, conservando invece
-la trasparenza dell’immagine. Le icone Material hanno normalmente un riempimento
-nero: per adattarle al contrasto del tema, mantieni attiva la modalità monocromatica.
-
-La scelta viene inclusa nei backup. Per importare un backup esportato dalla 1.7.0,
-aggiorna anche l’app sul dispositivo di destinazione. I vecchi backup restano importabili.
-
-Consulta il [changelog](CHANGELOG.md) e scarica la [release 1.7.0](https://github.com/alessio89g/MySearchWidget/releases/tag/v1.7.0).
+Con i colori originali, l’immagine conserva la propria trasparenza e ignora tinta, gradiente e opacità della tinta. Le icone Material hanno normalmente un riempimento nero: la modalità monocromatica permette di adattarle al contrasto del tema.
 
 ## Scorciatoie delle app
 
@@ -154,7 +143,7 @@ Sono disponibili anche `[u]`, `[s]`, `[size=20]`, `[weight=500]`, `[font=default
 ## Compatibilità e limiti
 
 - Dimensioni e posizionamento del widget dipendono anche dalla griglia e dal ridimensionamento del launcher.
-- Il comportamento delle azioni Google e delle scorciatoie dipende dalle app installate e dalle loro versioni. Non tutte le destinazioni sono state collaudate sul dispositivo reale.
+- Il comportamento delle azioni Google e delle scorciatoie dipende dalle app installate e dalle loro versioni.
 - Il blur dello sfondo non è disponibile.
 - Il progetto è indipendente e non è affiliato a Google. L’ispirazione grafica non implica la presenza della funzione Circle to Search.
 
