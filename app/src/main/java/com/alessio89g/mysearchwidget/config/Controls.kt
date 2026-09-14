@@ -109,7 +109,7 @@ private fun normalizedColor(value:String):String = if(value.contains(','))value.
  fun change(t:Tone){onChange(if(mode=="dark")value.copy(dark=t) else value.copy(light=t))}
  if(showColors)PaintControl(tr(R.string.background),tone.color,tone.gradient,{change(tone.copy(color=it))},{change(tone.copy(gradient=it))})
  NumberControl(tr(R.string.opacity),tone.opacity*100){change(tone.copy(opacity=it/100))}
- if(shapes)Choice(tr(R.string.shape),value.shape,listOf("circle" to tr(R.string.circle_square),"squircle" to "Squircle","flower" to tr(R.string.flower))){onChange(value.copy(shape=it))}
+ if(shapes)Choice(tr(R.string.shape),value.shape,Catalog.shapes.map {it to when(it){"circle"->tr(R.string.circle_square);"flower"->tr(R.string.flower);else->it.replaceFirstChar {c->c.uppercase()}}}){onChange(value.copy(shape=it))}
  NumberControl(tr(R.string.rounding),value.rounding){onChange(value.copy(rounding=it))}
 }
 @Composable fun TextEditor(value:TextStyle,onChange:(TextStyle)->Unit,pickFont:()->Unit) {

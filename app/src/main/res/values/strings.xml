@@ -31,7 +31,7 @@
  <string name="find_app">Search apps</string>
  <string name="close">Close</string>
  <string name="button_background">Button background</string>
- <string name="circle_help">Change the circle behind the icon.</string>
+ <string name="circle_help">Customize the shape behind the icon.</string>
  <string name="imported_image">Imported image</string>
  <string name="choose_icon">Choose icon</string>
  <string name="from_file">From file</string>
@@ -129,7 +129,7 @@
  <string name="bar">Bar</string>
  <string name="text">Text</string>
  <string name="icon">Icon</string>
- <string name="circle">Circle</string>
+ <string name="circle">Button shape</string>
  <string name="button_number">Button %1$s</string>
  <string name="voice">Voice search</string>
  <string name="music">Song search</string>

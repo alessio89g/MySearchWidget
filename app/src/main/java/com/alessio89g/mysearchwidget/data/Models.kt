@@ -28,6 +28,7 @@ import java.util.Base64
 @Serializable data class Template(val id: String, val name: String, val backup: Backup)
 
 object Catalog {
+ val shapes=listOf("circle","squircle","flower","clover","leaf","pebble","scallop","teardrop")
  // Legacy IDs and blur/up/down fields are accepted only to preserve schema-1 backups.
  val retired = setOf("ai","gemini","translate","weather","camera")
  val functions = linkedMapOf("music" to "Cerca brano", "voice" to "Ricerca vocale", "lens" to "Google Lens")
@@ -58,7 +59,7 @@ object Validation {
   fun range(n: Float, a: Float, b: Float) { require(n.isFinite() && n in a..b) { "Valore numerico fuori intervallo" } }
   fun gradient(g:Gradient) { color(g.start);color(g.end);require(g.start.isNotEmpty() && g.end.isNotEmpty());range(g.angle,0f,360f) }
   fun surface(s: Surface) {
-   range(s.rounding,0f,100f); require(s.shape in listOf("circle","squircle","flower")) { "Forma sconosciuta" }
+   range(s.rounding,0f,100f); require(s.shape in Catalog.shapes) { "Forma sconosciuta" }
    listOf(s.light,s.dark).forEach { color(it.color);gradient(it.gradient);range(it.opacity,0f,1f);range(it.blur,0f,100f) }
   }
   surface(c.outer);surface(c.field)

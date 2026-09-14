@@ -27,6 +27,22 @@ class ValidationTest {
   assertFalse(restored.buttons[1].icon.monochrome)
   rejected {Validation.parse(backup().replace("\"monochrome\":true","\"monochrome\":\"false\""))}
  }
+ @Test fun allButtonShapesRoundTripIndependently() {
+  for(name in Catalog.shapes) {
+   val base=WidgetConfig()
+   val c=base.copy(buttons=base.buttons.mapIndexed {i,slot->slot.copy(surface=slot.surface.copy(shape=if(i==1)name else "circle"))})
+   val restored=Validation.parse(backup(c)).config
+   assertEquals(name,restored.buttons[1].surface.shape)
+   assertEquals("circle",restored.buttons[0].surface.shape)
+   assertEquals("circle",restored.buttons[2].surface.shape)
+  }
+ }
+ @Test fun legacyFlowerStillLoadsAndUnknownShapesAreRejected() {
+  val base=WidgetConfig()
+  val c=base.copy(buttons=base.buttons.map {it.copy(surface=it.surface.copy(shape="flower"))})
+  assertEquals(c,Validation.parse(backup(c)).config)
+  rejected {Validation.parse(backup(c).replace("\"flower\"","\"unknown-shape\""))}
+ }
  @Test fun schemaAndRequiredFieldsAreChecked(){
   rejected {Validation.parse("not JSON")}
   rejected {Validation.parse(backup().replace("\"schemaVersion\":1","\"schemaVersion\":99"))}

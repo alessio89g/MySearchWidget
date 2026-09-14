@@ -83,6 +83,27 @@ class DisabledSettingsTest {
   assertEnabled("Personal engine")
   assertEnabled("Add custom engine")
  }
+ @Test fun buttonShapeTabAndNewChoiceAreLocalizedAndIndependent()=scenario {scenario->
+  click("Button 1")
+  click("Button shape")
+  scrollTo("Circle / Square");click("Circle / Square")
+  click("Clover")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertEquals("clover",state.config.buttons[0].surface.shape)
+   assertEquals("circle",state.config.buttons[1].surface.shape)
+  }
+  click("Switch to Italian")
+  repeat(12) {
+   if(text("Forma pulsante")==null) {
+    find(root()){it.className?.toString()=="android.widget.ScrollView"}?.performAction(Node.ACTION_SCROLL_BACKWARD)
+    SystemClock.sleep(150)
+   }
+  }
+  wait("Forma pulsante")
+  scrollTo("Clover")
+  assertNotNull(wait("Clover"))
+ }
  @Test fun originalIconSwitchOverridesMaterialYouAndKeepsStoredTint()=scenario {scenario->
   click("Logo")
   val toggle=actionable(scrollTo("Monochrome icon"))

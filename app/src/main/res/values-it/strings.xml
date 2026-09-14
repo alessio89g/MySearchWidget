@@ -30,7 +30,7 @@
  <string name="find_app">Cerca app</string>
  <string name="close">Chiudi</string>
  <string name="button_background">Sfondo del pulsante</string>
- <string name="circle_help">Modifica il cerchio sotto l’icona.</string>
+ <string name="circle_help">Personalizza la forma sotto l’icona.</string>
  <string name="imported_image">Immagine importata</string>
  <string name="choose_icon">Scegli icona</string>
  <string name="from_file">Da file</string>
@@ -128,7 +128,7 @@
  <string name="bar">Barra</string>
  <string name="text">Testo</string>
  <string name="icon">Icona</string>
- <string name="circle">Cerchio</string>
+ <string name="circle">Forma pulsante</string>
  <string name="button_number">Pulsante %1$s</string>
  <string name="voice">Ricerca vocale</string>
  <string name="music">Cerca brano</string>

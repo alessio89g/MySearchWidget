@@ -104,15 +104,15 @@ object Renderer {
   canvas.restore();return bitmap
  }
  fun shape(r:RectF,s:Surface):Path {
+  ButtonOutlines.path(s.shape,r)?.let {return it}
   val path=Path()
   when(s.shape) {
-   "squircle","flower" -> {
-    // Analytic superellipse n=4 and an 8-petal radial curve; shared by preview and RemoteViews.
+   "squircle" -> {
+    // Analytic superellipse; other named shapes use reference-derived contours.
     for(i in 0..240) {
      val t=i*2*PI/240;val co=cos(t);val si=sin(t)
-     val radial=if(s.shape=="flower") .87+.13*cos(8*t) else 1.0
-     val x=r.centerX()+r.width()/2*(if(s.shape=="squircle")sign(co)*sqrt(abs(co)) else co*radial)
-     val y=r.centerY()+r.height()/2*(if(s.shape=="squircle")sign(si)*sqrt(abs(si)) else si*radial)
+     val x=r.centerX()+r.width()/2*sign(co)*sqrt(abs(co))
+     val y=r.centerY()+r.height()/2*sign(si)*sqrt(abs(si))
      if(i==0)path.moveTo(x.toFloat(),y.toFloat()) else path.lineTo(x.toFloat(),y.toFloat())
     };path.close()
    }

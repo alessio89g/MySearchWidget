@@ -35,7 +35,7 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 - **Material You:** usa la palette dinamica del sistema.
 - **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
 - Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.
-- Regola opacità e arrotondamento degli sfondi. Per i pulsanti scegli tra cerchio/quadrato, squircle e fiore.
+- Regola opacità e arrotondamento degli sfondi. Per i pulsanti scegli tra cerchio/quadrato, squircle, fiore, clover, leaf, pebble, scallop e teardrop.
 - Scegli icone predefinite o importa immagini. Logo e pulsanti hanno ciascuno lo switch **Icona monocromatica**, attivo di default. Disattivalo per mantenere colori e trasparenza delle immagini importate o usare i colori nativi dei simboli Google e Chrome. I simboli Material sono già a colore singolo.
 - I colori originali hanno priorità su Material You solo per quell’icona. Tinta e gradienti sono disabilitati mentre i colori originali sono attivi; i valori salvati tornano disponibili riattivando lo stile monocromatico.
 - Visualizza l’anteprima su fondo solido oppure sul ritaglio centrale del wallpaper Home.
@@ -85,6 +85,16 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 **Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente. Gli aggiornamenti conservano le preferenze già salvate.
 
 La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google e richiedono verifica sul dispositivo. Gli stili della query del widget non modificano l’interfaccia Google.
+
+## Forme dei pulsanti — novità della 1.8.0
+
+Apri **Aspetto → Pulsante N → Forma pulsante** (la precedente scheda “Cerchio”).
+Il fiore ha un nuovo contorno a quattro lobi; si aggiungono **Clover, Leaf, Pebble, Scallop e Teardrop**.
+Ogni pulsante mantiene la propria forma, con i colori, gradienti e opacità già disponibili.
+
+![Contorni delle forme generati dal rendering Android](assets/screenshots/button-shapes.png)
+
+Le forme sono vettoriali e vengono usate sia nell’anteprima sia nel widget. La scelta viene salvata nelle configurazioni e nei backup. I vecchi backup restano importabili; le configurazioni con Fiore usano il nuovo contorno. Per importare backup con le nuove forme serve la versione 1.8.0 o successiva.
 
 ## Colori originali delle icone — novità della 1.7.0
 
