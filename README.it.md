@@ -1,6 +1,7 @@
 # MySearchWidget
 
-**Un progetto di vibe coding, sviluppato con l’assistenza dell’intelligenza artificiale.**
+> [!NOTE]
+> **L'intero progetto è stato realizzato in vibe coding.In questo repository non esiste codice scritto da un umano.**
 
 **Un widget di ricerca Android personalizzabile, con colori Material You, gradienti, testo formattato e scorciatoie alle tue app.**
 
@@ -87,14 +88,6 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 **Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente.
 
 La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google. Gli stili della query del widget non modificano l’interfaccia Google.
-
-## Forme dei pulsanti
-
-In **Aspetto → Pulsante N → Forma pulsante** puoi scegliere tra **Cerchio / Quadrato, Squircle, Fiore, Clover, Leaf, Pebble, Scallop e Teardrop**. Ogni pulsante ha impostazioni indipendenti di forma, colore, gradiente e opacità.
-
-![Forme disponibili per i pulsanti](assets/screenshots/button-shapes.png)
-
-L’arrotondamento degli angoli è regolabile per **Cerchio / Quadrato**. Le altre forme hanno un contorno fisso.
 
 ## Colori delle icone
 
