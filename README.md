@@ -58,6 +58,13 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 - Export and import individual widget configurations, including imported fonts and images.
 - A library of reusable templates. Backups are validated before import; applying one to a widget is a separate step that requires confirmation.
 
+## Managing the list and trash button
+
+Long-press a widget or an imported template to enter selection mode. Tap other items to select them together, then use the **trash button in the top-right corner** and confirm. **Cancel** or the Back button exits selection without removing anything.
+
+- **Imported templates:** are deleted from the library; widgets using them keep their settings.
+- **Widgets:** the entry is hidden from the list while the Home widget keeps its settings. Use your launcher to remove the widget from the Home screen. Opening its configuration again from the launcher and saving it makes the entry visible in the list again.
+
 ## Download
 
 Download the APK and its corresponding source archive from [Releases](https://github.com/alessio89g/MySearchWidget/releases). Each release also includes SHA-256 checksums.

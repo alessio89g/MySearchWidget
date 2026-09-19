@@ -4,15 +4,15 @@
 
 ### English
 
-- The widget library excludes unconfigured launcher slots and entries no longer associated with a widget.
-- Long-press an item to select it, select multiple items and use the shared trash button. Templates are deleted; widget entries are hidden without resetting their Home settings.
-- Widgets set to **System** follow light/dark mode without opening the configurator or running a background service.
+- Widget list: now shows only saved configurations associated with IDs that are still registered, avoiding default entries for unconfigured launcher slots.
+- Selection and trash button: a long press activates selection; you can add other items and use the single trash button in the top-right corner, with confirmation.
+- “Follow system” theme: the widget switches between light and dark without opening the configurator.
 
 ### Italiano
 
-- L’elenco dei widget esclude gli slot del launcher non configurati e le voci non più associate a un widget.
-- Tocco prolungato per selezionare gli elementi, selezione multipla e cestino unico. I modelli vengono eliminati; le voci widget vengono nascoste senza azzerare le impostazioni sulla Home.
-- I widget impostati su **Sistema** seguono il tema chiaro/scuro senza aprire il configuratore o eseguire un servizio in background.
+- Elenco dei widget: ora mostra soltanto configurazioni salvate associate a ID ancora registrati, evitando di generare voci predefinite per gli slot non configurati del launcher.
+- Selezione e cestino: un tocco prolungato attiva la selezione; puoi aggiungere altri elementi e usare l’unico cestino in alto a destra, con conferma.
+- Tema “Segui sistema”: il widget passa tra chiaro e scuro senza aprire il configuratore.
 
 ## 1.8.1 — 2026-09-14
 

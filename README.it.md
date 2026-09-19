@@ -58,6 +58,13 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 - Esportazione e importazione della configurazione del singolo widget, inclusi font e immagini importati.
 - Libreria di modelli riutilizzabili. I backup vengono validati prima dell’importazione; applicarli a un widget è un passaggio separato con conferma.
 
+## Gestione dell’elenco e cestino
+
+Tieni premuto un widget o un modello importato per attivare la selezione. Tocca altri elementi per selezionarli insieme, poi usa il **cestino in alto a destra** e conferma. **Annulla** o il tasto Indietro chiudono la selezione senza rimuovere nulla.
+
+- **Modelli importati:** vengono eliminati dalla libreria; i widget ai quali sono stati applicati mantengono le proprie impostazioni.
+- **Widget:** la voce viene nascosta dall’elenco, conservando le impostazioni del widget sulla Home. Per rimuovere il widget dalla Home usa il launcher. Aprendo di nuovo la sua configurazione dal launcher e salvandola, la voce torna visibile nell’elenco.
+
 ## Download
 
 Scarica l’APK e i sorgenti corrispondenti dalla sezione [Releases](https://github.com/alessio89g/MySearchWidget/releases). Ogni release include anche i checksum SHA-256.
