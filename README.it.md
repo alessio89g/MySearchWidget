@@ -144,7 +144,6 @@ Sono disponibili anche `[u]`, `[s]`, `[size=20]`, `[weight=500]`, `[font=default
 
 - Dimensioni e posizionamento del widget dipendono anche dalla griglia e dal ridimensionamento del launcher.
 - Il comportamento delle azioni Google e delle scorciatoie dipende dalle app installate e dalle loro versioni.
-- Il blur dello sfondo non è disponibile.
 - Il progetto è indipendente e non è affiliato a Google. L’ispirazione grafica non implica la presenza della funzione Circle to Search.
 
 ## Licenza e crediti
