@@ -144,7 +144,6 @@ Available tags also include `[u]`, `[s]`, `[size=20]`, `[weight=500]`, `[font=de
 
 - Widget size and placement also depend on your launcher’s grid and resizing behavior.
 - Google actions and app shortcuts depend on installed apps and their versions.
-- Background blur is not available.
 - This is an independent project and is not affiliated with Google. Its visual inspiration does not imply support for Circle to Search.
 
 ## License and credits
