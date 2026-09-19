@@ -125,6 +125,31 @@ class DisabledSettingsTest {
   scrollTo("Corner rounding %")
   assertNotNull(wait("Corner rounding %"))
  }
+ @Test fun longPressEnablesSingleTrashAndBulkTemplateSelection() {
+  val repo=Repository(ins.targetContext)
+  val models=kotlinx.coroutines.runBlocking {(1..3).map {repo.importBackup(Catalog.json.encodeToString(Backup.serializer(),Backup(1,WidgetConfig(),Catalog.engines.first())))}}
+  try {scenario {scenario->
+   scenario.onActivity {ViewModelProvider(it)[ConfigState::class.java].templates=models.mapIndexed {i,t->t.copy(name="Selection ${i+1}")}}
+   click("Backup")
+   val first=actionable(scrollTo("Selection 1"))
+   assertTrue(first.performAction(Node.ACTION_LONG_CLICK))
+   wait("1 selected");wait("Delete selected items")
+   scrollTo("Select Selection 2");click("Select Selection 2")
+   wait("2 selected")
+   ins.uiAutomation.takeScreenshot()?.let {bitmap->
+    java.io.File(ins.targetContext.filesDir,"library-selection.png").outputStream().use {bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)}
+    bitmap.recycle()
+   }
+   click("Delete selected items");wait("Delete 2 selected items?")
+   click("Cancel")
+   assertEquals(3,kotlinx.coroutines.runBlocking {repo.templates().count {it.id in models.map {m->m.id}}})
+   click("Delete selected items");click("Delete")
+   repeat(70) {if(text("2 selected")!=null)SystemClock.sleep(100)}
+   assertNull(text("Delete selected items"))
+   val remaining=kotlinx.coroutines.runBlocking {repo.templates().map {it.id}}
+   assertFalse(models[0].id in remaining);assertFalse(models[1].id in remaining);assertTrue(models[2].id in remaining)
+  }} finally {kotlinx.coroutines.runBlocking {models.forEach {repo.deleteTemplate(it.id)}}}
+ }
  @Test fun originalIconSwitchOverridesMaterialYouAndKeepsStoredTint()=scenario {scenario->
   click("Logo")
   val toggle=actionable(scrollTo("Monochrome icon"))

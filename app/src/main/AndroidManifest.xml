@@ -21,7 +21,7 @@
   <activity android:name=".overlay.InputActivity" android:theme="@style/InputTheme" android:exported="false" android:excludeFromRecents="true" android:taskAffinity="" android:windowSoftInputMode="adjustNothing|stateAlwaysVisible"/>
   <activity android:name=".overlay.ActionActivity" android:theme="@style/GestureTheme" android:exported="false" android:excludeFromRecents="true" android:taskAffinity=""/>
   <receiver android:name=".widget.SearchWidget" android:exported="false">
-   <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.MY_PACKAGE_REPLACED"/><action android:name="android.intent.action.WALLPAPER_CHANGED"/><action android:name="android.intent.action.CONFIGURATION_CHANGED"/></intent-filter>
+   <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/><action android:name="android.intent.action.MY_PACKAGE_REPLACED"/><action android:name="android.intent.action.WALLPAPER_CHANGED"/></intent-filter>
    <meta-data android:name="android.appwidget.provider" android:resource="@xml/search_widget"/>
   </receiver>
  </application>

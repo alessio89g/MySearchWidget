@@ -235,4 +235,11 @@
  <string name="monochrome_icon">Monochrome icon</string>
  <string name="icon_color_mode_help">Turn off to keep original colors. Material icons are naturally single-color.</string>
  <string name="original_colors_help">Original colors are active. Icon tint and gradients are disabled; saved settings are preserved. Material You still applies to the other elements.</string>
+ <string name="select_item">Select item</string>
+ <string name="select_named">Select %1$s</string>
+ <plurals name="selected_items"><item quantity="one">%1$d selected</item><item quantity="other">%1$d selected</item></plurals>
+ <string name="delete_selected">Delete selected items</string>
+ <plurals name="delete_selection_title"><item quantity="one">Delete %1$d selected item?</item><item quantity="other">Delete %1$d selected items?</item></plurals>
+ <string name="delete_widgets_help">Selected templates will be deleted. Widget entries will be hidden from this list, keeping their Home settings. Remove widgets from the Home screen using your launcher. Opening a widget for configuration and saving it shows its entry again.</string>
+ <string name="delete_templates_help">The selected templates will be deleted. Widgets using them will keep their settings.</string>
 </resources>

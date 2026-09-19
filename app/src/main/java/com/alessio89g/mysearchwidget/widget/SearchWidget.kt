@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.appwidget.*
 import android.content.*
 import android.os.Bundle
+import android.graphics.drawable.Icon
 import android.view.View
 import android.widget.RemoteViews
 import com.alessio89g.mysearchwidget.R
@@ -15,7 +16,15 @@ import kotlinx.coroutines.*
 class SearchWidget:AppWidgetProvider() {
  override fun onReceive(context:Context,intent:Intent) {
   super.onReceive(context,intent)
-  if(intent.action in listOf(Intent.ACTION_WALLPAPER_CHANGED,Intent.ACTION_CONFIGURATION_CHANGED,Intent.ACTION_MY_PACKAGE_REPLACED))work { ids(context).forEach { update(context,it) } }
+  if(intent.action==PIN_CONFIRMED) {
+   val id=intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,AppWidgetManager.INVALID_APPWIDGET_ID)
+   if(id in ids(context))work {
+    val repo=Repository(context)
+    repo.confirmPinned(id)
+    update(context,id)
+   }
+  }
+  if(intent.action in listOf(Intent.ACTION_WALLPAPER_CHANGED,Intent.ACTION_MY_PACKAGE_REPLACED))work { ids(context).forEach { update(context,it) } }
  }
  override fun onUpdate(context:Context,manager:AppWidgetManager,ids:IntArray) { work { ids.forEach { update(context,it) } } }
  override fun onAppWidgetOptionsChanged(context:Context,manager:AppWidgetManager,id:Int,options:Bundle) { work { update(context,id) } }
@@ -25,6 +34,7 @@ class SearchWidget:AppWidgetProvider() {
   CoroutineScope(Dispatchers.IO).launch { try { block() } finally { pending.finish() } }
  }
  companion object {
+  const val PIN_CONFIRMED="com.alessio89g.mysearchwidget.PIN_CONFIRMED"
   fun ids(context:Context)=AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context,SearchWidget::class.java))
   suspend fun update(context:Context,id:Int,c:WidgetConfig?=null,text:SessionText?=null) {
    val manager=AppWidgetManager.getInstance(context)
@@ -36,7 +46,13 @@ class SearchWidget:AppWidgetProvider() {
   }
   fun views(context:Context,id:Int,c:WidgetConfig,width:Int,text:SessionText?=null):RemoteViews {
    val rv=RemoteViews(context.packageName,R.layout.widget)
-   rv.setImageViewBitmap(R.id.art,Renderer.render(context,c,width,text))
+   if(c.theme=="system") {
+    // Android resolves these in the host configuration, even when our process is
+    // not running. Do not depend on CONFIGURATION_CHANGED delivery to a receiver.
+    rv.setIcon(R.id.art,"setImageIcon",
+     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="light"),width,text)),
+     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="dark"),width,text)))
+   }else rv.setImageViewBitmap(R.id.art,Renderer.render(context,c,width,text))
    fun pending(slot:Int,input:Boolean=false):PendingIntent {
     val intent=Intent(context,if(input && !c.googleInput)InputActivity::class.java else ActionActivity::class.java)
      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)

@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -42,6 +43,8 @@ import kotlinx.serialization.encodeToString
 import java.util.UUID
 
 class ConfigState:ViewModel() {
+ var librarySelection by mutableStateOf<Set<String>>(emptySet())
+ var confirmLibraryDelete by mutableStateOf(false)
  var selected by mutableStateOf<Int?>(null)
  var config by mutableStateOf(WidgetConfig())
  var configs by mutableStateOf<Map<Int,WidgetConfig>>(emptyMap())
@@ -140,6 +143,11 @@ class ConfigActivity:ComponentActivity() {
   lifecycleScope.launch {
    try {
     reload()
+    // A new configuration or a request from an existing widget is explicit;
+    // allow it even if no saved library entry exists (or it was hidden).
+    if(requested>0 && requested in SearchWidget.ids(this@ConfigActivity)) {
+     configs=configs+(requested to repo.config(requested))
+    }
     if(!ready) {
     if(configuring && requested !in configs) { message=tr(R.string.invalid_widget) }
     else if(requested>0 && requested in configs)select(requested)
@@ -164,13 +172,15 @@ class ConfigActivity:ComponentActivity() {
     Surface(Modifier.fillMaxSize()) {
      Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
       Column(Modifier.fillMaxSize().padding(horizontal=16.dp)) {
-       if(selected==null)Row(Modifier.fillMaxWidth().padding(top=12.dp,bottom=8.dp),verticalAlignment=Alignment.CenterVertically) {
+       if(selected==null && editorState.librarySelection.isNotEmpty())Spacer(Modifier.height(64.dp))
+       if(selected==null && editorState.librarySelection.isEmpty())Row(Modifier.fillMaxWidth().padding(top=12.dp,bottom=8.dp),verticalAlignment=Alignment.CenterVertically) {
         Text("MySearchWidget",Modifier.weight(1f),style=MaterialTheme.typography.headlineSmall)
         LanguageButton()
        }
        if(!ready || busy)LinearProgressIndicator(Modifier.fillMaxWidth())
        if(ready)if(selected==null)InstanceScreen() else Editor()
       }
+      LibrarySelectionActions(Modifier.align(Alignment.TopEnd).padding(12.dp))
       SnackbarHost(notices,modifier=Modifier.align(Alignment.BottomCenter).padding(horizontal=16.dp).padding(bottom=if(selected!=null)84.dp else 12.dp))
      }
     }
@@ -236,7 +246,11 @@ class ConfigActivity:ComponentActivity() {
   lifecycleScope.launch { SearchWidget.ids(this@ConfigActivity).forEach { SearchWidget.update(this@ConfigActivity,it) } }
   if(ready && selected==null)task { reload() }
  }
- private suspend fun reload(){configs=SearchWidget.ids(this).associateWith {repo.config(it)};engines=repo.engines();templates=repo.templates()}
+ private suspend fun reload(){
+  configs=repo.library(SearchWidget.ids(this).toSet());engines=repo.engines();templates=repo.templates()
+  val keys=configs.keys.map {"w:$it"}.toSet()+templates.map {"t:${it.id}"}
+  editorState.librarySelection=editorState.librarySelection.intersect(keys)
+ }
  private fun select(id:Int){selected=id;config=configs[id] ?: WidgetConfig()}
  private fun setSlot(index:Int,slot:Slot){config=if(index==-1)config.copy(logo=slot) else config.copy(buttons=config.buttons.mapIndexed {i,s->if(i==index)slot else s})}
  private fun task(block:suspend ()->Unit){lifecycleScope.launch {busy=true;try {block()}catch(e:Exception){message=tr(R.string.operation_failed,errorText(e))}finally{busy=false}}}
@@ -254,12 +268,16 @@ class ConfigActivity:ComponentActivity() {
   if(configs.isEmpty())Text(tr(R.string.add_widget_help),modifier=Modifier.padding(vertical=8.dp))
   Row {TextButton(onClick={
    val manager=AppWidgetManager.getInstance(this@ConfigActivity)
-   if(manager.isRequestPinAppWidgetSupported)manager.requestPinAppWidget(ComponentName(this@ConfigActivity,SearchWidget::class.java),null,null)
+   if(manager.isRequestPinAppWidgetSupported)manager.requestPinAppWidget(ComponentName(this@ConfigActivity,SearchWidget::class.java),null,
+    android.app.PendingIntent.getBroadcast(this@ConfigActivity,0,Intent(this@ConfigActivity,SearchWidget::class.java).setAction(SearchWidget.PIN_CONFIRMED),android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE))
    else message=tr(R.string.launcher_help)
   }){Text(tr(R.string.add_widget))};TextButton(onClick={task {reload()}}){Text(tr(R.string.refresh_list))}}
   OutlinedButton(onClick={importDocument.launch(arrayOf("application/json","text/*","application/octet-stream"))}){Text(tr(R.string.import_backup))}
   LazyColumn(Modifier.weight(1f)) {
-   items(configs.entries.toList(),key={it.key}){entry->Card(Modifier.fillMaxWidth().padding(vertical=8.dp).clickable {select(entry.key)}){Column(Modifier.padding(12.dp)){Text("Widget ${entry.key}");Preview(entry.value,wallpaperImage)}}}
+   items(configs.entries.toList(),key={it.key}){entry->LibraryCard("w:${entry.key}","Widget ${entry.key}",{select(entry.key)}) {
+    if(editorState.librarySelection.isEmpty())Text("Widget ${entry.key}")
+    Preview(entry.value,wallpaperImage)
+   }}
    if(configs.isEmpty())item {Text(tr(R.string.default_preview));Preview(WidgetConfig(),wallpaperImage)}
    item {TemplateLibrary()}
   }
@@ -291,8 +309,9 @@ class ConfigActivity:ComponentActivity() {
   val pageStates=rememberSaveableStateHolder()
   var confirmDiscard by remember {mutableStateOf(false)}
   val dirty=config!=configs[id]
-  BackHandler(enabled=!busy){save(true)}
-  Row(Modifier.fillMaxWidth().padding(vertical=8.dp),verticalAlignment=Alignment.CenterVertically) {
+  BackHandler(enabled=!busy && editorState.librarySelection.isEmpty()){save(true)}
+  if(editorState.librarySelection.isNotEmpty())Spacer(Modifier.height(64.dp))
+  else Row(Modifier.fillMaxWidth().padding(vertical=8.dp),verticalAlignment=Alignment.CenterVertically) {
    TextButton(onClick={if(dirty)confirmDiscard=true else if(configuring)finish() else {selected=null}},enabled=!busy){Text(tr(R.string.cancel))}
    Text("Widget $id",Modifier.weight(1f),style=MaterialTheme.typography.titleMedium)
    Button(onClick={save(false)},shapes=ButtonDefaults.shapes(),enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text(if(configuring)tr(R.string.add) else tr(R.string.save))}
@@ -391,7 +410,7 @@ class ConfigActivity:ComponentActivity() {
    }
   }
   NavigationBar(containerColor=MaterialTheme.colorScheme.surfaceContainer,windowInsets=WindowInsets(0,0,0,0)) {
-   pages.forEach {(name,icon)->NavigationBarItem(selected=page==name,onClick={page=name},icon={Icon(IconCatalog.vector(icon,false),null)},label={Text(navigationTitle(name))})}
+   pages.forEach {(name,icon)->NavigationBarItem(selected=page==name,onClick={page=name;editorState.librarySelection=emptySet();editorState.confirmLibraryDelete=false},icon={Icon(IconCatalog.vector(icon,false),null)},label={Text(navigationTitle(name))})}
   }
   if(confirmDiscard)AlertDialog(onDismissRequest={confirmDiscard=false},title={Text(tr(R.string.discard_title))},text={Text(tr(R.string.discard_help))},confirmButton={TextButton(onClick={confirmDiscard=false;if(configuring)finish() else {selected=null}}){Text(tr(R.string.discard))}},dismissButton={TextButton(onClick={confirmDiscard=false}){Text(tr(R.string.keep_editing))}})
   applyModel?.let {t->AlertDialog(onDismissRequest={applyModel=null},title={Text(tr(R.string.apply_widget,id))},text={Text(tr(R.string.replace_template,t.name))},confirmButton={TextButton(onClick={applyModel=null;task {
@@ -401,11 +420,55 @@ class ConfigActivity:ComponentActivity() {
  @Composable private fun TemplateLibrary(){
   Text(tr(R.string.saved_templates,templates.size),style=MaterialTheme.typography.titleMedium)
   if(templates.isEmpty())Text(tr(R.string.empty_templates))
-  templates.forEach { t->Column(Modifier.padding(vertical=8.dp)){
-   Text(t.name);Preview(t.backup.config,wallpaperImage)
-   Row {TextButton(onClick={if(selected!=null)applyModel=t else message=tr(R.string.open_target_first)}){Text(tr(R.string.apply_template))};TextButton(onClick={task {repo.deleteTemplate(t.id);templates=repo.templates()}}){Text(tr(R.string.remove_template))}}
+  templates.forEach { t->LibraryCard("t:${t.id}",t.name,{if(selected!=null)applyModel=t else message=tr(R.string.open_target_first)}) {
+   if(editorState.librarySelection.isEmpty())Text(t.name)
+   Preview(t.backup.config,wallpaperImage)
+   if(editorState.librarySelection.isEmpty())TextButton(onClick={if(selected!=null)applyModel=t else message=tr(R.string.open_target_first)}){Text(tr(R.string.apply_template))}
   }}
  }
+ private fun toggleLibrary(key:String) {
+  editorState.librarySelection=editorState.librarySelection.let {if(key in it)it-key else it+key}
+ }
+ @Composable private fun LibraryCard(key:String,label:String,onOpen:()->Unit,content:@Composable ColumnScope.()->Unit) {
+  val selection=editorState.librarySelection
+  Card(Modifier.fillMaxWidth().padding(vertical=8.dp).combinedClickable(
+   onClick={if(selection.isNotEmpty())toggleLibrary(key) else onOpen()},
+   onLongClick={toggleLibrary(key)},onLongClickLabel=tr(R.string.select_item)),
+   colors=CardDefaults.cardColors(containerColor=if(key in selection)MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerLow)) {
+   Column(Modifier.padding(12.dp)) {
+    if(selection.isNotEmpty())Row(verticalAlignment=Alignment.CenterVertically) {
+     Checkbox(key in selection,{toggleLibrary(key)},Modifier.semantics {contentDescription=tr(R.string.select_named,label)})
+     Text(label,style=MaterialTheme.typography.labelMedium)
+    }
+    content()
+   }
+  }
+ }
+ @Composable private fun LibrarySelectionActions(modifier:Modifier) {
+  val selection=editorState.librarySelection
+  if(selection.isEmpty())return
+  BackHandler {editorState.librarySelection=emptySet();editorState.confirmLibraryDelete=false}
+  Surface(modifier,shape=RoundedCornerShape(24.dp),tonalElevation=6.dp,shadowElevation=4.dp) {
+   Row(verticalAlignment=Alignment.CenterVertically) {
+    TextButton(onClick={editorState.librarySelection=emptySet()}){Text(tr(R.string.cancel))}
+    Text(AppLanguage.context(this@ConfigActivity).resources.getQuantityString(R.plurals.selected_items,selection.size,selection.size))
+    IconButton(onClick={editorState.confirmLibraryDelete=true},enabled=!busy) {
+     Icon(androidx.compose.material.icons.Icons.Default.Delete,tr(R.string.delete_selected))
+    }
+   }
+  }
+  if(editorState.confirmLibraryDelete)AlertDialog(onDismissRequest={editorState.confirmLibraryDelete=false},
+   title={Text(AppLanguage.context(this@ConfigActivity).resources.getQuantityString(R.plurals.delete_selection_title,selection.size,selection.size))},
+   text={Text(tr(if(selection.any {it.startsWith("w:")})R.string.delete_widgets_help else R.string.delete_templates_help))},
+   confirmButton={TextButton(onClick={
+    editorState.confirmLibraryDelete=false
+    val widgets=selection.filter {it.startsWith("w:")}.map {it.substring(2).toInt()}.toSet()
+    val models=selection.filter {it.startsWith("t:")}.map {it.substring(2)}.toSet()
+    task {repo.removeLibraryItems(widgets,models);reload();editorState.librarySelection=emptySet()}
+   }){Text(tr(R.string.delete))}},
+   dismissButton={TextButton(onClick={editorState.confirmLibraryDelete=false}){Text(tr(R.string.cancel))}})
+ }
+
  @Composable private fun EngineLibrary(){
   val enabled=LocalControlsEnabled.current
   Choice(tr(R.string.selected_engine),config.engineId,engines.map {it.id to it.name}){config=config.copy(engineId=it)}

@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.9.0 — 2026-09-19
+
+### English
+
+- The widget library excludes unconfigured launcher slots and entries no longer associated with a widget.
+- Long-press an item to select it, select multiple items and use the shared trash button. Templates are deleted; widget entries are hidden without resetting their Home settings.
+- Widgets set to **System** follow light/dark mode without opening the configurator or running a background service.
+
+### Italiano
+
+- L’elenco dei widget esclude gli slot del launcher non configurati e le voci non più associate a un widget.
+- Tocco prolungato per selezionare gli elementi, selezione multipla e cestino unico. I modelli vengono eliminati; le voci widget vengono nascoste senza azzerare le impostazioni sulla Home.
+- I widget impostati su **Sistema** seguono il tema chiaro/scuro senza aprire il configuratore o eseguire un servizio in background.
+
 ## 1.8.1 — 2026-09-14
 
 ### English

@@ -234,4 +234,11 @@
  <string name="monochrome_icon">Icona monocromatica</string>
  <string name="icon_color_mode_help">Disattiva per mantenere i colori originali. Le icone Material sono già a colore singolo.</string>
  <string name="original_colors_help">Colori originali attivi. Tinta e gradienti dell’icona sono disabilitati; le impostazioni salvate sono conservate. Material You resta applicato agli altri elementi.</string>
+ <string name="select_item">Seleziona elemento</string>
+ <string name="select_named">Seleziona %1$s</string>
+ <plurals name="selected_items"><item quantity="one">%1$d selezionato</item><item quantity="other">%1$d selezionati</item></plurals>
+ <string name="delete_selected">Elimina elementi selezionati</string>
+ <plurals name="delete_selection_title"><item quantity="one">Eliminare %1$d elemento selezionato?</item><item quantity="other">Eliminare %1$d elementi selezionati?</item></plurals>
+ <string name="delete_widgets_help">I modelli selezionati saranno eliminati. Le voci widget verranno nascoste da questo elenco, conservando le impostazioni sulla Home. Per rimuovere i widget dalla Home usa il launcher. Aprendo un widget nel configuratore e salvandolo, la sua voce torna visibile.</string>
+ <string name="delete_templates_help">I modelli selezionati saranno eliminati. I widget che li usano manterranno le proprie impostazioni.</string>
 </resources>
