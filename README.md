@@ -1,6 +1,7 @@
 # MySearchWidget
 
-**A vibe coding project, developed with AI assistance.**
+> [!NOTE]
+> **The entire project was created using vibe coding. There is no human-written code in this repository.**
 
 **A customizable Android search widget with Material You colors, gradients, rich text and shortcuts to your apps.**
 
@@ -87,14 +88,6 @@ The initial language is **English**. Tap **EN** to switch to Italian. The automa
 **Your custom settings and saved search engines are not deleted.** They become available again when you turn off the corresponding option.
 
 Google search opens its search interface; focus and keyboard behavior depend on the installed Google app version. The widget’s query styles do not change Google’s interface.
-
-## Button shapes
-
-In **Appearance → Button N → Button shape**, choose from **Circle / Square, Squircle, Flower, Clover, Leaf, Pebble, Scallop and Teardrop**. Each button has independent shape, color, gradient and opacity settings.
-
-![Available button shapes](assets/screenshots/button-shapes.png)
-
-Corner rounding is adjustable for **Circle / Square**. Other shapes have a fixed outline.
 
 ## Icon colors
 
