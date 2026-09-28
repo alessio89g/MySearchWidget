@@ -20,7 +20,7 @@ import kotlin.math.*
 
 data class SessionText(val text:String,val cursor:Int=text.length,val editing:Boolean=true)
 data class Geometry(val width:Float,val count:Int) {
- // Revised from home.png: 64dp outer, 46dp circles, 52dp hit cells.
+ // Baseline coordinates; WidgetDimensions scales artwork and hit cells together.
  val fieldRight=width-9-count*52- if(count>0) 1 else 0
  fun center(index:Int)=width-9-count*52+index*52+26
 }
@@ -30,9 +30,11 @@ object Renderer {
   val context=AppLanguage.context(baseContext)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
   val width=widthDp.coerceIn(180,1000)
-  val bitmap=Bitmap.createBitmap((width*density).roundToInt(),(64*density).roundToInt(),Bitmap.Config.ARGB_8888)
-  val canvas=Canvas(bitmap);canvas.scale(density,density)
-  val g=Geometry(width.toFloat(),c.count);val dark=dark(context,c)
+  val dimensions=WidgetDimensions(width.toFloat(),c.heightDp,c.count)
+  val bitmap=Bitmap.createBitmap((width*density).roundToInt(),(c.heightDp*density).roundToInt(),Bitmap.Config.ARGB_8888)
+  val canvas=Canvas(bitmap);canvas.scale(density*dimensions.scale,density*dimensions.scale)
+  canvas.translate(0f,dimensions.verticalInset)
+  val g=Geometry(dimensions.canvasWidth,c.count);val dark=dark(context,c)
   val scheme=if(dark)dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
   val on=if(c.dynamic)scheme.primary.toArgb() else Color.parseColor(if(dark)"#B8B3A1" else "#48463B")
   val outer=if(c.dynamic)scheme.secondaryContainer.toArgb() else Color.parseColor(if(dark)"#474645" else "#E5E2DA")
@@ -46,7 +48,7 @@ object Renderer {
    // to our bitmap would blur the content, not the background. Always use the truthful host fallback.
    canvas.drawPath(shape(rect,s),paint)
   }
-  surface(c.outer,RectF(0f,0f,width.toFloat(),64f),outer)
+  surface(c.outer,RectF(0f,-dimensions.verticalInset,dimensions.canvasWidth,64f+dimensions.verticalInset),outer)
   surface(c.field,RectF(9f,9f,g.fieldRight,55f),field)
   fun ink(light:String,darkColor:String)= (if(dark)darkColor else light).let { if(c.dynamic || it.isEmpty())on else Color.parseColor(it) }
   drawIcon(canvas,c,c.logo.icon,RectF(17f,16f,49f,48f),ink(c.logo.icon.light,c.logo.icon.dark),dark)

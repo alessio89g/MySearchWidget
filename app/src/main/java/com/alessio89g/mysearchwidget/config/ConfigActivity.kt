@@ -346,6 +346,10 @@ class ConfigActivity:ComponentActivity() {
          Toggle(tr(R.string.material_you),config.dynamic){config=config.copy(dynamic=it)}
          Text(tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
         }
+        SettingCard(tr(R.string.widget_height),tr(R.string.widget_height_help)) {
+         NumberControl(tr(R.string.height_dp),config.heightDp,WidgetDimensions.MIN_HEIGHT,WidgetDimensions.MAX_HEIGHT){config=config.copy(heightDp=it)}
+         TextButton(onClick={config=config.copy(heightDp=WidgetDimensions.DEFAULT_HEIGHT)}){Text(tr(R.string.reset_height))}
+        }
         SettingCard(tr(R.string.buttons),tr(R.string.buttons_help)) {
          Choice(tr(R.string.button_count),config.count.toString(),(0..3).map {it.toString() to it.toString()}){config=config.copy(count=it.toInt())}
         }
@@ -492,9 +496,9 @@ class ConfigActivity:ComponentActivity() {
   val width=maxWidth.value.toInt().coerceAtLeast(180)
   val uiMode=LocalConfiguration.current
   val bitmap=remember(config,width,uiMode.uiMode,uiMode.fontScale,AppLanguage.code,queryPreview){Renderer.render(context,config,width,if(queryPreview)com.alessio89g.mysearchwidget.widget.SessionText(tr(R.string.query_preview),0,false) else null)}
-  Box(Modifier.fillMaxWidth().height(if(wallpaper!=null)104.dp else 64.dp),contentAlignment=Alignment.Center) {
+  Box(Modifier.fillMaxWidth().height((config.heightDp+if(wallpaper!=null)40f else 0f).dp),contentAlignment=Alignment.Center) {
    if(wallpaper!=null)Image(wallpaper.asImageBitmap(),null,Modifier.matchParentSize(),contentScale=ContentScale.Crop,alignment=Alignment.Center)
-   Image(bitmap.asImageBitmap(),tr(R.string.widget_preview),Modifier.fillMaxWidth().height(64.dp))
+   Image(bitmap.asImageBitmap(),tr(R.string.widget_preview),Modifier.fillMaxWidth().height(config.heightDp.dp))
   }
  }
 }

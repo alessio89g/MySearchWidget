@@ -242,4 +242,8 @@
  <plurals name="delete_selection_title"><item quantity="one">Delete %1$d selected item?</item><item quantity="other">Delete %1$d selected items?</item></plurals>
  <string name="delete_widgets_help">Selected templates will be deleted. Widget entries will be hidden from this list, keeping their Home settings. Remove widgets from the Home screen using your launcher. Opening a widget for configuration and saving it shows its entry again.</string>
  <string name="delete_templates_help">The selected templates will be deleted. Widgets using them will keep their settings.</string>
+ <string name="widget_height">Widget height</string>
+ <string name="height_dp">Height (dp)</string>
+ <string name="widget_height_help">Default: 64 dp. Enter a value from 16 to 256 dp, including decimals. For a taller widget, resize its space on the Home screen. Elements scale proportionally within the available width.</string>
+ <string name="reset_height">Reset to 64 dp</string>
 </resources>

@@ -241,4 +241,8 @@
  <plurals name="delete_selection_title"><item quantity="one">Eliminare %1$d elemento selezionato?</item><item quantity="other">Eliminare %1$d elementi selezionati?</item></plurals>
  <string name="delete_widgets_help">I modelli selezionati saranno eliminati. Le voci widget verranno nascoste da questo elenco, conservando le impostazioni sulla Home. Per rimuovere i widget dalla Home usa il launcher. Aprendo un widget nel configuratore e salvandolo, la sua voce torna visibile.</string>
  <string name="delete_templates_help">I modelli selezionati saranno eliminati. I widget che li usano manterranno le proprie impostazioni.</string>
+ <string name="widget_height">Altezza del widget</string>
+ <string name="height_dp">Altezza (dp)</string>
+ <string name="widget_height_help">Predefinita: 64 dp. Inserisci un valore da 16 a 256 dp, anche decimale. Per un widget più alto, ridimensiona il suo spazio sulla Home. Gli elementi mantengono le proporzioni entro la larghezza disponibile.</string>
+ <string name="reset_height">Ripristina 64 dp</string>
 </resources>

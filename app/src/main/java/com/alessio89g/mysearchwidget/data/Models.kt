@@ -15,6 +15,7 @@ import java.util.Base64
 @Serializable data class Slot(val icon: IconSpec = IconSpec(), val surface: Surface = Surface(), val tap: Shortcut = Shortcut(), val up: Shortcut = Shortcut(), val down: Shortcut = Shortcut())
 @Serializable data class Asset(val kind: String, val base64: String)
 @Serializable data class WidgetConfig(
+ val heightDp: Float = WidgetDimensions.DEFAULT_HEIGHT,
  val theme: String = "system", val dynamic: Boolean = true, val placeholder: String = "",
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
  val field: Surface = Surface(), val hint: TextStyle = TextStyle(), val query: TextStyle = TextStyle(),
@@ -57,6 +58,7 @@ object Validation {
   require(c.theme in listOf("system","light","dark") && c.count in 0..3 && c.buttons.size == 3) { "Tema o numero di pulsanti non valido" }
   require(c.placeholder.length <= 500 && c.engineId.length in 1..100) { "Testo o motore non valido" }
   fun range(n: Float, a: Float, b: Float) { require(n.isFinite() && n in a..b) { "Valore numerico fuori intervallo" } }
+  range(c.heightDp,WidgetDimensions.MIN_HEIGHT,WidgetDimensions.MAX_HEIGHT)
   fun gradient(g:Gradient) { color(g.start);color(g.end);require(g.start.isNotEmpty() && g.end.isNotEmpty());range(g.angle,0f,360f) }
   fun surface(s: Surface) {
    range(s.rounding,0f,100f); require(s.shape in Catalog.shapes) { "Forma sconosciuta" }

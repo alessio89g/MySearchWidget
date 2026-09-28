@@ -67,6 +67,14 @@ class DisabledSettingsTest {
    }
   }finally {AppLanguage.select(language)}
  }
+ @Test fun heightResetUses64WithMaterialYouEnabled()=scenario {scenario->
+  scenario.onActivity {ViewModelProvider(it)[ConfigState::class.java].let {s->s.config=s.config.copy(heightDp=96.5f)}}
+  scrollTo("Reset to 64 dp");click("Reset to 64 dp")
+  scenario.onActivity {
+   val c=ViewModelProvider(it)[ConfigState::class.java].config
+   assertEquals(64f,c.heightDp,0f);assertTrue(c.dynamic)
+  }
+ }
  @Test fun directGoogleSearchDisablesEngineControlsWithoutDeletingThem()=scenario {scenario->
   click("Search")
   scrollTo("Open Google when tapping the search field")

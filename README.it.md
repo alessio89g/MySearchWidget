@@ -35,6 +35,7 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Aspetto
 
+- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Aspetto → Generale**. Il valore predefinito è **64 dp**, con un pulsante di ripristino. Icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
 - **Material You:** usa la palette dinamica del sistema.
 - **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
 - Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.

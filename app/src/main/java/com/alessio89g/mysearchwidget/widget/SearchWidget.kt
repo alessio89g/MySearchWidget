@@ -42,10 +42,23 @@ class SearchWidget:AppWidgetProvider() {
    val width=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,356).coerceAtLeast(180)
    val landscape=context.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE
    val actual=if(landscape)options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,width).coerceAtLeast(width) else width
-   manager.updateAppWidget(id,views(context,id,c ?: Repository(context).config(id),actual,text))
+   val config=c ?: Repository(context).config(id)
+   val availableHeight=options.getInt(if(landscape)AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,0)
+   // Preserve the saved preference; fit only this rendering into the launcher allocation.
+   val shown=if(availableHeight>=WidgetDimensions.MIN_HEIGHT)config.copy(heightDp=minOf(config.heightDp,availableHeight.toFloat())) else config
+   manager.updateAppWidget(id,views(context,id,shown,actual,text))
   }
   fun views(context:Context,id:Int,c:WidgetConfig,width:Int,text:SessionText?=null):RemoteViews {
    val rv=RemoteViews(context.packageName,R.layout.widget)
+   val dimensions=WidgetDimensions(width.coerceIn(180,1000).toFloat(),c.heightDp,c.count)
+   val scale=dimensions.scale
+   val dp=android.util.TypedValue.COMPLEX_UNIT_DIP
+   rv.setViewLayoutHeight(R.id.widget_frame,c.heightDp,dp)
+   rv.setViewLayoutHeight(R.id.hit_row,52f*scale,dp)
+   rv.setViewLayoutWidth(R.id.logo,44f*scale,dp)
+   listOf(R.id.button0,R.id.button1,R.id.button2).forEach {rv.setViewLayoutWidth(it,52f*scale,dp)}
+   val padding=kotlin.math.round(9f*scale*context.resources.displayMetrics.density).toInt()
+   rv.setViewPadding(R.id.hit_row,padding,0,padding,0)
    if(c.theme=="system") {
     // Android resolves these in the host configuration, even when our process is
     // not running. Do not depend on CONFIGURATION_CHANGED delivery to a receiver.

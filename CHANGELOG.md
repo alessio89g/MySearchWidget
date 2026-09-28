@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.10.0 — 2026-09-28
+
+### English
+
+- Adjust the widget height from 16 to 256 dp using a slider or a numeric value, including decimals.
+- Restore the default height of 64 dp with a dedicated button.
+- Icons, text and touch areas scale with the widget height within the available width.
+- Existing configurations and older backups keep the default height of 64 dp.
+
+### Italiano
+
+- Regola l’altezza del widget da 16 a 256 dp con uno slider o un valore numerico, anche decimale.
+- Ripristina l’altezza predefinita di 64 dp con un pulsante dedicato.
+- Icone, testo e aree di tocco si ridimensionano con l’altezza del widget entro la larghezza disponibile.
+- Le configurazioni esistenti e i vecchi backup mantengono l’altezza predefinita di 64 dp.
+
 ## 1.9.0 — 2026-09-19
 
 ### English
