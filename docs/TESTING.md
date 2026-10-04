@@ -1,20 +1,24 @@
-# Validation of version 1.9.0
+# Validation
 
-- Debug APK: version 1.9.0, versionCode 15; minimum API 31, target API 37.
-- 11 JVM tests passed.
-- Final build and lint completed: 0 errors and 67 warnings.
-- Complete Android suite: 49 tests passed on an AOSP API 35 emulator.
-- New coverage checks saved/bound library filtering, side-effect-free default reads, atomic pin confirmation, bulk template deletion, hidden widget persistence, and retention of unselected entries and active Home settings.
-- UI coverage checks long-press selection, selecting a second template, cancelling the confirmation, and deleting only the selected templates. All 6 configuration UI tests passed again after the final presentation refinements.
-- Theme tests serialize the RemoteViews and apply the same object in light, dark and light host contexts without provider updates. They cover both Material You and manual colors, and fixed Light/Dark modes.
-- Manual Launcher3 check: pin a default widget through the app, return Home, terminate the MySearchWidget process with `am kill`, and switch system night mode on and off. Screenshots show the widget following both switches; `pidof` confirms the app process stays absent.
-- The widget still uses `updatePeriodMillis="0"`; no service, alarm, worker or polling was introduced. Theme switching does not use a configuration-change receiver.
-- Debug signing certificate matches 1.8.1, and installation as an update succeeds.
+## Release artifact
 
-Android reports bound widget IDs rather than the launcher's visible layout. Saved IDs retained by a launcher cannot be automatically identified as abandoned; their library entries can be hidden manually without discarding the Home settings. Manufacturer-specific launcher behavior still needs confirmation on the user's device.
+- Version: **1.11.0**, versionCode **21**, minimum API 31, target API 37.
+- Release build, including `lintVitalRelease`: successful.
+- APK signature verified with the same certificate used for published updates.
+- APK ZIP alignment checked with a 16 KB page size.
+- SHA-256: `f0275f04e2f11e496063bb3e8bb80a48d2c90318d865666b95516d8a4a37c116`.
 
-APK SHA-256:
+## Automated checks
 
-```text
-a552bf15a55b70d117ff86ba1f2d2e48f7d6f8eb5f8d5b7de573fade67d02f3b
-```
+- **37 JVM tests passed**, with zero failures or errors. Coverage includes backup validation, default settings, dimension limits, aspect ratios, stable element anchors, linked and independent movement, offscreen clipping, layer order and preservation of child geometry when unlinking a small field.
+- Debug lint completed without errors (85 warnings and one hint). The release lint check also completed successfully.
+- Android instrumentation sources compile. The Android suite has **not been executed on a device or emulator for this release**; compilation is not a substitute for device validation.
+- Instrumentation coverage includes editor confirmation, layout controls, rendering and RemoteViews geometry, configuration language, search modes, shortcuts, library selection and theme behavior.
+
+## Device checks
+
+Verify appearance and touch order with overlapping elements, coordinates outside the widget, linked/unlinked movement, launcher resizing, and switching system light/dark mode. Confirm that Add/Save applies a draft while Cancel/Back discards it after confirmation. Check backup import/export on the target device.
+
+The widget uses `updatePeriodMillis="0"`. It does not use a persistent service, worker, alarm or polling loop. System-theme rendering relies on the launcher resolving the light/dark RemoteViews images.
+
+A launcher reports bound widget IDs rather than the visible Home layout. Saved IDs retained by a launcher can be hidden from the library without deleting the Home widget settings.

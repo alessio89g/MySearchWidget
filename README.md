@@ -11,18 +11,6 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ![MySearchWidget with a dark theme, search field and two action buttons](assets/screenshots/widget.png)
 
-## Screenshots
-
-| Appearance | Actions |
-| :---: | :---: |
-| [![MySearchWidget configurator: Appearance](assets/screenshots/appearance.png)](assets/screenshots/appearance.png) | [![MySearchWidget configurator: Actions](assets/screenshots/actions.png)](assets/screenshots/actions.png) |
-
-| Search | Backup |
-| :---: | :---: |
-| [![MySearchWidget configurator: Search](assets/screenshots/search.png)](assets/screenshots/search.png) | [![MySearchWidget configurator: Backup](assets/screenshots/backup.png)](assets/screenshots/backup.png) |
-
-*Select a screenshot to view it at full resolution.*
-
 ## Features
 
 ### Search and actions
@@ -35,7 +23,12 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ### Appearance
 
-- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Appearance → General**. The default is **64 dp**, with a reset button. Icons, text and touch areas scale together; the available width limits their size. Resize the widget vertically on the Home screen to provide room for greater heights.
+- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Layout**. The default is **64 dp**, with a reset button. In automatic mode, icons, text and touch areas scale together; the available width limits their size. Resize the widget vertically on the Home screen to provide room for greater heights.
+- **Independent dimensions and spacing:** set the outer capsule and search-field widths, search-field height, logo and icon sizes, each button background’s width and height, side padding, logo/text spacing and the gap before each button. Element dimension and spacing controls accept a manual dp value or automatic sizing. Restore automatic sizing to follow the overall widget height. Elements resize around fixed centers without moving neighbouring elements. The logo and text follow the search field while their movement link is enabled. Oversized elements fit the widget bounds; large sizes can overlap.
+- **Element positioning:** the **Layout** tab in the bottom navigation groups position, size and spacing controls. Adjust X/Y offsets in dp using numeric fields or arrows with a custom step; elements can overlap or move outside the visible area. Reset position clears the offsets.
+- **Layer order:** in **Layout → Layer order**, the top of the list is the foreground. Arrows move each element above or below the others; stacking is independent of movement links and is included in backups.
+- **Movement links:** padlocks link the logo and text to the search field, and each icon to its button, by default. Moving the parent moves its linked children; moving a child leaves other elements in place. Linking or unlinking preserves the current position.
+- **Lock proportions:** the padlock and connector lines next to width and height link the two dimensions for the outer capsule, search field and each button. The padlock is closed by default. Locking keeps the current ratio; unlocking allows independent changes. The setting is saved per element and included in backups.
 - **Material You:** use the system’s dynamic color palette.
 - **Custom colors and gradients:** customize the outer capsule, search field, logo, each button background and its icon, with separate values for light and dark themes.
 - Choose colors with a graphical picker, sliders, HEX/RGB codes and presets. Gradients have two colors and a direction adjustable visually or in degrees.
@@ -54,9 +47,10 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ### Configuration and backup
 
-- Four sections: **Appearance, Actions, Search and Backup**.
+- Five sections: **Layout, Appearance, Actions, Search and Backup**. Layout is the first section and opens when you start configuring a widget.
+- A GitHub link with the GitHub logo at the bottom of the home screen opens the project repository.
 - English and Italian interfaces, with instant switching through **EN / IT** in the top-right corner and a persistent language preference.
-- Export and import individual widget configurations, including imported fonts and images.
+- Export and import individual widget configurations, including layout, layer order, movement links, imported fonts and images.
 - A library of reusable templates. Backups are validated before import; applying one to a widget is a separate step that requires confirmation.
 
 ## Managing the list and trash button
@@ -81,6 +75,8 @@ To build the project, see the [build instructions](docs/BUILD.md). Check results
 2. Open the app and choose **Add widget**, or use your launcher’s widget picker.
 3. Select the widget instance to configure, customize it and tap **Save**.
 4. Tap the search field to start searching, or use the logo and buttons for their assigned actions.
+
+Edits and applied templates remain in the preview until you tap **Add** or **Save**. **Cancel** and Back let you discard changes without updating the widget.
 
 The initial language is **English**. Tap **EN** to switch to Italian. The automatic placeholder is **“Search the web” / “Cerca sul web”**; custom text is not translated automatically.
 
@@ -160,4 +156,4 @@ The project's original code is distributed under the **MySearchWidget Non-Commer
 
 The project is **source available for non-commercial use**, not open source under the [OSI definition](https://opensource.org/osd), which does not allow restrictions on commercial use.
 
-Third-party assets are excluded from this license and retain their own terms: Material icons are distributed under [Apache 2.0](LICENSE-Material-Icons.txt); Google Sans is distributed under [SIL OFL 1.1](LICENSE-Google-Sans.txt). Trademarks and other third-party assets are not relicensed by this project.
+Third-party assets are excluded from this license and retain their own terms: Material icons are distributed under [Apache 2.0](LICENSE-Material-Icons.txt); Google Sans is distributed under [SIL OFL 1.1](LICENSE-Google-Sans.txt); the GitHub mark from Octicons is distributed under [MIT](LICENSE-Octicons.txt). Trademarks and other third-party assets are not relicensed by this project.

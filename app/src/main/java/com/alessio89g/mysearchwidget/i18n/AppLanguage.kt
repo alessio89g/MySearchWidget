@@ -46,6 +46,7 @@ object AppLanguage {
 fun tr(@StringRes id:Int,vararg args:Any)=AppLanguage.text(id,*args)
 
 fun navigationTitle(key:String):String = when(key) {
+ "Geometria"->tr(R.string.geometry_title)
  "Aspetto"->tr(R.string.appearance)
  "Azioni"->tr(R.string.actions)
  "Ricerca"->tr(R.string.search_tab)

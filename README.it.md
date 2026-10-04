@@ -11,18 +11,6 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ![Widget MySearchWidget con tema scuro, campo di ricerca e due pulsanti](assets/screenshots/widget.png)
 
-## Screenshot
-
-| Aspetto | Azioni |
-| :---: | :---: |
-| [![Configuratore MySearchWidget: Aspetto](assets/screenshots/appearance.png)](assets/screenshots/appearance.png) | [![Configuratore MySearchWidget: Azioni](assets/screenshots/actions.png)](assets/screenshots/actions.png) |
-
-| Ricerca | Backup |
-| :---: | :---: |
-| [![Configuratore MySearchWidget: Ricerca](assets/screenshots/search.png)](assets/screenshots/search.png) | [![Configuratore MySearchWidget: Backup](assets/screenshots/backup.png)](assets/screenshots/backup.png) |
-
-*Tocca uno screenshot per aprirlo a piena risoluzione.*
-
 ## Funzionalità
 
 ### Ricerca e azioni
@@ -35,7 +23,12 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Aspetto
 
-- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Aspetto → Generale**. Il valore predefinito è **64 dp**, con un pulsante di ripristino. Icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
+- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. Il valore predefinito è **64 dp**, con un pulsante di ripristino. In modalità automatica, icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
+- **Dimensioni e spaziature indipendenti:** regola larghezza della capsula esterna e del campo di ricerca, altezza del campo, dimensione del logo e delle icone, larghezza e altezza dello sfondo di ogni pulsante, margini laterali, spazi prima del logo e tra logo e testo e distanza prima di ogni pulsante. I controlli delle dimensioni e delle spaziature degli elementi permettono un valore manuale in dp o il dimensionamento automatico. Il ripristino automatico segue l’altezza generale del widget. Gli elementi si ridimensionano attorno a centri fissi senza spostare quelli vicini. Logo e testo seguono il campo di ricerca quando il relativo collegamento è attivo. Le dimensioni eccessive si adattano ai limiti del widget; misure grandi possono sovrapporsi.
+- **Posizione degli elementi:** la scheda **Layout** nella barra inferiore raccoglie posizione, dimensioni e spaziature. Regola gli scostamenti X/Y in dp con campi numerici o frecce a passo personalizzabile; puoi sovrapporre gli elementi o spostarli fuori dall’area visibile. Il ripristino della posizione azzera gli scostamenti.
+- **Ordine dei livelli:** in **Layout → Ordine dei livelli**, la cima della lista rappresenta il primo piano. Le frecce portano ogni elemento sopra o sotto gli altri; l’ordine è indipendente dai collegamenti e viene salvato nei backup.
+- **Collegamenti:** i lucchetti collegano logo e testo al campo di ricerca e ogni icona al proprio pulsante, per default. Spostando il padre si spostano anche gli elementi collegati; spostando un figlio gli altri rimangono fermi. Scollegare o ricollegare conserva la posizione corrente.
+- **Blocca proporzioni:** il lucchetto con linee di collegamento accanto a larghezza e altezza lega le due misure per capsula esterna, campo di ricerca e ogni pulsante. Il lucchetto è chiuso per default. Il blocco mantiene il rapporto corrente; lo sblocco permette modifiche indipendenti. La scelta viene salvata per ciascun elemento e inclusa nei backup.
 - **Material You:** usa la palette dinamica del sistema.
 - **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
 - Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.
@@ -54,9 +47,10 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Configurazione e backup
 
-- Quattro sezioni: **Aspetto, Azioni, Ricerca e Backup**.
+- Cinque sezioni: **Layout, Aspetto, Azioni, Ricerca e Backup**. Layout è la prima sezione e si apre quando inizi a configurare un widget.
+- In fondo alla schermata iniziale, il collegamento con il logo GitHub apre il repository del progetto.
 - Interfaccia in inglese e italiano, con cambio immediato tramite **EN / IT** in alto a destra e scelta persistente.
-- Esportazione e importazione della configurazione del singolo widget, inclusi font e immagini importati.
+- Esportazione e importazione della configurazione del singolo widget, inclusi layout, ordine dei livelli, collegamenti degli spostamenti, font e immagini importati.
 - Libreria di modelli riutilizzabili. I backup vengono validati prima dell’importazione; applicarli a un widget è un passaggio separato con conferma.
 
 ## Gestione dell’elenco e cestino
@@ -81,6 +75,8 @@ Per compilare il progetto consulta le [istruzioni di build](docs/BUILD.md). I ri
 2. Apri l’app e scegli **Aggiungi widget**, oppure usa il selettore widget del launcher.
 3. Seleziona l’istanza da configurare, personalizzala e premi **Salva**.
 4. Tocca il campo di ricerca per iniziare oppure usa il logo e i pulsanti per le azioni assegnate.
+
+Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Aggiungi** o **Salva**. **Annulla** e il tasto Indietro permettono di scartare le modifiche senza aggiornare il widget.
 
 La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il placeholder automatico è **“Search the web” / “Cerca sul web”**; un testo personalizzato non viene tradotto automaticamente.
 
@@ -161,3 +157,5 @@ Il codice originale del progetto è distribuito con la **MySearchWidget Non-Comm
 Il progetto è **source available per uso non commerciale**, non open source secondo la [definizione OSI](https://opensource.org/osd), che non consente restrizioni all’uso commerciale.
 
 Le risorse di terzi sono escluse da questa licenza e mantengono i rispettivi termini: le icone Material sono distribuite sotto [Apache 2.0](LICENSE-Material-Icons.txt); il font Google Sans è distribuito sotto [SIL OFL 1.1](LICENSE-Google-Sans.txt). I marchi e le altre risorse di terzi non vengono rilicenziati da questo progetto.
+
+Il logo GitHub proviene da Octicons ed è distribuito con [licenza MIT](LICENSE-Octicons.txt).

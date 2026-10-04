@@ -63,11 +63,69 @@ class DisabledSettingsTest {
     }
     wait("Widget 987657")
     text("Preview ▾ · Widget 987657")?.let {actionable(it).performAction(Node.ACTION_CLICK)}
+    click("Appearance")
     block(scenario)
    }
   }finally {AppLanguage.select(language)}
  }
+ @Test fun backDiscardsDraftAndOnlySaveCommits()=scenario {scenario->
+  val repo=Repository(ins.targetContext);val id=987657
+  val original=WidgetConfig(placeholder="Original")
+  kotlinx.coroutines.runBlocking {repo.save(id,original)}
+  try {
+   scenario.onActivity {val state=ViewModelProvider(it)[ConfigState::class.java];state.configs=mapOf(id to original);state.config=original.copy(placeholder="Draft")}
+   assertEquals(original,kotlinx.coroutines.runBlocking {repo.config(id)})
+   ins.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK)
+   wait("Discard changes?")
+   assertEquals(original,kotlinx.coroutines.runBlocking {repo.config(id)})
+   click("Discard")
+   assertEquals(original,kotlinx.coroutines.runBlocking {repo.config(id)})
+   scenario.onActivity {val state=ViewModelProvider(it)[ConfigState::class.java];state.selected=id;state.config=original.copy(placeholder="Confirmed")}
+   click("Save")
+   val deadline=SystemClock.uptimeMillis()+5000
+   while(kotlinx.coroutines.runBlocking {repo.config(id).placeholder}!="Confirmed" && SystemClock.uptimeMillis()<deadline)SystemClock.sleep(100)
+   assertEquals("Confirmed",kotlinx.coroutines.runBlocking {repo.config(id).placeholder})
+  } finally {kotlinx.coroutines.runBlocking {repo.remove(id)}}
+ }
+ @Test fun geometryArrowsOnlyChangeTheDraft()=scenario {scenario->
+  click("Layout");scrollTo("Outer border");click("Outer border");click("Search field")
+  scrollTo("Move right");click("Move right")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertEquals(1f,state.config.placement.field.x,0f)
+   assertEquals(0f,state.configs.getValue(987657).placement.field.x,0f)
+   assertTrue(state.config.placement.fieldLinked)
+  }
+ }
+ @Test fun proportionLockIsIndependentAndCanBeUnlocked()=scenario {scenario->
+  click("Layout");scrollTo("Outer border");click("Outer border");click("Button 1")
+  scrollTo("Unlock proportions");click("Unlock proportions")
+  scrollTo("Lock proportions");click("Lock proportions")
+  scenario.onActivity {
+   val c=ViewModelProvider(it)[ConfigState::class.java].config
+   assertEquals(1f,c.buttons[0].aspectRatio!!,0f)
+   assertEquals(46f,c.buttons[0].widthDp!!,0f);assertEquals(46f,c.buttons[0].heightDp!!,0f)
+   assertNull(c.buttons[1].aspectRatio)
+  }
+  scrollTo("Unlock proportions");click("Unlock proportions")
+  scenario.onActivity {
+   val c=ViewModelProvider(it)[ConfigState::class.java].config
+   assertNull(c.buttons[0].aspectRatio);assertEquals(46f,c.buttons[0].widthDp!!,0f)
+  }
+ }
+ @Test fun independentButtonSizeControlsWorkWithMaterialYou()=scenario {scenario->
+  click("Layout");scrollTo("Outer border");click("Outer border");click("Button 1")
+  scrollTo("Custom: Width (dp)");click("Custom: Width (dp)")
+  scenario.onActivity {
+   val c=ViewModelProvider(it)[ConfigState::class.java].config
+   assertTrue(c.dynamic);assertEquals(46f,c.buttons[0].widthDp!!,0f)
+   assertNull(c.buttons[1].widthDp);assertEquals(46f,c.buttons[0].heightDp!!,0f)
+  }
+  scrollTo("Restore automatic size");click("Restore automatic size")
+  scenario.onActivity {assertNull(ViewModelProvider(it)[ConfigState::class.java].config.buttons[0].widthDp)}
+ }
  @Test fun heightResetUses64WithMaterialYouEnabled()=scenario {scenario->
+  click("Layout")
   scenario.onActivity {ViewModelProvider(it)[ConfigState::class.java].let {s->s.config=s.config.copy(heightDp=96.5f)}}
   scrollTo("Reset to 64 dp");click("Reset to 64 dp")
   scenario.onActivity {
@@ -93,7 +151,7 @@ class DisabledSettingsTest {
  }
  @Test fun buttonShapeTabAndNewChoiceAreLocalizedAndIndependent()=scenario {scenario->
   click("Button 1")
-  click("Button shape")
+  click("Button")
   scrollTo("Circle / Square");click("Circle / Square")
   click("Clover")
   scenario.onActivity {
@@ -103,17 +161,17 @@ class DisabledSettingsTest {
   }
   click("Switch to Italian")
   repeat(12) {
-   if(text("Forma pulsante")==null) {
+   if(text("Pulsante")==null) {
     find(root()){it.className?.toString()=="android.widget.ScrollView"}?.performAction(Node.ACTION_SCROLL_BACKWARD)
     SystemClock.sleep(150)
    }
   }
-  wait("Forma pulsante")
+  wait("Pulsante")
   scrollTo("Clover")
   assertNotNull(wait("Clover"))
  }
  @Test fun cornerRoundingIsAvailableOnlyForCircleSquare()=scenario {scenario->
-  click("Button 1");click("Button shape")
+  click("Button 1");click("Button")
   scrollTo("Corner rounding %")
   for(shape in Catalog.shapes.filter {it!="circle"}) {
    scenario.onActivity {

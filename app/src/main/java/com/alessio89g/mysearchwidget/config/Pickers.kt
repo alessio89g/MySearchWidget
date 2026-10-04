@@ -41,13 +41,14 @@ import kotlinx.coroutines.withContext
   }},confirmButton={TextButton(onClick={apps=false}){Text(tr(R.string.close))}})
  }
 }
-@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,pickImage:()->Unit) {
+@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,pickImage:()->Unit) {
  var catalog by remember {mutableStateOf(false)}
  var part by rememberSaveable {mutableStateOf("Icona")}
  if(background)Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
   listOf("Icona","Cerchio").forEach {name->FilterChip(selected=part==name,onClick={part=name},label={Text(navigationTitle(name))})}
  }
  if(background && part=="Cerchio")SettingCard(tr(R.string.button_background),tr(R.string.circle_help)) {
+  Text(tr(R.string.dimensions_help),style=MaterialTheme.typography.bodySmall)
   SurfaceEditor(value.surface,true){onChange(value.copy(surface=it))}
  } else SettingCard(tr(R.string.icon),if(value.icon.asset.isNotEmpty())tr(R.string.imported_image) else value.icon.name) {
   Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {

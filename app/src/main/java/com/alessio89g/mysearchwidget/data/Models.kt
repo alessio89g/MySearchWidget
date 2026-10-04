@@ -11,11 +11,15 @@ import java.util.Base64
 @Serializable data class Surface(val light: Tone = Tone(), val dark: Tone = Tone(), val rounding: Float = 100f, val shape: String = "circle")
 @Serializable data class TextStyle(val font: String = "", val size: Float = 15f, val weight: Int = 400, val light: String = "", val dark: String = "", val italic:Boolean=false,val underline:Boolean=false,val strike:Boolean=false,val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
 @Serializable data class Shortcut(val kind: String = "none", val value: String = "", val label: String = "")
-@Serializable data class IconSpec(val name: String = "Search", val monochrome:Boolean = true, val outline: Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
-@Serializable data class Slot(val icon: IconSpec = IconSpec(), val surface: Surface = Surface(), val tap: Shortcut = Shortcut(), val up: Shortcut = Shortcut(), val down: Shortcut = Shortcut())
+@Serializable data class IconSpec(val name: String = "Search", val monochrome:Boolean = true, val outline: Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient(),val sizeDp:Float?=null)
+@Serializable data class Slot(val icon: IconSpec = IconSpec(), val surface: Surface = Surface(), val tap: Shortcut = Shortcut(), val up: Shortcut = Shortcut(), val down: Shortcut = Shortcut(), val widthDp:Float?=null, val heightDp:Float?=null, val gapDp:Float?=null, val aspectRatio:Float?=null, val proportionsLocked:Boolean=true, val position:OffsetDp=OffsetDp(), val iconPosition:OffsetDp=OffsetDp(), val iconLinked:Boolean=true)
 @Serializable data class Asset(val kind: String, val base64: String)
+@Serializable data class ElementSizing(
+ val outerWidthDp:Float?=null, val fieldWidthDp:Float?=null, val fieldHeightDp:Float?=null,
+ val sidePaddingDp:Float?=null, val logoInsetDp:Float?=null, val textGapDp:Float?=null, val outerRatio:Float?=null, val fieldRatio:Float?=null, val outerLocked:Boolean=true, val fieldLocked:Boolean=true, val layoutHeightDp:Float?=null
+)
 @Serializable data class WidgetConfig(
- val heightDp: Float = WidgetDimensions.DEFAULT_HEIGHT,
+ val placement:Placement=Placement(), val heightDp: Float = WidgetDimensions.DEFAULT_HEIGHT, val sizing:ElementSizing=ElementSizing(),
  val theme: String = "system", val dynamic: Boolean = true, val placeholder: String = "",
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
  val field: Surface = Surface(), val hint: TextStyle = TextStyle(), val query: TextStyle = TextStyle(),
@@ -59,6 +63,20 @@ object Validation {
   require(c.placeholder.length <= 500 && c.engineId.length in 1..100) { "Testo o motore non valido" }
   fun range(n: Float, a: Float, b: Float) { require(n.isFinite() && n in a..b) { "Valore numerico fuori intervallo" } }
   range(c.heightDp,WidgetDimensions.MIN_HEIGHT,WidgetDimensions.MAX_HEIGHT)
+  require(c.placement.layers.size==DEFAULT_LAYERS.size && c.placement.layers.toSet()==DEFAULT_LAYERS.toSet()) {"Invalid layer order"}
+  c.placement.detachedFieldWidth?.let {range(it,.0001f,1000f)}
+  c.placement.detachedFieldHeight?.let {range(it,.0001f,256f)}
+  fun offset(p:OffsetDp){range(p.x,-10000f,10000f);range(p.y,-10000f,10000f)}
+  listOf(c.placement.outer,c.placement.field,c.placement.logo,c.placement.text).forEach(::offset)
+  (listOf(c.logo)+c.buttons).forEach {offset(it.position);offset(it.iconPosition)}
+  c.sizing.layoutHeightDp?.let {range(it,16f,256f)}
+  c.sizing.outerRatio?.let {range(it,16f/256f,1000f/16f);require(c.sizing.outerWidthDp!=null)}
+  c.sizing.fieldRatio?.let {range(it,16f/256f,1000f);require(c.sizing.fieldWidthDp!=null && c.sizing.fieldHeightDp!=null)}
+  (listOf(c.logo)+c.buttons).forEach {s->s.aspectRatio?.let {range(it,1f/256f,256f);require(s.widthDp!=null && s.heightDp!=null)}}
+  fun dimension(n:Float?,min:Float=1f,max:Float=256f){if(n!=null)range(n,min,max)}
+  dimension(c.sizing.outerWidthDp,16f,1000f);dimension(c.sizing.fieldWidthDp,16f,1000f);dimension(c.sizing.fieldHeightDp)
+  listOf(c.sizing.sidePaddingDp,c.sizing.logoInsetDp,c.sizing.textGapDp).forEach {dimension(it,0f,128f)}
+  (listOf(c.logo)+c.buttons).forEach {s->dimension(s.icon.sizeDp);dimension(s.widthDp);dimension(s.heightDp);dimension(s.gapDp,0f,128f)}
   fun gradient(g:Gradient) { color(g.start);color(g.end);require(g.start.isNotEmpty() && g.end.isNotEmpty());range(g.angle,0f,360f) }
   fun surface(s: Surface) {
    range(s.rounding,0f,100f); require(s.shape in Catalog.shapes) { "Forma sconosciuta" }

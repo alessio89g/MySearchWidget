@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.11.0 — 2026-10-04
+
+### English
+
+- **Layout** is the first configuration section and groups element position, dimensions and stacking controls.
+- Independent dimensions in dp, automatic sizing and padlocks to maintain width/height proportions, enabled by default.
+- X/Y coordinates and arrow buttons with an adjustable step; elements can overlap or move outside the visible widget area.
+- Movement links between the search field and its logo/text, and between each button and its icon, enabled by default.
+- Layer ordering with controls to move each element above or below the others.
+- Widget edits and applied templates remain in the preview until **Add** or **Save** is pressed.
+- Layout settings, links and layer order are included in backups; existing backups remain importable.
+- A GitHub link on the app home screen opens the project repository.
+
+### Italiano
+
+- **Layout** è la prima sezione del configuratore e raccoglie i controlli di posizione, dimensioni e sovrapposizione degli elementi.
+- Dimensioni indipendenti in dp, dimensionamento automatico e lucchetti per mantenere le proporzioni, attivi per default.
+- Coordinate X/Y e frecce con passo regolabile; gli elementi possono sovrapporsi o uscire dall’area visibile del widget.
+- Collegamenti tra campo di ricerca e logo/testo, e tra ogni pulsante e la sua icona, attivi per default.
+- Ordine dei livelli con controlli per portare ciascun elemento sopra o sotto gli altri.
+- Le modifiche del widget e i modelli applicati restano in anteprima fino alla pressione di **Aggiungi** o **Salva**.
+- Layout, collegamenti e ordine dei livelli sono inclusi nei backup; i backup esistenti restano importabili.
+- Un collegamento GitHub nella home dell’app apre il repository del progetto.
+
 ## 1.10.0 — 2026-09-28
 
 ### English

@@ -19,22 +19,18 @@ import com.alessio89g.mysearchwidget.icons.IconCatalog
 import kotlin.math.*
 
 data class SessionText(val text:String,val cursor:Int=text.length,val editing:Boolean=true)
-data class Geometry(val width:Float,val count:Int) {
- // Baseline coordinates; WidgetDimensions scales artwork and hit cells together.
- val fieldRight=width-9-count*52- if(count>0) 1 else 0
- fun center(index:Int)=width-9-count*52+index*52+26
-}
 object Renderer {
  fun dark(context:Context,c:WidgetConfig)=c.theme=="dark" || (c.theme=="system" && context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES)
- fun render(baseContext:Context,c:WidgetConfig,widthDp:Int,session:SessionText?=null):Bitmap {
+ fun render(baseContext:Context,config:WidgetConfig,widthDp:Int,session:SessionText?=null):Bitmap {
   val context=AppLanguage.context(baseContext)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
   val width=widthDp.coerceIn(180,1000)
-  val dimensions=WidgetDimensions(width.toFloat(),c.heightDp,c.count)
+  val c=config.fitOuter(width.toFloat())
+  val dimensions=ElementLayout(width.toFloat(),c)
   val bitmap=Bitmap.createBitmap((width*density).roundToInt(),(c.heightDp*density).roundToInt(),Bitmap.Config.ARGB_8888)
-  val canvas=Canvas(bitmap);canvas.scale(density*dimensions.scale,density*dimensions.scale)
-  canvas.translate(0f,dimensions.verticalInset)
-  val g=Geometry(dimensions.canvasWidth,c.count);val dark=dark(context,c)
+  val canvas=Canvas(bitmap);canvas.scale(density,density)
+  fun Bounds.rect()=RectF(left,top,right,bottom)
+  val dark=dark(context,c)
   val scheme=if(dark)dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
   val on=if(c.dynamic)scheme.primary.toArgb() else Color.parseColor(if(dark)"#B8B3A1" else "#48463B")
   val outer=if(c.dynamic)scheme.secondaryContainer.toArgb() else Color.parseColor(if(dark)"#474645" else "#E5E2DA")
@@ -48,24 +44,17 @@ object Renderer {
    // to our bitmap would blur the content, not the background. Always use the truthful host fallback.
    canvas.drawPath(shape(rect,s),paint)
   }
-  surface(c.outer,RectF(0f,-dimensions.verticalInset,dimensions.canvasWidth,64f+dimensions.verticalInset),outer)
-  surface(c.field,RectF(9f,9f,g.fieldRight,55f),field)
   fun ink(light:String,darkColor:String)= (if(dark)darkColor else light).let { if(c.dynamic || it.isEmpty())on else Color.parseColor(it) }
-  drawIcon(canvas,c,c.logo.icon,RectF(17f,16f,49f,48f),ink(c.logo.icon.light,c.logo.icon.dark),dark)
-  for(i in 0 until c.count) {
-   val slot=c.buttons[i];val x=g.center(i)
-   surface(slot.surface,RectF(x-23,9f,x+23,55f),field)
-   drawIcon(canvas,c,slot.icon,RectF(x-12.5f,19.5f,x+12.5f,44.5f),ink(slot.icon.light,slot.icon.dark),dark)
-  }
+  fun drawText() {
   val textStyle=if(session!=null)c.query else c.hint
   val text=session?.text ?: c.placeholder.ifEmpty { context.getString(R.string.placeholder) }
-  val start=60f;val end=(g.fieldRight-10).coerceAtLeast(start);val available=end-start
+  val start=dimensions.textLeft;val end=dimensions.textRight;val available=end-start
   fun styledPaint(p:TextPaint,style:com.alessio89g.mysearchwidget.data.TextStyle) {
    val face=c.assets[style.font]?.let {runCatching {Assets.font(context,it)}.getOrNull()} ?: context.resources.getFont(R.font.google_sans)
    p.color=ink(style.light,style.dark);p.typeface=Typeface.create(face,style.weight,style.italic)
-   p.textSize=style.size*context.resources.configuration.fontScale;p.isUnderlineText=style.underline;p.isStrikeThruText=style.strike
+   p.textSize=style.size*context.resources.configuration.fontScale*dimensions.textScale;p.isUnderlineText=style.underline;p.isStrikeThruText=style.strike
    val gr=if(dark)style.darkGradient else style.lightGradient
-   p.shader=if(!c.dynamic && gr.enabled)gradient(gr,RectF(0f,0f,available.coerceAtLeast(1f),46f)) else null
+   p.shader=if(!c.dynamic && gr.enabled)gradient(gr,RectF(0f,0f,available.coerceAtLeast(1f),dimensions.field.height)) else null
   }
   val paint=TextPaint(3).apply {styledPaint(this,textStyle)}
   // TextLine also calls updateDrawState while measuring. Never query the layout
@@ -98,12 +87,24 @@ object Renderer {
   if(!c.dynamic && textGradient.enabled)paint.shader=gradient(textGradient,RectF(0f,0f,layout.getLineWidth(0).coerceAtLeast(1f),layout.height.toFloat()))
   val cursor=session?.cursor?.coerceIn(0,text.length) ?: 0
   val advance=if(session?.editing==true)layout.getPrimaryHorizontal(cursor) else 0f
-  val shift=if(session?.editing==true)max(0f,advance-available+2) else 0f
-  canvas.save();canvas.clipRect(start,9f,end,55f)
-  canvas.translate(start-shift,32f-layout.height/2f)
+  val shift=if(session?.editing==true)max(0f,advance-available+2*dimensions.textScale) else 0f
+  canvas.save();canvas.clipRect(start,dimensions.textTop,end,dimensions.textBottom)
+  canvas.translate(start-shift,dimensions.textCenterY-layout.height/2f)
   layout.draw(canvas)
-  if(session?.editing==true)canvas.drawRect(advance,0f,advance+1,layout.height.toFloat(),Paint(3).apply {color=on})
-  canvas.restore();return bitmap
+  if(session?.editing==true)canvas.drawRect(advance,0f,advance+dimensions.textScale,layout.height.toFloat(),Paint(3).apply {color=on})
+  canvas.restore()
+  }
+  for(layer in c.visibleLayers())when(layer) {
+   "outer"->surface(c.outer,dimensions.outer.rect(),outer)
+   "field"->surface(c.field,dimensions.field.rect(),field)
+   "logo"->drawIcon(canvas,c,c.logo.icon,dimensions.logo.rect(),ink(c.logo.icon.light,c.logo.icon.dark),dark)
+   "text"->drawText()
+   else->{val i=layer.last().digitToInt();val slot=c.buttons[i]
+    if(layer.startsWith("button"))surface(slot.surface,dimensions.buttonBounds[i].rect(),field)
+    else drawIcon(canvas,c,slot.icon,dimensions.iconBounds[i].rect(),ink(slot.icon.light,slot.icon.dark),dark)
+   }
+  }
+  return bitmap
  }
  fun shape(r:RectF,s:Surface):Path {
   ButtonOutlines.path(s.shape,r)?.let {return it}

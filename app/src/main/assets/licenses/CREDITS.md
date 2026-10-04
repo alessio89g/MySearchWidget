@@ -10,3 +10,7 @@ Repository: https://github.com/alessio89g/MySearchWidget
 
 Google names and marks remain the property of their respective owners.
 MySearchWidget is an independent project and is not affiliated with Google.
+
+## GitHub mark
+
+The GitHub mark is from [Primer Octicons](https://github.com/primer/octicons), copyright GitHub Inc., used under the MIT license. Its license is included as `LICENSE-Octicons.txt` in the repository and `licenses/Octicons-LICENSE.txt` in the app.

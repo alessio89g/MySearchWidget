@@ -62,10 +62,11 @@ class RefinementTest {
   val c=original.copy(buttons=listOf(first)+original.buttons.drop(1))
   val bitmap=Renderer.render(context,c,356)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
-  val g=Geometry(356f,2)
-  assertEquals(Color.RED,bitmap.getPixel((g.center(0)*density).roundToInt(),(12*density).roundToInt()))
-  assertEquals(Color.GREEN,bitmap.getPixel((g.center(0)*density).roundToInt(),(32*density).roundToInt()))
-  assertEquals(Color.BLACK,bitmap.getPixel((g.center(1)*density).roundToInt(),(12*density).roundToInt()))
+  val g=ElementLayout(356f,c)
+  fun center(i:Int)=(g.buttonBounds[i].left+g.buttonBounds[i].right)/2f
+  assertEquals(Color.RED,bitmap.getPixel((center(0)*density).roundToInt(),(12*density).roundToInt()))
+  assertEquals(Color.GREEN,bitmap.getPixel((center(0)*density).roundToInt(),(32*density).roundToInt()))
+  assertEquals(Color.BLACK,bitmap.getPixel((center(1)*density).roundToInt(),(12*density).roundToInt()))
   assertEquals(c,Validation.parse(Catalog.json.encodeToString(Backup(1,c,Catalog.engines.first()))).config)
  }
  @Test fun legacyBackupStillLoadsWithoutOfferingRetiredFunctions() {
