@@ -287,4 +287,7 @@
  <string name="layer_backward">Porta %1$s sotto un livello</string>
  <string name="reset_layers">Ripristina ordine dei livelli</string>
  <string name="geometry_element">Elemento</string>
+ <string name="reset_element_dimensions">Ripristina dimensioni predefinite</string>
+ <string name="reset_geometry_help">Il ripristino delle dimensioni riattiva il dimensionamento automatico (64 dp per l’altezza esterna). Il ripristino della posizione azzera X/Y, relativi al padre se collegato. I lucchetti mantengono la loro impostazione.</string>
+ <string name="reset_text_dimensions_help">Il ripristino delle dimensioni imposta placeholder, porzioni formattate e query a 15 sp, conservando il resto della formattazione. Il ripristino della posizione azzera X/Y, relativi al campo di ricerca se collegato.</string>
 </resources>

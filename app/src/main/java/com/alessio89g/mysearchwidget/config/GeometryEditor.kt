@@ -29,7 +29,6 @@ import com.alessio89g.mysearchwidget.i18n.*
   }
   OutlinedButton(onClick={move(0f,step)},modifier=Modifier.semantics {contentDescription=tr(R.string.move_down)}){Text("↓")}
  }
- TextButton(onClick={onChange(OffsetDp())}){Text(tr(R.string.reset_position))}
 }
 @Composable private fun LinkControl(label:String,linked:Boolean,onChange:(Boolean)->Unit) {
  Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
@@ -64,6 +63,9 @@ import com.alessio89g.mysearchwidget.i18n.*
   TextButton(onClick={onChange(config.copy(placement=config.placement.copy(layers=DEFAULT_LAYERS)))}){Text(tr(R.string.reset_layers))}
  }
  key(selected) {SettingCard(options.first {it.first==selected}.second) {
+  OutlinedButton(onClick={onChange(config.resetElementDimensions(selected))},modifier=Modifier.fillMaxWidth()){Text(tr(R.string.reset_element_dimensions))}
+  OutlinedButton(onClick={onChange(config.resetElementPosition(selected))},modifier=Modifier.fillMaxWidth()){Text(tr(R.string.reset_position))}
+  Text(tr(if(selected=="text")R.string.reset_text_dimensions_help else R.string.reset_geometry_help),style=MaterialTheme.typography.bodySmall)
   val p=config.placement
   when(selected) {
    "outer"->{

@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.12.0 — 2026-10-05
+
+### English
+
+- Separate **Reset default dimensions** and **Reset position (0, 0)** buttons for each element in Layout.
+- Size reset restores automatic sizing, with 64 dp for the outer height and 15 sp for text. Position reset clears X/Y offsets without changing sizes.
+- Movement and proportion locks retain their settings. Changes apply to the widget only after **Add** or **Save**.
+
+### Italiano
+
+- Pulsanti separati **Ripristina dimensioni predefinite** e **Ripristina posizione (0, 0)** per ogni elemento in Layout.
+- Il ripristino delle dimensioni riattiva il dimensionamento automatico, con 64 dp per l’altezza esterna e 15 sp per il testo. Il ripristino della posizione azzera X/Y senza cambiare le dimensioni.
+- I lucchetti di collegamento e delle proporzioni mantengono le proprie impostazioni. Le modifiche si applicano al widget solo dopo **Aggiungi** o **Salva**.
+
 ## 1.11.0 — 2026-10-04
 
 ### English

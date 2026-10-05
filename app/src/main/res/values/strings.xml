@@ -288,4 +288,7 @@
  <string name="layer_backward">Move %1$s down a layer</string>
  <string name="reset_layers">Reset layer order</string>
  <string name="geometry_element">Element</string>
+ <string name="reset_element_dimensions">Reset default dimensions</string>
+ <string name="reset_geometry_help">Size reset restores automatic sizing (64 dp for the outer height). Position reset sets X/Y to zero, relative to the parent when linked. Movement and proportion locks keep their settings.</string>
+ <string name="reset_text_dimensions_help">Size reset sets placeholder, formatted ranges and query text to 15 sp, keeping other formatting. Position reset sets X/Y to zero, relative to the search field when linked.</string>
 </resources>
