@@ -39,33 +39,34 @@ class SearchWidget:AppWidgetProvider() {
   suspend fun update(context:Context,id:Int,c:WidgetConfig?=null,text:SessionText?=null) {
    val manager=AppWidgetManager.getInstance(context)
    val options=manager.getAppWidgetOptions(id)
-   val width=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,356).coerceAtLeast(180)
-   val landscape=context.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE
-   val actual=if(landscape)options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,width).coerceAtLeast(width) else width
-   val config=c ?: Repository(context).config(id)
-   val availableHeight=options.getInt(if(landscape)AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,0)
-   // Preserve the saved preference; fit only this rendering into the launcher allocation.
-   val shown=config.fitOuter(actual.coerceIn(180,1000).toFloat(),if(availableHeight>=WidgetDimensions.MIN_HEIGHT)availableHeight.toFloat() else config.heightDp)
-   manager.updateAppWidget(id,views(context,id,shown,actual,text))
+   val size=WidgetViewport.from(context,options)
+   val actual=size.width
+   val config=c ?: Repository(context).let {if(WidgetViewport.hasAllocation(options))it.anchorWidth(id,actual) else it.config(id)}
+   manager.updateAppWidget(id,views(context,id,config,actual,text,size.availableHeight,Repository(context).engine(config.engineId)))
   }
-  fun views(context:Context,id:Int,config:WidgetConfig,width:Int,text:SessionText?=null):RemoteViews {
-   val c=config.fitOuter(width.coerceIn(180,1000).toFloat())
+  fun views(context:Context,id:Int,config:WidgetConfig,width:Int,text:SessionText?=null,availableHeight:Float?=null,engine:Engine?=null):RemoteViews {
+   val presentation=WidgetPresentation(config,width.coerceIn(180,1000),availableHeight)
+   val c=presentation.config
+   val designWidth=presentation.designWidth
    val rv=RemoteViews(context.packageName,R.layout.widget)
-   val dimensions=ElementLayout(width.coerceIn(180,1000).toFloat(),c)
+   val dimensions=ElementLayout(designWidth.toFloat(),c)
    val dp=android.util.TypedValue.COMPLEX_UNIT_DIP
-   rv.setViewLayoutHeight(R.id.widget_frame,c.heightDp,dp)
+   // Keep bitmap and hit targets in the same dp coordinate space, even if a
+   // launcher changes its padding without updating the reported dimensions.
+   rv.setViewLayoutWidth(R.id.widget_frame,presentation.width,dp)
+   rv.setViewLayoutHeight(R.id.widget_frame,presentation.height,dp)
    if(c.theme=="system") {
     // Android resolves these in the host configuration, even when our process is
     // not running. Do not depend on CONFIGURATION_CHANGED delivery to a receiver.
     rv.setIcon(R.id.art,"setImageIcon",
-     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="light"),width,text)),
-     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="dark"),width,text)))
-   }else rv.setImageViewBitmap(R.id.art,Renderer.render(context,c,width,text))
-   fun pending(slot:Int,input:Boolean=false):PendingIntent {
+     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="light"),designWidth,text,engine)),
+     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="dark"),designWidth,text,engine)))
+   }else rv.setImageViewBitmap(R.id.art,Renderer.render(context,c,designWidth,text,engine))
+   fun pending(slot:Int,input:Boolean=false,element:String):PendingIntent {
     val intent=Intent(context,if(input && !c.googleInput)InputActivity::class.java else ActionActivity::class.java)
      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id).putExtra("slot",slot)
-     .setData(android.net.Uri.parse("mysearchwidget://widget/$id/${if(input)"input" else slot.toString()}"))
+     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id).putExtra("slot",slot).putExtra("element",element)
+     .setData(android.net.Uri.parse("mysearchwidget://widget/$id/${element}"))
     return PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
    }
    rv.removeAllViews(R.id.hit_row)
@@ -83,19 +84,20 @@ class SearchWidget:AppWidgetProvider() {
      "icon1"->R.layout.hit_icon1 to R.id.icon1
      else->R.layout.hit_icon2 to R.id.icon2
     }
-    val bounds=when(layer) {
+    val designBounds=when(layer) {
      "field"->dimensions.inputHit
      "logo"->dimensions.logoHit
      "text"->Bounds(dimensions.textLeft,dimensions.textTop,dimensions.textRight,dimensions.textBottom)
      else->if(layer.startsWith("button"))dimensions.buttonHits[index!!] else dimensions.iconHits[index!!]
     }.visibleWithin(dimensions.width,dimensions.height) ?: continue
+    val bounds=presentation.transform(designBounds)
     val child=RemoteViews(context.packageName,layout)
     child.setViewLayoutWidth(view,bounds.width,dp);child.setViewLayoutHeight(view,bounds.height,dp)
     child.setViewLayoutMargin(view,RemoteViews.MARGIN_LEFT,bounds.left,dp)
     child.setViewLayoutMargin(view,RemoteViews.MARGIN_TOP,bounds.top,dp)
     val input=layer=="field" || layer=="text"
-    child.setOnClickPendingIntent(view,pending(if(input)-2 else index ?: -1,input))
-    child.setContentDescription(view,if(input)text?.text ?: c.placeholder.ifEmpty {tr(R.string.placeholder)} else label(if(index==null)c.logo else c.buttons[index]))
+    child.setOnClickPendingIntent(view,pending(if(input)-2 else index ?: -1,input,layer))
+    child.setContentDescription(view,if(input)text?.text ?: placeholderText(c,engine) else label(if(index==null)c.logo else c.buttons[index]))
     rv.addView(R.id.hit_row,child)
    }
    return rv

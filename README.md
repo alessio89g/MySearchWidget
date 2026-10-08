@@ -48,7 +48,11 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ### Configuration and backup
 
+- **Layout → Number of buttons** lets you show 0 to 3 buttons. Hidden buttons retain their settings and become available again when you increase the number.
 - Five sections: **Layout, Appearance, Actions, Search and Backup**. Layout is the first section and opens when you start configuring a widget.
+- Settings use **grouped cards** with an icon, title and description. Tap a row to open its controls; **All settings** or Back returns to the section list.
+- Each element in Layout has **Dimensions** and **Position** panels with their respective resets. Each area in Actions groups its tap action and haptic feedback.
+- Material 3 Expressive selectors show frequent choices directly and wrap on narrower screens. Preview background settings open from the row below the preview.
 - A GitHub link with the GitHub logo at the bottom of the home screen opens the project repository.
 - English and Italian interfaces, with instant switching through **EN / IT** in the top-right corner and a persistent language preference.
 - Export and import individual widget configurations, including layout, layer order, movement links, imported fonts and images.
@@ -77,9 +81,17 @@ To build the project, see the [build instructions](docs/BUILD.md). Check results
 3. Select the widget instance to configure, customize it and tap **Save**.
 4. Tap the search field to start searching, or use the logo and buttons for their assigned actions.
 
-Edits and applied templates remain in the preview until you tap **Add** or **Save**. **Cancel** and Back let you discard changes without updating the widget.
+Edits and applied templates remain in the preview until you tap **Add** or **Save**. **Cancel** lets you leave and discard edits after confirmation. Back first returns to the section list; from the main configuration screen, it lets you leave with the same confirmation.
 
-The initial language is **English**. Tap **EN** to switch to Italian. The automatic placeholder is **“Search the web” / “Cerca sul web”**; custom text is not translated automatically.
+For widgets already placed on the home screen, the preview uses the dimensions reported by the launcher and scales the complete composition to fit the configurator. Element positions are not recalculated from the width of the preview card.
+
+The widget keeps a reference composition and scales the entire layout proportionally to the space provided by the launcher. Changing launcher padding preserves relative element sizes, spacing and touch targets. Dimension controls edit the reference composition, which is included in backups.
+
+**Undo** and **Redo** step through edits before saving; a slider drag is one edit. The **Light/Dark** preview button shows its current state and changes only the preview. Choosing a colour variant automatically previews that variant, and you can still switch it manually.
+
+**Haptic feedback** is enabled by default and can be toggled independently in **Actions** for the search field, logo and each action button. A button and its icon share one setting. Feedback respects Android’s touch-vibration settings.
+
+The initial language is **English**. Tap **EN** to switch to Italian. The automatic placeholder follows the selected engine: **“Search with Bing” / “Cerca con Bing”**, including custom engines such as Qwant. Formatting is preserved. A custom placeholder takes precedence and is not translated or replaced when the engine changes. Google-app search uses Google in the automatic placeholder.
 
 > The APK is signed with a **debug key**. Updating an existing installation requires a compatible signature.
 

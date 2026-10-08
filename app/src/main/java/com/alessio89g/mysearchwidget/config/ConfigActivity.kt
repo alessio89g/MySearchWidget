@@ -46,7 +46,12 @@ class ConfigState:ViewModel() {
  var librarySelection by mutableStateOf<Set<String>>(emptySet())
  var confirmLibraryDelete by mutableStateOf(false)
  var selected by mutableStateOf<Int?>(null)
- var config by mutableStateOf(WidgetConfig())
+ var history by mutableStateOf(EditHistory(WidgetConfig()))
+ var gestureBase:EditHistory<WidgetConfig>?=null
+ var config:WidgetConfig
+  get()=history.present
+  set(value){history=(gestureBase ?: history).record(value)}
+ fun gesture(active:Boolean){gestureBase=if(active)history else null}
  var configs by mutableStateOf<Map<Int,WidgetConfig>>(emptyMap())
  var engines by mutableStateOf<List<Engine>>(Catalog.engines)
  var templates by mutableStateOf<List<Template>>(emptyList())
@@ -72,6 +77,7 @@ class ConfigActivity:ComponentActivity() {
  private var wallpaperGeneration=0
  private val wallpaperPermissionResult=registerForActivityResult(ActivityResultContracts.RequestPermission()){granted->if(granted)setWallpaper(true) else setWallpaper(false)}
  private var configuring=false
+ private var viewportRevision by mutableIntStateOf(0)
  private var launcherAccess by mutableStateOf(false)
  private var selected:Int?
   get()=editorState.selected
@@ -169,7 +175,7 @@ class ConfigActivity:ComponentActivity() {
     }
    }
    MaterialExpressiveTheme(colorScheme=if(dark)dynamicDarkColorScheme(this) else dynamicLightColorScheme(this)) {
-    Surface(Modifier.fillMaxSize()) {
+    Surface(Modifier.fillMaxSize(),color=MaterialTheme.colorScheme.surfaceContainerLow) {
      Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
       Column(Modifier.fillMaxSize().padding(horizontal=16.dp)) {
        if(selected==null && editorState.librarySelection.isNotEmpty())Spacer(Modifier.height(64.dp))
@@ -237,6 +243,7 @@ class ConfigActivity:ComponentActivity() {
 
  override fun onResume() {
   super.onResume()
+  viewportRevision++
   launcherAccess=PinnedShortcuts.hasAccess(this)
   val wanted=getSharedPreferences("interface",0).getBoolean("wallpaper_preview",false)
   val pending=wallpaperPending;wallpaperPending=false
@@ -251,13 +258,24 @@ class ConfigActivity:ComponentActivity() {
   val keys=configs.keys.map {"w:$it"}.toSet()+templates.map {"t:${it.id}"}
   editorState.librarySelection=editorState.librarySelection.intersect(keys)
  }
- private fun select(id:Int){selected=id;config=configs[id] ?: WidgetConfig()}
+ private fun select(id:Int){
+  selected=id
+  val current=configs[id] ?: WidgetConfig()
+  val options=AppWidgetManager.getInstance(this).getAppWidgetOptions(id)
+  val width=WidgetViewport.from(this,options).width
+  val anchored=if(current.referenceWidthDp==null && WidgetViewport.hasAllocation(options))current.copy(referenceWidthDp=width) else current
+  if(id in configs)configs=configs+(id to anchored)
+  editorState.gesture(false)
+  editorState.history=EditHistory(anchored)
+ }
  private fun setSlot(index:Int,slot:Slot){config=if(index==-1)config.copy(logo=slot) else config.copy(buttons=config.buttons.mapIndexed {i,s->if(i==index)slot else s})}
  private fun task(block:suspend ()->Unit){lifecycleScope.launch {busy=true;try {block()}catch(e:Exception){message=tr(R.string.operation_failed,errorText(e))}finally{busy=false}}}
  private fun save(){task {
   val id=selected ?: return@task
   require(id>0){tr(R.string.add_widget_first)}
-  val submitted=Assets.prune(config)
+  val options=AppWidgetManager.getInstance(this@ConfigActivity).getAppWidgetOptions(id)
+  val reference=config.referenceWidthDp ?: if(WidgetViewport.hasAllocation(options))WidgetViewport.from(this@ConfigActivity,options).width else null
+  val submitted=Assets.prune(config.copy(referenceWidthDp=reference))
   repo.save(id,submitted);SearchWidget.update(this@ConfigActivity,id,submitted)
   configs=configs+(id to submitted)
   if(configuring){setResult(RESULT_OK,Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id));finish()}
@@ -267,7 +285,7 @@ class ConfigActivity:ComponentActivity() {
   Text(tr(R.string.your_widgets),style=MaterialTheme.typography.titleLarge)
   WallpaperControl()
   if(configs.isEmpty())Text(tr(R.string.add_widget_help),modifier=Modifier.padding(vertical=8.dp))
-  Row {TextButton(onClick={
+  FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {Button(shapes=ButtonDefaults.shapes(),onClick={
    val manager=AppWidgetManager.getInstance(this@ConfigActivity)
    if(manager.isRequestPinAppWidgetSupported)manager.requestPinAppWidget(ComponentName(this@ConfigActivity,SearchWidget::class.java),null,
     android.app.PendingIntent.getBroadcast(this@ConfigActivity,0,Intent(this@ConfigActivity,SearchWidget::class.java).setAction(SearchWidget.PIN_CONFIRMED),android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE))
@@ -277,7 +295,7 @@ class ConfigActivity:ComponentActivity() {
   LazyColumn(Modifier.weight(1f)) {
    items(configs.entries.toList(),key={it.key}){entry->LibraryCard("w:${entry.key}","Widget ${entry.key}",{select(entry.key)}) {
     if(editorState.librarySelection.isEmpty())Text("Widget ${entry.key}")
-    Preview(entry.value,wallpaperImage)
+    Preview(entry.value,wallpaperImage,viewport=launcherViewport(entry.key),engine=engines.firstOrNull {it.id==entry.value.engineId})
    }}
    if(configs.isEmpty())item {Text(tr(R.string.default_preview));Preview(WidgetConfig(),wallpaperImage)}
    item {TemplateLibrary()}
@@ -314,15 +332,26 @@ class ConfigActivity:ComponentActivity() {
    config=config.copy(heightDp=h,sizing=config.sizing.copy(outerWidthDp=w,outerRatio=ratio,layoutHeightDp=null))
   }
  }
+ @Composable private fun launcherViewport(id:Int):WidgetViewport? {
+  val orientation=LocalConfiguration.current.orientation
+  return remember(id,viewportRevision,orientation) {
+   val options=AppWidgetManager.getInstance(this).getAppWidgetOptions(id)
+   if(WidgetViewport.hasAllocation(options))WidgetViewport.from(this,options) else null
+  }
+ }
  @Composable private fun ColumnScope.Editor(){
   CompositionLocalProvider(LocalManualColorsEnabled provides !config.dynamic){EditorContent()}
  }
  @Composable private fun ColumnScope.EditorContent(){
   val id=selected ?: return
   var page by rememberSaveable(id){mutableStateOf("Geometria")}
-  var element by rememberSaveable(id){mutableStateOf("Generale")}
+  var element by rememberSaveable(id){mutableStateOf("")}
   var queryPreview by rememberSaveable(id){mutableStateOf(false)}
-  var previewWidth by remember {mutableFloatStateOf(356f)}
+  var actionTarget by rememberSaveable(id){mutableStateOf("")}
+  var searchTarget by rememberSaveable(id){mutableStateOf("")}
+  var previewTheme by rememberSaveable(id){mutableStateOf(if(Renderer.dark(this@ConfigActivity,config))"dark" else "light")}
+  val viewport=launcherViewport(id)
+  var previewWidth by remember(id,viewport){mutableFloatStateOf(config.referenceWidthDp?.toFloat() ?: viewport?.width?.toFloat() ?: 356f)}
   val sizeUnit=ElementLayout(previewWidth,config).unit
   LaunchedEffect(page,element){if(page!="Aspetto" || element!="Testo")queryPreview=false}
   val compactHeight=LocalConfiguration.current.screenHeightDp<500
@@ -347,30 +376,50 @@ class ConfigActivity:ComponentActivity() {
      Text(tr(R.string.preview_heading,if(previewExpanded)"▾" else "▸",id),style=MaterialTheme.typography.labelMedium)
      Text(if(dirty)tr(R.string.unsaved) else tr(R.string.saved),style=MaterialTheme.typography.labelMedium)
     }
-    WallpaperControl()
-    if(previewExpanded)Preview(config,wallpaperImage,queryPreview){previewWidth=it.toFloat()}
+    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically) {
+     TextButton(enabled=editorState.history.past.isNotEmpty(),onClick={editorState.gesture(false);editorState.history=editorState.history.undo()}){Text("↶ "+tr(R.string.undo_edit))}
+     TextButton(enabled=editorState.history.future.isNotEmpty(),onClick={editorState.gesture(false);editorState.history=editorState.history.redo()}){Text("↷ "+tr(R.string.redo_edit))}
+     FilledTonalButton(shapes=ButtonDefaults.shapes(),onClick={previewTheme=if(previewTheme=="light")"dark" else "light"}){Text(tr(if(previewTheme=="light")R.string.preview_light else R.string.preview_dark))}
+    }
+    if(previewExpanded) {
+     Preview(config.copy(theme=previewTheme),wallpaperImage,queryPreview,viewport,engines.firstOrNull {it.id==config.engineId}){previewWidth=it.toFloat()}
+     Section(tr(R.string.preview_options)){WallpaperControl()}
+    }
    }
   }
   val pages=listOf("Geometria" to "Settings","Aspetto" to "AutoAwesome","Azioni" to "Star","Ricerca" to "Search","Backup" to "Cloud")
+  CompositionLocalProvider(LocalPreviewTheme provides {theme:String->previewTheme=theme},LocalEditGesture provides editorState::gesture) {
   pageStates.SaveableStateProvider(page) {
-   Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).imePadding().padding(top=16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-    Text(navigationTitle(page),style=MaterialTheme.typography.headlineSmall)
+   val scroll=rememberScrollState()
+   val scope=rememberCoroutineScope()
+   fun top(){scope.launch {scroll.scrollTo(0)}}
+   Column(Modifier.weight(1f).verticalScroll(scroll).imePadding().padding(top=16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+    Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
+     Text(navigationTitle(page),style=MaterialTheme.typography.headlineSmall)
+     Text(tr(when(page){"Geometria"->R.string.layout_overview;"Aspetto"->R.string.appearance_overview;"Azioni"->R.string.actions_overview;"Ricerca"->R.string.search_overview;else->R.string.backup_overview}),style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+    }
     when(page) {
      "Aspetto" -> {
       val elements=listOf("Generale","Barra","Testo","Logo")+(1..config.count).map {"Pulsante $it"}
-      if(element !in elements)LaunchedEffect(element){element="Generale"}
-      Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-       elements.forEach {name->FilterChip(selected=element==name,onClick={element=name},label={Text(navigationTitle(name))})}
-      }
-      key(element) {when(element) {
+      if(element.isEmpty()) {
+       SettingsGroup(listOf(
+        SettingsEntry(navigationTitle("Generale"),tr(R.string.general_style_summary),"AutoAwesome"){element="Generale";top()},
+        SettingsEntry(navigationTitle("Barra"),tr(R.string.bar_style_summary),"Settings"){element="Barra";top()}
+       ))
+       SettingsGroup(listOf(
+        SettingsEntry(navigationTitle("Testo"),tr(R.string.text_style_summary),"Description"){element="Testo";top()},
+        SettingsEntry("Logo",tr(R.string.icon_style_summary),"Photo"){element="Logo";top()}
+       ),1)
+       if(config.count>0)SettingsGroup((1..config.count).map {i->SettingsEntry(tr(R.string.button_number,i),tr(R.string.button_style_summary),"Star"){element="Pulsante $i";top()}},2)
+      } else {
+      if(element !in elements)LaunchedEffect(element){element=""}
+      DetailBack {element="";top()}
+      if(element in elements)key(element) {when(element) {
        "Generale" -> {
         SettingCard(tr(R.string.widget_style),tr(R.string.style_help)) {
-         Choice(tr(R.string.theme),config.theme,listOf("system" to tr(R.string.system),"light" to tr(R.string.light),"dark" to tr(R.string.dark))){config=config.copy(theme=it)}
+         Choice(tr(R.string.theme),config.theme,listOf("system" to tr(R.string.system),"light" to tr(R.string.light),"dark" to tr(R.string.dark))){config=config.copy(theme=it);previewTheme=if(Renderer.dark(this@ConfigActivity,config))"dark" else "light"}
          Toggle(tr(R.string.material_you),config.dynamic){config=config.copy(dynamic=it)}
          Text(tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
-        }
-        SettingCard(tr(R.string.buttons),tr(R.string.buttons_help)) {
-         Choice(tr(R.string.button_count),config.count.toString(),(0..3).map {it.toString() to it.toString()}){config=config.copy(count=it.toInt())}
         }
        }
        "Barra" -> {
@@ -385,11 +434,13 @@ class ConfigActivity:ComponentActivity() {
        "Testo" -> {
         Choice(tr(R.string.text_target),if(queryPreview)"query" else "hint",listOf("hint" to tr(R.string.placeholder_label),"query" to tr(R.string.typed_text))){queryPreview=it=="query"}
         if(config.dynamic)Text(tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
-        key(queryPreview){RichTextEditor(config,queryPreview,{config=it}){start,end->
+        SettingCard(tr(if(queryPreview)R.string.typed_text else R.string.placeholder_label)) {
+        key(queryPreview){RichTextEditor(config,queryPreview,{config=it},engines.firstOrNull {it.id==config.engineId}){start,end->
          fontTarget=if(queryPreview)"query" else "hint"
-         if(!queryPreview && end>start && config.placeholder.isEmpty())config=config.copy(placeholder=tr(R.string.placeholder))
+         if(!queryPreview && end>start && config.placeholder.isEmpty())config=config.copy(placeholder=placeholderText(config,engines.firstOrNull {it.id==config.engineId}))
          editorState.fontStart=start;editorState.fontEnd=end;fontDocument.launch(arrayOf("*/*"))
         }}
+        }
        }
        else -> {
         val slotIndex=if(element=="Logo")-1 else element.substringAfter(" ").toIntOrNull()?.minus(1) ?: -1
@@ -398,52 +449,86 @@ class ConfigActivity:ComponentActivity() {
         SlotEditor(slot,slotIndex>=0,{setSlot(slotIndex,it)},showAction=false,unit=sizeUnit,firstButton=slotIndex==0){iconTarget=slotIndex;iconDocument.launch(arrayOf("image/*"))}
        }
       }}
+      }
      }
-     "Geometria" -> GeometryEditor(config,previewWidth,{config=it},{updateOuterHeight(it,previewWidth)},{resetOuterHeight()})
+     "Geometria" -> GeometryEditor(config,previewWidth,{config=it},{updateOuterHeight(it,previewWidth)},{resetOuterHeight()},::top)
      "Azioni" -> {
-      Text(tr(R.string.actions_help),style=MaterialTheme.typography.bodyMedium)
-      (listOf(-1)+(0 until config.count)).forEach {index->key(index) {
-       val slot=if(index==-1)config.logo else config.buttons[index]
-       SettingCard(if(index==-1)"Logo" else tr(R.string.button_number,index+1)) {
-        ActionPicker(tr(R.string.tap_action),slot.tap){setSlot(index,slot.copy(tap=it))}
+      val areas=listOf("field" to tr(R.string.search_field),"logo" to "Logo")+(0 until config.count).map {"button$it" to tr(R.string.button_number,it+1)}
+      if(actionTarget.isEmpty()) {
+       SettingsGroup(areas.take(2).map {(key,title)->SettingsEntry(title,tr(R.string.area_action_summary),if(key=="field")"Search" else "Photo"){actionTarget=key;top()}})
+       if(config.count>0)SettingsGroup(areas.drop(2).map {(key,title)->SettingsEntry(title,tr(R.string.area_action_summary),"Star"){actionTarget=key;top()}},1)
+       SettingsGroup(listOf(SettingsEntry(tr(R.string.launcher_access),tr(R.string.launcher_shortcuts_summary),"Home"){actionTarget="launcher";top()}),2)
+      } else {
+       DetailBack {actionTarget="";top()}
+       if(actionTarget=="launcher") {
+        SettingCard(tr(R.string.launcher_access),tr(if(launcherAccess)R.string.launcher_active else R.string.launcher_explain)) {
+         if(!launcherAccess)Button(onClick={HomeAccess.request(this@ConfigActivity)},shapes=ButtonDefaults.shapes()){Text(tr(R.string.launcher_select))}
+         OutlinedButton(onClick={HomeAccess.settings(this@ConfigActivity)}){Text(tr(R.string.launcher_restore))}
+        }
+       } else {
+        val area=actionTarget.takeIf {key->areas.any {it.first==key}} ?: "field"
+        key(area) {
+         SettingCard(areas.first {it.first==area}.second) {
+          if(area=="field") {
+           Text(tr(R.string.field_action_help),style=MaterialTheme.typography.bodyMedium)
+           FilledTonalButton(onClick={page="Ricerca"},shapes=ButtonDefaults.shapes()){Text(tr(R.string.open_search_settings))}
+          } else {
+           val index=if(area=="logo")-1 else area.last().digitToInt()
+           val slot=if(index==-1)config.logo else config.buttons[index]
+           ActionPicker(tr(R.string.tap_action),slot.tap){setSlot(index,slot.copy(tap=it))}
+          }
+         }
+         SettingCard(tr(R.string.touch_feedback),if(area.startsWith("button"))tr(R.string.haptic_area_help) else "") {
+          Toggle(tr(R.string.haptic_feedback),config.hapticEnabled(area)){config=config.copy(haptics=config.haptics+(area to it))}
+         }
+        }
        }
-      }}
-      SettingCard(tr(R.string.launcher_access),tr(if(launcherAccess)R.string.launcher_active else R.string.launcher_explain)) {
-       if(!launcherAccess)Button(onClick={HomeAccess.request(this@ConfigActivity)}){Text(tr(R.string.launcher_select))}
-       OutlinedButton(onClick={HomeAccess.settings(this@ConfigActivity)}){Text(tr(R.string.launcher_restore))}
       }
      }
      "Ricerca" -> {
-      SettingCard(tr(R.string.search_field),tr(R.string.placeholder_help)) {
-       OutlinedTextField(config.placeholder,{config=config.copy(placeholder=it.take(500),hintRuns=RichText.edit(config.placeholder,it.take(500),config.hintRuns,config.hint))},label={Text(tr(R.string.placeholder_label))},placeholder={Text(tr(R.string.placeholder))},supportingText={Text(tr(R.string.placeholder_empty))},modifier=Modifier.fillMaxWidth(),singleLine=true)
+      if(searchTarget.isEmpty()) {
+       SettingsGroup(listOf(
+        SettingsEntry(tr(R.string.search_field),tr(R.string.placeholder_help),"Description"){searchTarget="text";top()}
+       ),1)
+       SettingsGroup(listOf(
+        SettingsEntry(tr(R.string.google_input_title),tr(if(config.googleInput)R.string.setting_on else R.string.setting_off),"Search"){searchTarget="google";top()},
+        SettingsEntry(tr(R.string.search_engine),tr(R.string.engine_help),"Public"){searchTarget="engine";top()}
+       ))
+      } else {
+      DetailBack {searchTarget="";top()}
+      if(searchTarget=="text")SettingCard(tr(R.string.search_field),tr(R.string.placeholder_help)) {
+       OutlinedTextField(config.placeholder,{config=config.copy(placeholder=it.take(500),hintRuns=RichText.edit(config.placeholder,it.take(500),config.hintRuns,config.hint))},label={Text(tr(R.string.placeholder_label))},placeholder={Text(placeholderText(config,engines.firstOrNull {it.id==config.engineId}))},supportingText={Text(tr(R.string.placeholder_empty))},modifier=Modifier.fillMaxWidth(),singleLine=true)
+       TextButton(onClick={page="Aspetto";element="Testo";queryPreview=false}){Text(tr(R.string.format_search_text))}
       }
-      SettingCard(tr(R.string.google_input_title),tr(R.string.google_input_help)){
+      if(searchTarget=="google")SettingCard(tr(R.string.google_input_title),tr(R.string.google_input_help)){
        Toggle(tr(R.string.google_input_toggle),config.googleInput){config=config.copy(googleInput=it)}
       }
-      SettingCard(tr(R.string.search_engine),tr(R.string.engine_help)){
+      if(searchTarget=="engine")SettingCard(tr(R.string.search_engine),tr(R.string.engine_help)){
        if(config.googleInput)Text(tr(R.string.google_engine_disabled),style=MaterialTheme.typography.bodySmall)
        CompositionLocalProvider(LocalControlsEnabled provides !config.googleInput){
         Column(Modifier.graphicsLayer {alpha=if(config.googleInput).45f else 1f}){EngineLibrary()}
        }
       }
+      }
      }
      "Backup" -> {
-      SettingCard(tr(R.string.backup_title),tr(R.string.backup_help)) {
-       Button(onClick={exportBackup(id)},shapes=ButtonDefaults.shapes(),modifier=Modifier.fillMaxWidth()){Text(tr(R.string.export_backup))}
-       OutlinedButton(onClick={importDocument.launch(arrayOf("application/json","text/*","application/octet-stream"))},modifier=Modifier.fillMaxWidth()){Text(tr(R.string.import_backup))}
-      }
+      SettingsGroup(listOf(
+       SettingsEntry(tr(R.string.export_backup),tr(R.string.export_summary),"Cloud"){exportBackup(id)},
+       SettingsEntry(tr(R.string.import_backup),tr(R.string.import_summary),"Folder"){importDocument.launch(arrayOf("application/json","text/*","application/octet-stream"))}
+      ))
       TemplateLibrary()
      }
     }
     Spacer(Modifier.height(12.dp))
    }
   }
+  }
   NavigationBar(containerColor=MaterialTheme.colorScheme.surfaceContainer,windowInsets=WindowInsets(0,0,0,0)) {
-   pages.forEach {(name,icon)->NavigationBarItem(selected=page==name,onClick={page=name;editorState.librarySelection=emptySet();editorState.confirmLibraryDelete=false},icon={Icon(IconCatalog.vector(icon,false),null)},label={Text(navigationTitle(name))})}
+   pages.forEach {(name,icon)->NavigationBarItem(selected=page==name,onClick={page=name;editorState.librarySelection=emptySet();editorState.confirmLibraryDelete=false},icon={Icon(IconCatalog.vector(icon,false),null)},label={Text(navigationTitle(name),maxLines=1,overflow=androidx.compose.ui.text.style.TextOverflow.Ellipsis)})}
   }
   if(confirmDiscard)AlertDialog(onDismissRequest={confirmDiscard=false},title={Text(tr(R.string.discard_title))},text={Text(tr(R.string.discard_help))},confirmButton={TextButton(onClick={confirmDiscard=false;if(configuring)finish() else {selected=null}}){Text(tr(R.string.discard))}},dismissButton={TextButton(onClick={confirmDiscard=false}){Text(tr(R.string.keep_editing))}})
   applyModel?.let {t->AlertDialog(onDismissRequest={applyModel=null},title={Text(tr(R.string.apply_widget,id))},text={Text(tr(R.string.replace_template,t.name))},confirmButton={TextButton(onClick={applyModel=null;task {
-   config=repo.prepareTemplate(t);engines=repo.engines()
+   config=repo.prepareTemplate(t).let {it.copy(referenceWidthDp=it.referenceWidthDp ?: config.referenceWidthDp)};engines=repo.engines()
   }}){Text(tr(R.string.apply))}},dismissButton={TextButton(onClick={applyModel=null}){Text(tr(R.string.cancel))}})}
  }
  @Composable private fun TemplateLibrary(){
@@ -451,7 +536,7 @@ class ConfigActivity:ComponentActivity() {
   if(templates.isEmpty())Text(tr(R.string.empty_templates))
   templates.forEach { t->LibraryCard("t:${t.id}",t.name,{if(selected!=null)applyModel=t else message=tr(R.string.open_target_first)}) {
    if(editorState.librarySelection.isEmpty())Text(t.name)
-   Preview(t.backup.config,wallpaperImage)
+   Preview(t.backup.config,wallpaperImage,engine=t.backup.engine)
    if(editorState.librarySelection.isEmpty())TextButton(onClick={if(selected!=null)applyModel=t else message=tr(R.string.open_target_first)}){Text(tr(R.string.apply_template))}
   }}
  }
@@ -511,20 +596,26 @@ class ConfigActivity:ComponentActivity() {
    var name by remember(e.id){mutableStateOf(e.name)};var url by remember(e.id){mutableStateOf(e.template)};var error by remember {mutableStateOf("")}
    AlertDialog(onDismissRequest={editing=null},title={Text(tr(R.string.custom_engine))},text={Column {
     OutlinedTextField(name,{name=it},label={Text(tr(R.string.name))});OutlinedTextField(url,{url=it},label={Text(tr(R.string.url_template))});if(error.isNotEmpty())Text(error,color=MaterialTheme.colorScheme.error)
-   }},confirmButton={TextButton(onClick={val updated=e.copy(name=name,template=url);runCatching {Validation.engine(updated)}.onSuccess {task {repo.saveEngine(updated);engines=repo.engines();editing=null}}.onFailure {error=errorText(it)}}){Text(tr(R.string.save))}},dismissButton={TextButton(onClick={editing=null}){Text(tr(R.string.cancel))}})
+   }},confirmButton={TextButton(onClick={val updated=e.copy(name=name,template=url);runCatching {Validation.engine(updated)}.onSuccess {task {repo.saveEngine(updated);engines=repo.engines();editing=null;SearchWidget.ids(this@ConfigActivity).forEach {widgetId->if(repo.config(widgetId).engineId==updated.id)SearchWidget.update(this@ConfigActivity,widgetId)}}}.onFailure {error=errorText(it)}}){Text(tr(R.string.save))}},dismissButton={TextButton(onClick={editing=null}){Text(tr(R.string.cancel))}})
   }
  }
 }
-@Composable fun Preview(config:WidgetConfig,wallpaper:android.graphics.Bitmap?=null,queryPreview:Boolean=false,onWidth:(Int)->Unit={}) {
+@Composable fun Preview(config:WidgetConfig,wallpaper:android.graphics.Bitmap?=null,queryPreview:Boolean=false,viewport:WidgetViewport?=null,engine:Engine?=null,onWidth:(Int)->Unit={}) {
  val context=LocalContext.current
  BoxWithConstraints(Modifier.fillMaxWidth().padding(vertical=8.dp)) {
-  val width=maxWidth.value.toInt().coerceAtLeast(180)
+  val presentation=WidgetPresentation(config,viewport?.width ?: maxWidth.value.toInt().coerceIn(180,1000),viewport?.availableHeight)
+  val width=presentation.designWidth
+  val shown=presentation.config
+  // Scale the whole composition to the card; never reflow its elements to the card width.
+  val displayScale=minOf(1f,maxWidth.value/presentation.width)
+  val displayWidth=presentation.width*displayScale
+  val displayHeight=presentation.height*displayScale
   LaunchedEffect(width){onWidth(width)}
   val uiMode=LocalConfiguration.current
-  val bitmap=remember(config,width,uiMode.uiMode,uiMode.fontScale,AppLanguage.code,queryPreview){Renderer.render(context,config,width,if(queryPreview)com.alessio89g.mysearchwidget.widget.SessionText(tr(R.string.query_preview),0,false) else null)}
-  Box(Modifier.fillMaxWidth().height((config.heightDp+if(wallpaper!=null)40f else 0f).dp),contentAlignment=Alignment.Center) {
+  val bitmap=remember(shown,width,uiMode.uiMode,uiMode.fontScale,AppLanguage.code,queryPreview,engine){Renderer.render(context,shown,width,if(queryPreview)com.alessio89g.mysearchwidget.widget.SessionText(tr(R.string.query_preview),0,false) else null,engine)}
+  Box(Modifier.fillMaxWidth().height((displayHeight+if(wallpaper!=null)40f else 0f).dp),contentAlignment=Alignment.Center) {
    if(wallpaper!=null)Image(wallpaper.asImageBitmap(),null,Modifier.matchParentSize(),contentScale=ContentScale.Crop,alignment=Alignment.Center)
-   Image(bitmap.asImageBitmap(),tr(R.string.widget_preview),Modifier.fillMaxWidth().height(config.heightDp.dp))
+   Image(bitmap.asImageBitmap(),tr(R.string.widget_preview),Modifier.size(displayWidth.dp,displayHeight.dp),contentScale=ContentScale.FillBounds)
   }
  }
 }

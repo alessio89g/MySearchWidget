@@ -17,14 +17,15 @@ import com.alessio89g.mysearchwidget.data.*
 import com.alessio89g.mysearchwidget.data.TextStyle as WidgetTextStyle
 import com.alessio89g.mysearchwidget.R
 import com.alessio89g.mysearchwidget.i18n.tr
+import com.alessio89g.mysearchwidget.i18n.placeholderText
 
-@Composable fun RichTextEditor(config:WidgetConfig,query:Boolean,onChange:(WidgetConfig)->Unit,pickFont:(Int,Int)->Unit) {
+@Composable fun RichTextEditor(config:WidgetConfig,query:Boolean,onChange:(WidgetConfig)->Unit,engine:Engine?=null,pickFont:(Int,Int)->Unit) {
  var bbcode by rememberSaveable {mutableStateOf(false)}
  var bbcodeDraft by rememberSaveable {mutableStateOf("")}
  var error by remember {mutableStateOf(false)}
  val context=androidx.compose.ui.platform.LocalContext.current
  val density=androidx.compose.ui.platform.LocalDensity.current
- val text=config.placeholder.ifEmpty {tr(R.string.placeholder)}
+ val text=placeholderText(config,engine)
  var field by remember {mutableStateOf(TextFieldValue(text))}
  val start=field.selection.min.coerceIn(0,text.length);val end=field.selection.max.coerceIn(start,text.length)
  val selected=!query && end>start

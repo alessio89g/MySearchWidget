@@ -48,7 +48,11 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Configurazione e backup
 
+- **Layout → Numero di pulsanti** permette di mostrare da 0 a 3 pulsanti. Le impostazioni dei pulsanti nascosti vengono conservate e tornano disponibili aumentando il numero.
 - Cinque sezioni: **Layout, Aspetto, Azioni, Ricerca e Backup**. Layout è la prima sezione e si apre quando inizi a configurare un widget.
+- Le impostazioni sono organizzate in **gruppi di card**, con icona, titolo e descrizione. Tocca una voce per aprirne i controlli; **Tutte le impostazioni** o Indietro riportano alla lista della sezione.
+- In Layout, ogni elemento ha due pannelli: **Dimensioni** e **Posizione**, con i rispettivi ripristini. In Azioni, ogni area raccoglie la propria azione al tocco e il feedback aptico.
+- I selettori Material 3 Expressive mostrano direttamente le scelte più frequenti; le opzioni vanno a capo quando lo spazio è ridotto. Le impostazioni dello sfondo dell’anteprima si aprono dalla relativa voce sotto l’anteprima.
 - In fondo alla schermata iniziale, il collegamento con il logo GitHub apre il repository del progetto.
 - Interfaccia in inglese e italiano, con cambio immediato tramite **EN / IT** in alto a destra e scelta persistente.
 - Esportazione e importazione della configurazione del singolo widget, inclusi layout, ordine dei livelli, collegamenti degli spostamenti, font e immagini importati.
@@ -77,9 +81,17 @@ Per compilare il progetto consulta le [istruzioni di build](docs/BUILD.md). I ri
 3. Seleziona l’istanza da configurare, personalizzala e premi **Salva**.
 4. Tocca il campo di ricerca per iniziare oppure usa il logo e i pulsanti per le azioni assegnate.
 
-Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Aggiungi** o **Salva**. **Annulla** e il tasto Indietro permettono di scartare le modifiche senza aggiornare il widget.
+Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Aggiungi** o **Salva**. Il pulsante **Annulla** permette di uscire scartando le modifiche, dopo conferma. Il tasto Indietro torna prima alla lista della sezione; dalla schermata principale del configuratore permette di uscire con la stessa conferma.
 
-La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il placeholder automatico è **“Search the web” / “Cerca sul web”**; un testo personalizzato non viene tradotto automaticamente.
+Per i widget già presenti nella home, l’anteprima usa le dimensioni comunicate dal launcher e riduce l’intera composizione per mostrarla nel configuratore. Le posizioni degli elementi non vengono ricalcolate in base alla larghezza del riquadro di anteprima.
+
+Il widget conserva una composizione di riferimento e adatta proporzionalmente l’intero layout allo spazio fornito dal launcher. Cambiare il riempimento del launcher mantiene le dimensioni relative degli elementi, le distanze e le aree di tocco. I controlli delle dimensioni modificano la composizione di riferimento, inclusa nei backup.
+
+Le frecce **Annulla** e **Ripeti** permettono di ripercorrere le modifiche prima del salvataggio; il trascinamento di uno slider conta come una sola modifica. Il pulsante **Chiaro/Scuro** indica lo stato corrente e cambia soltanto l’anteprima. La selezione di una variante di colore la mostra automaticamente nell’anteprima, che rimane invertibile manualmente.
+
+Il **feedback aptico** è attivo di default e può essere attivato o disattivato indipendentemente in **Azioni** per il campo di ricerca, il logo e ciascun pulsante funzione. Pulsante e icona condividono la stessa impostazione. Il feedback rispetta le impostazioni della vibrazione al tocco di Android.
+
+La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il placeholder automatico segue il motore selezionato: **“Cerca con Bing” / “Search with Bing”**, anche per motori aggiunti manualmente come Qwant. La formattazione viene conservata. Un testo personalizzato ha precedenza e non viene tradotto né sostituito al cambio del motore. Con la ricerca tramite app Google, il testo automatico indica Google.
 
 > L’APK è firmato con una **chiave di debug**. Per aggiornare un’installazione esistente è necessaria una firma compatibile.
 

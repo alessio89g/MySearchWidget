@@ -44,14 +44,12 @@ import kotlinx.coroutines.withContext
 @Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,pickImage:()->Unit) {
  var catalog by remember {mutableStateOf(false)}
  var part by rememberSaveable {mutableStateOf("Icona")}
- if(background)Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-  listOf("Icona","Cerchio").forEach {name->FilterChip(selected=part==name,onClick={part=name},label={Text(navigationTitle(name))})}
- }
+ if(background)OptionButtons(part,listOf("Icona","Cerchio").map {it to navigationTitle(it)}){part=it}
  if(background && part=="Cerchio")SettingCard(tr(R.string.button_background),tr(R.string.circle_help)) {
   Text(tr(R.string.dimensions_help),style=MaterialTheme.typography.bodySmall)
   SurfaceEditor(value.surface,true){onChange(value.copy(surface=it))}
  } else SettingCard(tr(R.string.icon),if(value.icon.asset.isNotEmpty())tr(R.string.imported_image) else value.icon.name) {
-  Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+  FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    FilledTonalButton(onClick={catalog=true}){Text(tr(R.string.choose_icon))}
    OutlinedButton(onClick=pickImage){Text(tr(R.string.from_file))}
   }
@@ -59,8 +57,9 @@ import kotlinx.coroutines.withContext
   Toggle(tr(R.string.monochrome_icon),value.icon.monochrome){onChange(value.copy(icon=value.icon.copy(monochrome=it)))}
   Text(tr(R.string.icon_color_mode_help),style=MaterialTheme.typography.bodySmall)
   CompositionLocalProvider(LocalControlsEnabled provides (LocalControlsEnabled.current && value.icon.monochrome)) {
-  PaintControl(tr(R.string.icon_dark),value.icon.dark,value.icon.darkGradient,{onChange(value.copy(icon=value.icon.copy(dark=it)))},{onChange(value.copy(icon=value.icon.copy(darkGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
-  PaintControl(tr(R.string.icon_light),value.icon.light,value.icon.lightGradient,{onChange(value.copy(icon=value.icon.copy(light=it)))},{onChange(value.copy(icon=value.icon.copy(lightGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
+  val mode=EditingTheme()
+  if(mode=="dark")PaintControl(tr(R.string.icon_dark),value.icon.dark,value.icon.darkGradient,{onChange(value.copy(icon=value.icon.copy(dark=it)))},{onChange(value.copy(icon=value.icon.copy(darkGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
+  else PaintControl(tr(R.string.icon_light),value.icon.light,value.icon.lightGradient,{onChange(value.copy(icon=value.icon.copy(light=it)))},{onChange(value.copy(icon=value.icon.copy(lightGradient=it)))},disabledReason=if(!value.icon.monochrome)tr(R.string.original_colors_help) else null)
   }
  }
  if(catalog) {

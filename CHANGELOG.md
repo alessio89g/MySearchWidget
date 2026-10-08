@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.13.2 — 2026-10-08
+
+### English
+
+- Settings organised into grouped Material 3 Expressive cards, with icons, descriptions and dedicated detail screens.
+- Layout groups overall height, button count, layer order and separate Dimensions/Position panels. Hidden buttons retain their settings.
+- Proportional scaling preserves the widget composition when launcher padding or available space changes. The preview uses the launcher dimensions.
+- Undo and Redo for configuration edits.
+- Light/Dark preview toggle, with automatic preview of the colour variant being edited and manual override.
+- Haptic feedback enabled by default and configurable in Actions for each interactive area. A button and its icon share one setting.
+- Automatic placeholder follows the selected search engine, including custom engines, while preserving formatting and custom text.
+- Existing backups remain compatible.
+
+### Italiano
+
+- Impostazioni organizzate in gruppi di card Material 3 Expressive, con icone, descrizioni e schermate di dettaglio.
+- Layout raccoglie altezza generale, numero di pulsanti, ordine dei livelli e pannelli Dimensioni/Posizione separati. I pulsanti nascosti conservano le proprie impostazioni.
+- Ridimensionamento proporzionale per mantenere la composizione del widget quando cambiano il riempimento o lo spazio disponibile nel launcher. L’anteprima usa le dimensioni comunicate dal launcher.
+- Annulla e Ripeti per le modifiche alla configurazione.
+- Pulsante Chiaro/Scuro per l’anteprima, sincronizzata con la variante di colore in modifica e comunque invertibile manualmente.
+- Feedback aptico attivo di default e configurabile in Azioni per ogni area interattiva. Pulsante e icona condividono la stessa impostazione.
+- Testo a riposo automatico legato al motore selezionato, anche personalizzato, conservando formattazione e testi inseriti manualmente.
+- Compatibilità con i backup precedenti mantenuta.
+
 ## 1.12.0 — 2026-10-05
 
 ### English

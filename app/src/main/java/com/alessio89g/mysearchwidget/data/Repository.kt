@@ -18,6 +18,19 @@ class Repository(private val context: Context) {
   val raw=context.store.data.first()[stringPreferencesKey("widget_$id")] ?: return WidgetConfig()
   return Catalog.json.decodeFromString(raw)
  }
+ // One-time migration captures the current composition without creating unsaved slots.
+ suspend fun anchorWidth(id:Int,width:Int):WidgetConfig {
+  var result=WidgetConfig(referenceWidthDp=width)
+  context.store.edit {p->
+   val key=stringPreferencesKey("widget_$id")
+   p[key]?.let {raw->
+    val current=Catalog.json.decodeFromString<WidgetConfig>(raw)
+    result=if(current.referenceWidthDp==null)current.copy(referenceWidthDp=width) else current
+    if(result!=current)p[key]=Catalog.json.encodeToString(result)
+   }
+  }
+  return result
+ }
  // Only committed configurations belong in the library. A launcher may bind
  // preview or abandoned IDs; missing data must not manufacture default entries.
  suspend fun library(boundIds:Set<Int>):Map<Int,WidgetConfig> {

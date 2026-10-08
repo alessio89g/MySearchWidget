@@ -19,6 +19,7 @@ class ActionActivity:Activity() {
   scope.launch {
    val c=Repository(this@ActionActivity).config(id)
    val index=intent.getIntExtra("slot",-1)
+   if(state==null)WidgetHaptics.tap(this@ActionActivity,c,intent.getStringExtra("element") ?: if(index==-2)"field" else if(index==-1)"logo" else "button$index")
    if(index==-2){if(c.googleInput)Actions.openGoogleInput(this@ActionActivity);finish();return@launch}
    val s=if(index==-1)c.logo else c.buttons.getOrNull(index) ?: run { finish();return@launch }
    run(s.tap)

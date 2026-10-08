@@ -6,6 +6,9 @@ import com.alessio89g.mysearchwidget.R
 import com.alessio89g.mysearchwidget.i18n.*
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.selection.toggleable
@@ -32,7 +35,7 @@ val LocalControlsEnabled=staticCompositionLocalOf {true}
 val LocalManualColorsEnabled=staticCompositionLocalOf {true}
 
 @Composable fun SettingCard(title:String,description:String="",content:@Composable ColumnScope.()->Unit) {
- Card(Modifier.fillMaxWidth(),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surfaceContainerLow)) {
+ Card(Modifier.fillMaxWidth(),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surfaceContainerLowest)) {
   Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
    Text(title,style=MaterialTheme.typography.titleMedium)
    if(description.isNotEmpty())Text(description,style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
@@ -41,11 +44,11 @@ val LocalManualColorsEnabled=staticCompositionLocalOf {true}
  }
 }
 @Composable fun Section(title:String,initial:Boolean=false,content:@Composable ()->Unit) {
- var open by remember {mutableStateOf(initial)}
- Card(Modifier.fillMaxWidth().animateContentSize(MaterialTheme.motionScheme.defaultSpatialSpec()),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surfaceContainerLow)) {
-  Row(Modifier.fillMaxWidth().clickable {open=!open}.padding(16.dp),verticalAlignment=Alignment.CenterVertically) {
+ var open by rememberSaveable {mutableStateOf(initial)}
+ Card(Modifier.fillMaxWidth().animateContentSize(MaterialTheme.motionScheme.defaultSpatialSpec()),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surfaceContainerLowest)) {
+  Row(Modifier.fillMaxWidth().semantics {stateDescription=tr(if(open)R.string.section_expanded else R.string.section_collapsed)}.clickable {open=!open}.padding(16.dp),verticalAlignment=Alignment.CenterVertically) {
    Text(title,Modifier.weight(1f),style=MaterialTheme.typography.titleMedium)
-   Text(if(open)"−" else "+",style=MaterialTheme.typography.titleLarge)
+   Text(if(open)"⌃" else "⌄",style=MaterialTheme.typography.titleLarge,color=MaterialTheme.colorScheme.primary)
   }
   if(open)Column(Modifier.padding(start=16.dp,end=16.dp,bottom=16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){content()}
  }
@@ -54,22 +57,41 @@ val LocalManualColorsEnabled=staticCompositionLocalOf {true}
  val enabled=LocalControlsEnabled.current
  Row(Modifier.fillMaxWidth().toggleable(value=value,enabled=enabled,role=Role.Switch,onValueChange=onChange).padding(vertical=4.dp),verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.weight(1f));Switch(value,null,enabled=enabled)}
 }
+/** Wrapping, single-selection expressive buttons keep choices visible at large font sizes. */
+@Composable fun OptionButtons(value:String,options:List<Pair<String,String>>,onChange:(String)->Unit) {
+ val enabled=LocalControlsEnabled.current
+ FlowRow(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+  options.forEach {(key,name)->
+   TonalToggleButton(checked=value==key,onCheckedChange={onChange(key)},enabled=enabled,
+    modifier=Modifier.heightIn(min=48.dp).semantics {selected=value==key},contentPadding=PaddingValues(horizontal=16.dp,vertical=10.dp)) {
+    Text(name)
+   }
+  }
+ }
+}
 @Composable fun Choice(label:String,value:String,options:List<Pair<String,String>>,onChange:(String)->Unit) {
  val enabled=LocalControlsEnabled.current
  var open by remember { mutableStateOf(false) }
- Column {
-  Text(label,style=MaterialTheme.typography.labelLarge)
-  Box {
-   OutlinedButton(enabled=enabled,onClick={open=true},modifier=Modifier.fillMaxWidth()){Text(options.firstOrNull {it.first==value}?.second ?: value)}
+ Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+  if(label.isNotEmpty())Text(label,style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.onSurfaceVariant)
+  if(options.size in 2..4)OptionButtons(value,options,onChange)
+  else Box {
+   OutlinedButton(enabled=enabled,onClick={open=true},shapes=ButtonDefaults.shapes(),modifier=Modifier.fillMaxWidth()){
+    Text(options.firstOrNull {it.first==value}?.second ?: value,Modifier.weight(1f));Text("⌄")
+   }
    DropdownMenu(open && enabled,{open=false}){options.forEach { (key,name)->DropdownMenuItem(text={Text(name)},onClick={onChange(key);open=false}) }}
   }
  }
 }
+val LocalEditGesture=staticCompositionLocalOf<(Boolean)->Unit> {{}}
 @Composable fun NumberControl(label:String,value:Float,min:Float=0f,max:Float=100f,onAnchor:((Float)->Unit)?=null,showSlider:Boolean=true,onChange:(Float)->Unit) {
  val enabled=LocalControlsEnabled.current
  var text by remember(value) { mutableStateOf(if(value==value.toInt().toFloat())value.toInt().toString() else "%.2f".format(java.util.Locale.ROOT,value).trimEnd('0').trimEnd('.')) }
- Row(Modifier.onGloballyPositioned {onAnchor?.invoke(it.positionInParent().y+it.size.height/2f)},verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.weight(1f));OutlinedTextField(text,{text=it;it.replace(',','.').toFloatOrNull()?.takeIf { n->n.isFinite() && n in min..max }?.let(onChange)},singleLine=true,enabled=enabled,modifier=Modifier.width(88.dp),keyboardOptions=KeyboardOptions(keyboardType=if(min<0f)KeyboardType.Ascii else KeyboardType.Decimal))}
- if(showSlider)Slider(value.coerceIn(min,max),onChange,enabled=enabled,valueRange=min..max)
+ Row(Modifier.onGloballyPositioned {onAnchor?.invoke(it.positionInParent().y+it.size.height/2f)},verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.weight(1f));OutlinedTextField(text,{text=it;it.replace(',','.').toFloatOrNull()?.takeIf { n->n.isFinite() && n in min..max }?.let(onChange)},singleLine=true,enabled=enabled,modifier=Modifier.width(88.dp).semantics {contentDescription=label},keyboardOptions=KeyboardOptions(keyboardType=if(min<0f)KeyboardType.Ascii else KeyboardType.Decimal))}
+ val gesture=LocalEditGesture.current
+ var dragging by remember {mutableStateOf(false)}
+ DisposableEffect(Unit){onDispose {if(dragging)gesture(false)}}
+ if(showSlider)Slider(value.coerceIn(min,max),{if(!dragging){gesture(true);dragging=true};onChange(it)},onValueChangeFinished={dragging=false;gesture(false)},enabled=enabled,valueRange=min..max)
 }
 @Composable fun ColorControl(label:String,value:String,onChange:(String)->Unit) {
  val enabled=LocalControlsEnabled.current
@@ -107,9 +129,16 @@ val LocalManualColorsEnabled=staticCompositionLocalOf {true}
  }},confirmButton={TextButton(onClick={onApply(normalizedColor(draft))},enabled=!error){Text(tr(R.string.apply))}},dismissButton={TextButton(onClick=onDismiss){Text(tr(R.string.cancel))}})
 }
 private fun normalizedColor(value:String):String = if(value.contains(','))value.split(',').map {it.trim().toIntOrNull()}.let {parts->if(parts.size==3 && parts.all {it!=null && it in 0..255})"#%02X%02X%02X".format(parts[0],parts[1],parts[2]) else value} else value
-@Composable fun SurfaceEditor(value:Surface,shapes:Boolean=false,showColors:Boolean=true,onChange:(Surface)->Unit) {
+val LocalPreviewTheme=staticCompositionLocalOf<(String)->Unit> {{}}
+@Composable fun EditingTheme():String {
  var mode by remember {mutableStateOf("dark")}
- Choice(tr(R.string.edit_colors),mode,listOf("dark" to tr(R.string.dark_theme),"light" to tr(R.string.light_theme))){mode=it}
+ val preview=LocalPreviewTheme.current
+ LaunchedEffect(mode){preview(mode)}
+ Choice(tr(R.string.edit_colors),mode,listOf("dark" to tr(R.string.dark_theme),"light" to tr(R.string.light_theme))){mode=it;preview(it)}
+ return mode
+}
+@Composable fun SurfaceEditor(value:Surface,shapes:Boolean=false,showColors:Boolean=true,onChange:(Surface)->Unit) {
+ val mode=EditingTheme()
  val tone=if(mode=="dark")value.dark else value.light
  fun change(t:Tone){onChange(if(mode=="dark")value.copy(dark=t) else value.copy(light=t))}
  if(showColors)PaintControl(tr(R.string.background),tone.color,tone.gradient,{change(tone.copy(color=it))},{change(tone.copy(gradient=it))})
@@ -127,8 +156,9 @@ private fun normalizedColor(value:String):String = if(value.contains(','))value.
  NumberControl(tr(R.string.font_size),value.size,8f,32f){onChange(value.copy(size=it))}
  Text(if(value.font.isEmpty())tr(R.string.bundled_font) else tr(R.string.embedded_font))
  Row {TextButton(onClick=pickFont){Text(tr(R.string.import_font))};TextButton(onClick={onChange(value.copy(font=""))}){Text("Google Sans")}}
- PaintControl(tr(R.string.text_dark),value.dark,value.darkGradient,{onChange(value.copy(dark=it))},{onChange(value.copy(darkGradient=it))})
- PaintControl(tr(R.string.text_light),value.light,value.lightGradient,{onChange(value.copy(light=it))},{onChange(value.copy(lightGradient=it))})
+ val mode=EditingTheme()
+ if(mode=="dark")PaintControl(tr(R.string.text_dark),value.dark,value.darkGradient,{onChange(value.copy(dark=it))},{onChange(value.copy(darkGradient=it))})
+ else PaintControl(tr(R.string.text_light),value.light,value.lightGradient,{onChange(value.copy(light=it))},{onChange(value.copy(lightGradient=it))})
 }
 
 /** Null means the original proportional layout, so old configurations stay unchanged. */
@@ -202,4 +232,33 @@ private fun normalizedColor(value:String):String = if(value.contains(','))value.
      drawCircle(color,1.2f*u,androidx.compose.ui.geometry.Offset(12*u,15*u))
      drawLine(color,androidx.compose.ui.geometry.Offset(12*u,15*u),androidx.compose.ui.geometry.Offset(12*u,18*u),1.5f*u)
     }
+}
+
+/** Android Settings-style groups: large outer corners and compact inner seams. */
+data class SettingsEntry(val title:String,val summary:String,val icon:String="Settings",val onClick:()->Unit)
+@Composable fun SettingsGroup(entries:List<SettingsEntry>,accent:Int=0) {
+ val scheme=MaterialTheme.colorScheme
+ val tone=when(accent%3){0->scheme.primaryContainer;1->scheme.tertiaryContainer;else->scheme.secondaryContainer}
+ val ink=when(accent%3){0->scheme.onPrimaryContainer;1->scheme.onTertiaryContainer;else->scheme.onSecondaryContainer}
+ Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(2.dp)) {
+  entries.forEachIndexed {index,entry->
+   val top=if(index==0)28.dp else 4.dp;val bottom=if(index==entries.lastIndex)28.dp else 4.dp
+   Surface(onClick=entry.onClick,modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(top,top,bottom,bottom),color=scheme.surfaceContainerLowest) {
+    Row(Modifier.padding(horizontal=16.dp,vertical=18.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(14.dp)) {
+     Box(Modifier.size(40.dp).background(tone,androidx.compose.foundation.shape.CircleShape),contentAlignment=Alignment.Center) {
+      Icon(com.alessio89g.mysearchwidget.icons.IconCatalog.vector(entry.icon,false),null,tint=ink,modifier=Modifier.size(22.dp))
+     }
+     Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(2.dp)) {
+      Text(entry.title,style=MaterialTheme.typography.titleMedium)
+      if(entry.summary.isNotEmpty())Text(entry.summary,style=MaterialTheme.typography.bodyMedium,color=scheme.onSurfaceVariant)
+     }
+     Text("›",style=MaterialTheme.typography.titleLarge,color=scheme.onSurfaceVariant)
+    }
+   }
+  }
+ }
+}
+@Composable fun DetailBack(onBack:()->Unit) {
+ androidx.activity.compose.BackHandler(onBack=onBack)
+ TextButton(onClick=onBack){Text("‹ "+tr(R.string.all_settings))}
 }

@@ -1,6 +1,7 @@
 package com.alessio89g.mysearchwidget.widget
 
 import com.alessio89g.mysearchwidget.i18n.AppLanguage
+import com.alessio89g.mysearchwidget.i18n.placeholderText
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.*
@@ -21,7 +22,7 @@ import kotlin.math.*
 data class SessionText(val text:String,val cursor:Int=text.length,val editing:Boolean=true)
 object Renderer {
  fun dark(context:Context,c:WidgetConfig)=c.theme=="dark" || (c.theme=="system" && context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES)
- fun render(baseContext:Context,config:WidgetConfig,widthDp:Int,session:SessionText?=null):Bitmap {
+ fun render(baseContext:Context,config:WidgetConfig,widthDp:Int,session:SessionText?=null,engine:Engine?=null):Bitmap {
   val context=AppLanguage.context(baseContext)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
   val width=widthDp.coerceIn(180,1000)
@@ -47,7 +48,7 @@ object Renderer {
   fun ink(light:String,darkColor:String)= (if(dark)darkColor else light).let { if(c.dynamic || it.isEmpty())on else Color.parseColor(it) }
   fun drawText() {
   val textStyle=if(session!=null)c.query else c.hint
-  val text=session?.text ?: c.placeholder.ifEmpty { context.getString(R.string.placeholder) }
+  val text=session?.text ?: placeholderText(c,engine)
   val start=dimensions.textLeft;val end=dimensions.textRight;val available=end-start
   fun styledPaint(p:TextPaint,style:com.alessio89g.mysearchwidget.data.TextStyle) {
    val face=c.assets[style.font]?.let {runCatching {Assets.font(context,it)}.getOrNull()} ?: context.resources.getFont(R.font.google_sans)

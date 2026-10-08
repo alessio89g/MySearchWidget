@@ -19,6 +19,7 @@ import java.util.Base64
  val sidePaddingDp:Float?=null, val logoInsetDp:Float?=null, val textGapDp:Float?=null, val outerRatio:Float?=null, val fieldRatio:Float?=null, val outerLocked:Boolean=true, val fieldLocked:Boolean=true, val layoutHeightDp:Float?=null
 )
 @Serializable data class WidgetConfig(
+ val referenceWidthDp:Int?=null, val haptics:Map<String,Boolean> = emptyMap(),
  val placement:Placement=Placement(), val heightDp: Float = WidgetDimensions.DEFAULT_HEIGHT, val sizing:ElementSizing=ElementSizing(),
  val theme: String = "system", val dynamic: Boolean = true, val placeholder: String = "",
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
@@ -63,6 +64,8 @@ object Validation {
   require(c.placeholder.length <= 500 && c.engineId.length in 1..100) { "Testo o motore non valido" }
   fun range(n: Float, a: Float, b: Float) { require(n.isFinite() && n in a..b) { "Valore numerico fuori intervallo" } }
   range(c.heightDp,WidgetDimensions.MIN_HEIGHT,WidgetDimensions.MAX_HEIGHT)
+  c.referenceWidthDp?.let {require(it in 180..1000)}
+  require(c.haptics.keys.all {it in listOf("field","logo","button0","button1","button2")})
   require(c.placement.layers.size==DEFAULT_LAYERS.size && c.placement.layers.toSet()==DEFAULT_LAYERS.toSet()) {"Invalid layer order"}
   c.placement.detachedFieldWidth?.let {range(it,.0001f,1000f)}
   c.placement.detachedFieldHeight?.let {range(it,.0001f,256f)}
@@ -125,4 +128,10 @@ object Validation {
   require(b.warnings.size <= 20 && b.warnings.all { it.length <= 500 })
   return b
  }
+}
+
+/** Artwork and icon layers share the same action area and feedback preference. */
+fun WidgetConfig.hapticEnabled(element:String):Boolean {
+ val area=if(element.startsWith("icon"))"button"+element.removePrefix("icon") else if(element=="text")"field" else element
+ return haptics[area] ?: true
 }
