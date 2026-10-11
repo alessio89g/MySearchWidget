@@ -77,11 +77,11 @@ Per compilare il progetto consulta le [istruzioni di build](docs/BUILD.md). I ri
 - Un browser per le ricerche web; l’app Google per le funzioni che la richiedono.
 
 1. Installa l’APK di MySearchWidget, consentendo l’installazione da quella sorgente se Android lo richiede.
-2. Apri l’app e scegli **Aggiungi widget**, oppure usa il selettore widget del launcher.
-3. Seleziona l’istanza da configurare, personalizzala e premi **Salva**.
+2. Nella schermata iniziale dell’app, usa **Aggiungi widget** per posizionare un nuovo widget nella home. Puoi anche usare il selettore widget del launcher.
+3. Conferma il posizionamento nel launcher. Si apre il configuratore del nuovo widget: personalizzalo e premi **Salva**. Per modificare un widget esistente, selezionalo nella schermata iniziale dell’app.
 4. Tocca il campo di ricerca per iniziare oppure usa il logo e i pulsanti per le azioni assegnate.
 
-Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Aggiungi** o **Salva**. Il pulsante **Annulla** permette di uscire scartando le modifiche, dopo conferma. Il tasto Indietro torna prima alla lista della sezione; dalla schermata principale del configuratore permette di uscire con la stessa conferma.
+Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Salva**. Il pulsante **Annulla** permette di uscire scartando le modifiche, dopo conferma. Il tasto Indietro torna prima alla lista della sezione; dalla schermata principale del configuratore permette di uscire con la stessa conferma.
 
 Per i widget già presenti nella home, l’anteprima usa le dimensioni comunicate dal launcher e riduce l’intera composizione per mostrarla nel configuratore. Le posizioni degli elementi non vengono ricalcolate in base alla larghezza del riquadro di anteprima.
 

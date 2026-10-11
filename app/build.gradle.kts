@@ -10,8 +10,8 @@ android {
   applicationId = "com.alessio89g.mysearchwidget"
   minSdk = 31 // Material You requires Android 12; the input technique does not.
   targetSdk = 37
-  versionCode = 27
-  versionName = "1.13.2"
+  versionCode = 28
+  versionName = "1.13.3"
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
  buildFeatures { compose = true }

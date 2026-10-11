@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.13.3 — 2026-10-11
+
+### English
+
+- Save confirms widget settings during both creation and editing.
+- A New widget card at the top of the app’s home screen lets you add a widget through your launcher and opens its configurator after confirmation.
+- The app icon opens the widget library, including when only one widget is saved.
+
+### Italiano
+
+- Salva conferma le impostazioni del widget sia durante la creazione sia durante la modifica.
+- La card Nuovo widget, in cima alla schermata iniziale dell’app, permette di aggiungere un widget tramite il launcher e ne apre il configuratore dopo la conferma.
+- L’icona dell’app apre la raccolta dei widget anche quando ne è stato salvato soltanto uno.
+
 ## 1.13.2 — 2026-10-08
 
 ### English

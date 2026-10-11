@@ -1,5 +1,15 @@
 # Validation
 
+## Candidate 1.13.3 — 2026-10-10
+
+- VersionCode 28, minimum API 31, target API 37.
+- Release build and lintVital passed. APK signature matches previous updates; 16 KB ZIP alignment verified.
+- APK SHA-256: `eb4b06a0b1ec568e133d0b511c2f57a89eeda0177980d6d6b50a156bf830e488`.
+- 45 JVM tests passed. Four targeted instrumentation tests passed on Android 17 QPR1 (API 37.1): `WidgetPinningTest` and `CardNavigationUiTest`.
+- Pin callback checks cover the widget ID, draft-only configuration, distinct one-shot callbacks and the app home screen. Card navigation checks cover existing editing controls.
+- Manual emulator launcher check: Add widget → Add to home screen → new widget configurator → Save. English Save and Italian Salva verified; relaunching the app displays the library with the saved widget.
+- The final release also updates the empty-library help text to refer to the card above. The full instrumentation suite and physical-device/Nova flow were not run.
+
 ## Release 1.13.2 — 2026-10-08
 
 - VersionCode 27, minimum API 31, target API 37.

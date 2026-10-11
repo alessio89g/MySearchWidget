@@ -48,7 +48,7 @@
  <string name="invalid_widget">Invalid widget instance</string>
  <string name="add_widget_first">Add a widget to your home screen first</string>
  <string name="your_widgets">Your widgets</string>
- <string name="add_widget_help">Add MySearchWidget from your launcher\'s widget picker, or use the button below.</string>
+ <string name="add_widget_help">Add MySearchWidget from your launcher\'s widget picker, or use the New widget card above.</string>
  <string name="launcher_help">Long-press your home screen and open the widget picker.</string>
  <string name="add_widget">Add widget</string>
  <string name="refresh_list">Refresh list</string>
@@ -332,4 +332,6 @@
     <string name="placeholder_engine">Search with %1$s</string>
     <string name="visible_button_count">Visible: %1$d · up to 3</string>
     <string name="hidden_buttons_preserved">Hidden buttons keep their settings. Increase the number to show them again.</string>
+ <string name="new_widget">New widget</string>
+ <string name="new_widget_help">Add a widget to your Home screen. Confirm its placement in your launcher, then customise it and tap Save.</string>
 </resources>

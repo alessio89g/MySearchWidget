@@ -77,11 +77,11 @@ To build the project, see the [build instructions](docs/BUILD.md). Check results
 - A browser for web searches; the Google app for features that require it.
 
 1. Install the MySearchWidget APK, allowing installation from that source if Android requests it.
-2. Open the app and choose **Add widget**, or use your launcher’s widget picker.
-3. Select the widget instance to configure, customize it and tap **Save**.
+2. On the app’s home screen, choose **Add widget** to place a new widget on your home screen. You can also use your launcher’s widget picker.
+3. Confirm placement in your launcher. The configurator opens for the new widget: customize it and tap **Save**. To edit an existing widget, select it on the app’s home screen.
 4. Tap the search field to start searching, or use the logo and buttons for their assigned actions.
 
-Edits and applied templates remain in the preview until you tap **Add** or **Save**. **Cancel** lets you leave and discard edits after confirmation. Back first returns to the section list; from the main configuration screen, it lets you leave with the same confirmation.
+Edits and applied templates remain in the preview until you tap **Save**. **Cancel** lets you leave and discard edits after confirmation. Back first returns to the section list; from the main configuration screen, it lets you leave with the same confirmation.
 
 For widgets already placed on the home screen, the preview uses the dimensions reported by the launcher and scales the complete composition to fit the configurator. Element positions are not recalculated from the width of the preview card.
 

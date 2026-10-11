@@ -157,7 +157,6 @@ class ConfigActivity:ComponentActivity() {
     if(!ready) {
     if(configuring && requested !in configs) { message=tr(R.string.invalid_widget) }
     else if(requested>0 && requested in configs)select(requested)
-    else if(configs.size==1)select(configs.keys.first())
     }
    } catch(e:Exception){message=tr(R.string.load_failed,errorText(e))} finally {ready=true}
   }
@@ -282,17 +281,24 @@ class ConfigActivity:ComponentActivity() {
   else message=tr(R.string.widget_updated,id)
  }}
  @Composable private fun ColumnScope.InstanceScreen(){
+  LazyColumn(Modifier.weight(1f)) {
+   item {
+  SettingCard(tr(R.string.new_widget),tr(R.string.new_widget_help)) {
+   Button(onClick={
+    runCatching {WidgetPinning.request(this@ConfigActivity)}
+     .onSuccess {if(!it)message=tr(R.string.launcher_help)}
+     .onFailure {message=tr(R.string.operation_failed,errorText(it))}
+   },shapes=ButtonDefaults.shapes(),modifier=Modifier.fillMaxWidth()) {
+    Text("+ "+tr(R.string.add_widget))
+   }
+  }
+  Spacer(Modifier.height(12.dp))
   Text(tr(R.string.your_widgets),style=MaterialTheme.typography.titleLarge)
   WallpaperControl()
   if(configs.isEmpty())Text(tr(R.string.add_widget_help),modifier=Modifier.padding(vertical=8.dp))
-  FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {Button(shapes=ButtonDefaults.shapes(),onClick={
-   val manager=AppWidgetManager.getInstance(this@ConfigActivity)
-   if(manager.isRequestPinAppWidgetSupported)manager.requestPinAppWidget(ComponentName(this@ConfigActivity,SearchWidget::class.java),null,
-    android.app.PendingIntent.getBroadcast(this@ConfigActivity,0,Intent(this@ConfigActivity,SearchWidget::class.java).setAction(SearchWidget.PIN_CONFIRMED),android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE))
-   else message=tr(R.string.launcher_help)
-  }){Text(tr(R.string.add_widget))};TextButton(onClick={task {reload()}}){Text(tr(R.string.refresh_list))}}
+  TextButton(onClick={task {reload()}}){Text(tr(R.string.refresh_list))}
   OutlinedButton(onClick={importDocument.launch(arrayOf("application/json","text/*","application/octet-stream"))}){Text(tr(R.string.import_backup))}
-  LazyColumn(Modifier.weight(1f)) {
+   }
    items(configs.entries.toList(),key={it.key}){entry->LibraryCard("w:${entry.key}","Widget ${entry.key}",{select(entry.key)}) {
     if(editorState.librarySelection.isEmpty())Text("Widget ${entry.key}")
     Preview(entry.value,wallpaperImage,viewport=launcherViewport(entry.key),engine=engines.firstOrNull {it.id==entry.value.engineId})
@@ -366,7 +372,7 @@ class ConfigActivity:ComponentActivity() {
   else Row(Modifier.fillMaxWidth().padding(vertical=8.dp),verticalAlignment=Alignment.CenterVertically) {
    TextButton(onClick={leaveEditor()},enabled=!busy){Text(tr(R.string.cancel))}
    Text("Widget $id",Modifier.weight(1f),style=MaterialTheme.typography.titleMedium)
-   Button(onClick={save()},shapes=ButtonDefaults.shapes(),enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text(if(configuring)tr(R.string.add) else tr(R.string.save))}
+   Button(onClick={save()},shapes=ButtonDefaults.shapes(),enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text(tr(R.string.save))}
    Spacer(Modifier.width(4.dp))
    LanguageButton()
   }

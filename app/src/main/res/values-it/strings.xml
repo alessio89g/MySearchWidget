@@ -47,7 +47,7 @@
  <string name="invalid_widget">Istanza widget non valida</string>
  <string name="add_widget_first">Aggiungi prima un widget alla home</string>
  <string name="your_widgets">I tuoi widget</string>
- <string name="add_widget_help">Aggiungi MySearchWidget alla home dal selettore widget del launcher, oppure usa il pulsante qui sotto.</string>
+ <string name="add_widget_help">Aggiungi MySearchWidget alla home dal selettore widget del launcher, oppure usa la card Nuovo widget in alto.</string>
  <string name="launcher_help">Tieni premuto sulla home e apri il selettore Widget.</string>
  <string name="add_widget">Aggiungi widget</string>
  <string name="refresh_list">Aggiorna elenco</string>
@@ -331,4 +331,6 @@
     <string name="placeholder_engine">Cerca con %1$s</string>
     <string name="visible_button_count">Visibili: %1$d · massimo 3</string>
     <string name="hidden_buttons_preserved">I pulsanti nascosti conservano le proprie impostazioni. Aumenta il numero per mostrarli di nuovo.</string>
+ <string name="new_widget">Nuovo widget</string>
+ <string name="new_widget_help">Aggiungi un widget alla Home. Conferma il posizionamento nel launcher, poi personalizzalo e premi Salva.</string>
 </resources>
