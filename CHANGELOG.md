@@ -4,13 +4,13 @@
 
 ### English
 
-- Save confirms widget settings during both creation and editing.
+- Renamed the configuration screen’s **Add** button to **Save**, so the same label is used when creating and editing a widget.
 - A New widget card at the top of the app’s home screen lets you add a widget through your launcher and opens its configurator after confirmation.
 - The app icon opens the widget library, including when only one widget is saved.
 
 ### Italiano
 
-- Salva conferma le impostazioni del widget sia durante la creazione sia durante la modifica.
+- Il pulsante **Aggiungi** del configuratore è stato rinominato **Salva**, così ha lo stesso nome sia quando si crea un widget sia quando lo si modifica.
 - La card Nuovo widget, in cima alla schermata iniziale dell’app, permette di aggiungere un widget tramite il launcher e ne apre il configuratore dopo la conferma.
 - L’icona dell’app apre la raccolta dei widget anche quando ne è stato salvato soltanto uno.
 
