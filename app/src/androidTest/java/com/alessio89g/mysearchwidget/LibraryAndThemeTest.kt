@@ -23,7 +23,7 @@ class LibraryAndThemeTest {
    repo.save(saved,WidgetConfig()) // A deliberately saved default is legitimate.
    repo.save(stale,WidgetConfig(placeholder="No longer bound"))
    assertEquals(setOf(saved),repo.library(setOf(saved,unsaved)).keys)
-   repeat(3){assertEquals(WidgetConfig(),repo.config(unsaved))}
+   repeat(3){assertEquals(DefaultWidget.create(context),repo.config(unsaved))}
    assertFalse(repo.hasConfig(unsaved))
    assertEquals(setOf(saved),repo.library(setOf(saved,unsaved)).keys)
   }finally {listOf(saved,unsaved,stale).forEach {repo.remove(it)}}

@@ -39,6 +39,7 @@ import com.alessio89g.mysearchwidget.i18n.*
  }
 }
 @Composable fun GeometryEditor(config:WidgetConfig,width:Float,onChange:(WidgetConfig)->Unit,onHeight:(Float)->Unit,onResetHeight:()->Unit,onNavigate:()->Unit={}) {
+ val defaults=DefaultWidget.create(androidx.compose.ui.platform.LocalContext.current)
  var target by rememberSaveable {mutableStateOf("")}
  var panel by rememberSaveable {mutableStateOf("size")}
  val options=listOf("outer" to tr(R.string.outer_border),"field" to tr(R.string.search_field),"logo" to "Logo","text" to tr(R.string.geometry_text))+
@@ -83,7 +84,7 @@ import com.alessio89g.mysearchwidget.i18n.*
     IconButton(onClick={onChange(config.moveLayer(id,false))},enabled=id!=visible.first(),modifier=Modifier.semantics {contentDescription=tr(R.string.layer_backward,options.first {it.first==id}.second)}){Text("↓")}
    }
   }
-  TextButton(onClick={onChange(config.copy(placement=config.placement.copy(layers=DEFAULT_LAYERS)))}){Text(tr(R.string.reset_layers))}
+  TextButton(onClick={onChange(config.copy(placement=config.placement.copy(layers=defaults.placement.layers)))}){Text(tr(R.string.reset_layers))}
  }
  return
  }
@@ -109,12 +110,12 @@ import com.alessio89g.mysearchwidget.i18n.*
      } else PositionControl(slot.iconPosition){change(slot.copy(iconPosition=it))}
     }
    }
-   TextButton(onClick={onChange(config.resetElementPosition(selected))}){Text(tr(R.string.reset_position))}
+   TextButton(onClick={onChange(config.resetElementPosition(selected,defaults))}){Text(tr(R.string.reset_position))}
   } else {
   Text(tr(if(selected=="text")R.string.reset_text_dimensions_help else R.string.reset_geometry_help),style=MaterialTheme.typography.bodySmall)
   when(selected) {
    "outer"->{
-    DimensionPair(config.sizing.outerWidthDp,config.heightDp,width,64f,config.sizing.outerRatio,16f,1000f,16f,256f,requiredHeight=true,locked=config.sizing.outerLocked){w,h,r,l->onChange(config.copy(heightDp=h ?: 64f,sizing=config.sizing.copy(outerWidthDp=w,outerRatio=r,outerLocked=l,layoutHeightDp=config.sizing.layoutHeightDp ?: config.heightDp)))}
+    DimensionPair(config.sizing.outerWidthDp,config.heightDp,width,defaults.heightDp,config.sizing.outerRatio,16f,1000f,16f,256f,requiredHeight=true,locked=config.sizing.outerLocked){w,h,r,l->onChange(config.copy(heightDp=h ?: defaults.heightDp,sizing=config.sizing.copy(outerWidthDp=w,outerRatio=r,outerLocked=l,layoutHeightDp=config.sizing.layoutHeightDp ?: config.heightDp)))}
     DimensionControl(tr(R.string.side_padding_dp),config.sizing.sidePaddingDp,9f*unit,0f,128f){onChange(config.copy(sizing=config.sizing.copy(sidePaddingDp=it)))}
    }
    "field"->{
@@ -139,7 +140,7 @@ import com.alessio89g.mysearchwidget.i18n.*
     }
    }
   }
-  TextButton(onClick={onChange(config.resetElementDimensions(selected))}){Text(tr(R.string.reset_element_dimensions))}
+  TextButton(onClick={onChange(config.resetElementDimensions(selected,defaults))}){Text(tr(R.string.reset_element_dimensions))}
   }
  }}
 }

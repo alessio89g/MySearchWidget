@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.13.4 — 2026-10-12
+
+### English
+
+- The default widget has been updated to more closely match the appearance of Google Circle to Search.
+
+### Italiano
+
+- Il widget predefinito è stato modificato per rispecchiare più fedelmente l’aspetto di Google Circle to Search.
+
 ## 1.13.3 — 2026-10-11
 
 ### English

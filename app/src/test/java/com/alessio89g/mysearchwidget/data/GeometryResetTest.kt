@@ -13,7 +13,7 @@ class GeometryResetTest {
  )
  @Test fun positionResetNeverChangesDimensionsOrOtherElements() {
   DEFAULT_LAYERS.forEach {id->
-   val result=config.resetElementPosition(id)
+   val result=config.resetElementPosition(id,WidgetConfig())
    assertEquals(config.heightDp,result.heightDp,0f);assertEquals(config.sizing,result.sizing)
    assertEquals(config.hint,result.hint);assertEquals(config.query,result.query)
    assertEquals(config.placement.fieldLinked,result.placement.fieldLinked)
@@ -32,28 +32,28 @@ class GeometryResetTest {
  }
  @Test fun dimensionResetPreservesOffsetsAndSeparatesButtonFromIcon() {
   DEFAULT_LAYERS.forEach {id->
-   val result=config.resetElementDimensions(id)
+   val result=config.resetElementDimensions(id,WidgetConfig())
    assertEquals(config.placement,result.placement)
    assertEquals(config.buttons.map {it.position to it.iconPosition},result.buttons.map {it.position to it.iconPosition})
    assertEquals(config.buttons.map {it.iconLinked},result.buttons.map {it.iconLinked})
    Validation.config(result)
    assertEquals(result,Validation.parse(Catalog.json.encodeToString(Backup(1,result,Catalog.engines.first()))).config)
   }
-  val button=config.resetElementDimensions("button1")
+  val button=config.resetElementDimensions("button1",WidgetConfig())
   assertNull(button.buttons[1].widthDp);assertNull(button.buttons[1].heightDp);assertNull(button.buttons[1].aspectRatio)
   assertEquals(config.buttons[1].icon,button.buttons[1].icon)
   assertEquals(config.buttons[0],button.buttons[0]);assertEquals(config.buttons[2],button.buttons[2])
-  val icon=config.resetElementDimensions("icon1")
+  val icon=config.resetElementDimensions("icon1",WidgetConfig())
   assertEquals(config.buttons[1].copy(icon=config.buttons[1].icon.copy(sizeDp=null)),icon.buttons[1])
  }
  @Test fun outerFieldAndTextRestoreTheirDefaults() {
-  val outer=config.resetElementDimensions("outer")
+  val outer=config.resetElementDimensions("outer",WidgetConfig())
   assertEquals(64f,outer.heightDp,0f);assertNull(outer.sizing.outerWidthDp);assertNull(outer.sizing.outerRatio)
   assertFalse(outer.sizing.outerLocked);assertEquals(80f,outer.sizing.layoutHeightDp!!,0f)
-  val field=config.resetElementDimensions("field")
+  val field=config.resetElementDimensions("field",WidgetConfig())
   assertNull(field.sizing.fieldWidthDp);assertNull(field.sizing.fieldHeightDp);assertNull(field.sizing.fieldRatio)
   assertEquals(config.heightDp,field.heightDp,0f)
-  val text=config.resetElementDimensions("text")
+  val text=config.resetElementDimensions("text",WidgetConfig())
   assertEquals(config.hint.copy(size=15f),text.hint);assertEquals(config.query.copy(size=15f),text.query)
   assertEquals(config.hintRuns.map {it.copy(style=it.style.copy(size=15f))},text.hintRuns)
   assertEquals(config.placeholder,text.placeholder)

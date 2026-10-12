@@ -243,8 +243,8 @@
  <string name="delete_templates_help">I modelli selezionati saranno eliminati. I widget che li usano manterranno le proprie impostazioni.</string>
  <string name="widget_height">Altezza del widget</string>
  <string name="height_dp">Altezza (dp)</string>
- <string name="widget_height_help">Predefinita: 64 dp. Inserisci un valore da 16 a 256 dp, anche decimale. Per un widget più alto, ridimensiona il suo spazio sulla Home. Gli elementi mantengono le proporzioni entro la larghezza disponibile.</string>
- <string name="reset_height">Ripristina 64 dp</string>
+ <string name="widget_height_help">Predefinita: 68 dp. Inserisci un valore da 16 a 256 dp, anche decimale. Per un widget più alto, ridimensiona il suo spazio sulla Home. Gli elementi mantengono le proporzioni entro la larghezza disponibile.</string>
+ <string name="reset_height">Ripristina 68 dp</string>
  <string name="github_repo">Vedi il progetto su GitHub</string>
  <string name="link_unavailable">Nessuna app disponibile per aprire questo link.</string>
  <string name="width_dp">Larghezza (dp)</string>
@@ -263,7 +263,7 @@
  <string name="unlock_ratio">Sblocca proporzioni</string>
  <string name="ratio_locked">Proporzioni bloccate: modificando una misura si aggiorna anche l’altra.</string>
  <string name="ratio_unlocked">Dimensioni indipendenti. Blocca per mantenere le proporzioni attuali.</string>
- <string name="reset_height_locked">Ripristina 64 dp e sblocca le proporzioni</string>
+ <string name="reset_height_locked">Ripristina 68 dp</string>
  <string name="geometry_title">Layout</string>
  <string name="geometry_help">Posizione e dimensioni. X e Y sono scostamenti in dp dalla posizione automatica; i valori positivi spostano a destra e in basso. Le frecce usano il passo scelto. Gli elementi possono sovrapporsi o uscire dall’area visibile del widget. I lucchetti chiusi collegano gli spostamenti; muovere un elemento figlio non sposta il padre.</string>
  <string name="position_x">X (dp)</string>
@@ -273,7 +273,7 @@
  <string name="move_down">Sposta in basso</string>
  <string name="move_left">Sposta a sinistra</string>
  <string name="move_right">Sposta a destra</string>
- <string name="reset_position">Ripristina posizione (0, 0)</string>
+ <string name="reset_position">Ripristina posizione predefinita</string>
  <string name="link_elements">Collega spostamenti</string>
  <string name="unlink_elements">Scollega spostamenti</string>
  <string name="link_field_contents">Collega logo e testo al campo di ricerca</string>
@@ -288,8 +288,8 @@
  <string name="reset_layers">Ripristina ordine dei livelli</string>
  <string name="geometry_element">Elemento</string>
  <string name="reset_element_dimensions">Ripristina dimensioni predefinite</string>
- <string name="reset_geometry_help">Il ripristino delle dimensioni riattiva il dimensionamento automatico (64 dp per l’altezza esterna). Il ripristino della posizione azzera X/Y, relativi al padre se collegato. I lucchetti mantengono la loro impostazione.</string>
- <string name="reset_text_dimensions_help">Il ripristino delle dimensioni imposta placeholder, porzioni formattate e query a 15 sp, conservando il resto della formattazione. Il ripristino della posizione azzera X/Y, relativi al campo di ricerca se collegato.</string>
+ <string name="reset_geometry_help">I ripristini di dimensioni e posizione applicano i valori del preset iniziale all’elemento selezionato (68 dp per l’altezza esterna). I lucchetti mantengono la loro impostazione.</string>
+ <string name="reset_text_dimensions_help">Il ripristino delle dimensioni applica le misure iniziali del testo: 12,5 sp per placeholder e porzioni formattate, 15 sp per la query. La restante formattazione rimane invariata. Il ripristino della posizione applica lo scostamento iniziale del testo.</string>
  <string name="undo_edit">Annulla</string>
  <string name="redo_edit">Ripeti</string>
  <string name="preview_light">Chiaro</string>

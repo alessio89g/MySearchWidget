@@ -84,7 +84,7 @@ class CardNavigationUiTest {
    val current=ViewModelProvider(it)[ConfigState::class.java].config
    assertEquals(1f,current.placement.outer.x,0f);assertEquals(original.sizing,current.sizing)
   }
-  reveal("Reset position (0, 0)");click("Reset position (0, 0)")
+  reveal("Reset default position");click("Reset default position")
   scenario.onActivity {assertEquals(original.placement,ViewModelProvider(it)[ConfigState::class.java].config.placement)}
   repeat(8){find(root()){it.isScrollable}?.performAction(Node.ACTION_SCROLL_BACKWARD)}
   ins.uiAutomation.waitForIdle(200,5000)
@@ -92,4 +92,17 @@ class CardNavigationUiTest {
   reveal("Reset default dimensions");click("Reset default dimensions")
   scenario.onActivity {assertEquals(original,ViewModelProvider(it)[ConfigState::class.java].configs[987663])}
  }
+ @Test fun heightResetUsesNewPresetAndRemainsUndoableUntilSave()=scenario {scenario,original->
+  scenario.onActivity {ViewModelProvider(it)[ConfigState::class.java].config=original.copy(heightDp=110f)}
+  click("Widget height");click("Reset to 68 dp")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertEquals(68f,state.config.heightDp,0f)
+   assertEquals(original,state.configs[987663])
+  }
+  click("Preview ▸ · Widget 987663")
+  click("↶ Undo")
+  scenario.onActivity {assertEquals(110f,ViewModelProvider(it)[ConfigState::class.java].config.heightDp,0f)}
+ }
+
 }

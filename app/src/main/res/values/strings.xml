@@ -244,8 +244,8 @@
  <string name="delete_templates_help">The selected templates will be deleted. Widgets using them will keep their settings.</string>
  <string name="widget_height">Widget height</string>
  <string name="height_dp">Height (dp)</string>
- <string name="widget_height_help">Default: 64 dp. Enter a value from 16 to 256 dp, including decimals. For a taller widget, resize its space on the Home screen. Elements scale proportionally within the available width.</string>
- <string name="reset_height">Reset to 64 dp</string>
+ <string name="widget_height_help">Default: 68 dp. Enter a value from 16 to 256 dp, including decimals. For a taller widget, resize its space on the Home screen. Elements scale proportionally within the available width.</string>
+ <string name="reset_height">Reset to 68 dp</string>
  <string name="github_repo">View project on GitHub</string>
  <string name="link_unavailable">No app is available to open this link.</string>
  <string name="width_dp">Width (dp)</string>
@@ -264,7 +264,7 @@
  <string name="unlock_ratio">Unlock proportions</string>
  <string name="ratio_locked">Proportions locked: changing one dimension updates the other.</string>
  <string name="ratio_unlocked">Independent dimensions. Lock to keep the current proportions.</string>
- <string name="reset_height_locked">Reset to 64 dp and unlock proportions</string>
+ <string name="reset_height_locked">Reset to 68 dp</string>
  <string name="geometry_title">Layout</string>
  <string name="geometry_help">Position and dimensions. X and Y are offsets in dp from the automatic position; positive values move right and down. Arrows use the selected step. Elements may overlap or leave the visible widget area. Closed padlocks link movement; moving a child never moves its parent.</string>
  <string name="position_x">X (dp)</string>
@@ -274,7 +274,7 @@
  <string name="move_down">Move down</string>
  <string name="move_left">Move left</string>
  <string name="move_right">Move right</string>
- <string name="reset_position">Reset position (0, 0)</string>
+ <string name="reset_position">Reset default position</string>
  <string name="link_elements">Link movement</string>
  <string name="unlink_elements">Unlink movement</string>
  <string name="link_field_contents">Link logo and text to the search field</string>
@@ -289,8 +289,8 @@
  <string name="reset_layers">Reset layer order</string>
  <string name="geometry_element">Element</string>
  <string name="reset_element_dimensions">Reset default dimensions</string>
- <string name="reset_geometry_help">Size reset restores automatic sizing (64 dp for the outer height). Position reset sets X/Y to zero, relative to the parent when linked. Movement and proportion locks keep their settings.</string>
- <string name="reset_text_dimensions_help">Size reset sets placeholder, formatted ranges and query text to 15 sp, keeping other formatting. Position reset sets X/Y to zero, relative to the search field when linked.</string>
+ <string name="reset_geometry_help">Size and position resets restore the selected element’s initial preset values (68 dp for the outer height). Movement and proportion locks keep their settings.</string>
+ <string name="reset_text_dimensions_help">Size reset restores the initial text sizes: 12.5 sp for the placeholder and formatted ranges, 15 sp for the query. Other formatting stays unchanged. Position reset restores the initial text offset.</string>
  <string name="undo_edit">Undo</string>
  <string name="redo_edit">Redo</string>
  <string name="preview_light">Light</string>

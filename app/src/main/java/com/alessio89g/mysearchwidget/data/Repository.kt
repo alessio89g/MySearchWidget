@@ -15,12 +15,12 @@ class Repository(private val context: Context) {
  private val hiddenKey=stringSetPreferencesKey("hidden_widgets")
  private val modelsKey=stringPreferencesKey("templates")
  suspend fun config(id: Int): WidgetConfig {
-  val raw=context.store.data.first()[stringPreferencesKey("widget_$id")] ?: return WidgetConfig()
+  val raw=context.store.data.first()[stringPreferencesKey("widget_$id")] ?: return DefaultWidget.create(context)
   return Catalog.json.decodeFromString(raw)
  }
  // One-time migration captures the current composition without creating unsaved slots.
  suspend fun anchorWidth(id:Int,width:Int):WidgetConfig {
-  var result=WidgetConfig(referenceWidthDp=width)
+  var result=DefaultWidget.create(context)
   context.store.edit {p->
    val key=stringPreferencesKey("widget_$id")
    p[key]?.let {raw->
@@ -43,7 +43,7 @@ class Repository(private val context: Context) {
   require(id>0)
   context.store.edit {p->
    val key=stringPreferencesKey("widget_$id")
-   if(!p.contains(key))p[key]=Catalog.json.encodeToString(WidgetConfig())
+   if(!p.contains(key))p[key]=Catalog.json.encodeToString(DefaultWidget.create(context))
   }
  }
  suspend fun hasConfig(id:Int)=context.store.data.first().contains(stringPreferencesKey("widget_$id"))

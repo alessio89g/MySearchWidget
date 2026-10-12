@@ -1,5 +1,18 @@
 # Validation
 
+## Candidate 1.13.4 — 2026-10-12
+
+- VersionCode 29, minimum API 31, target API 37.
+- Final release build and lintVital passed. Signature matches previous updates; 16 KB ZIP alignment verified.
+- Final APK SHA-256: `df408b201390be1b8bbd43a723483b46862664be7db4b31e6bddaf4c74e84e30`.
+- 45 JVM tests and 14 targeted Android instrumentation tests passed on Android 17 QPR1 (API 37.1): `DefaultWidgetTest`, `LibraryAndThemeTest`, `WidgetPinningTest`, `CardNavigationUiTest`.
+- The creation preset is compared against the provided backup, with `theme` changed to `system` and the third icon’s horizontal offset centered; embedded assets are validated. Its bounds share the button’s horizontal center.
+- Missing widget IDs use the preset without writing settings or changing its reference width. Existing saved widgets, sparse legacy configurations and old backups retain their values.
+- Serialized RemoteViews switch between light and dark with the host configuration; both renders match the renderer. The README image is the actual dark rendering of the preset.
+- Dimension/position resets use the creation preset (68 dp height, 193 × 47 dp field, 12.5 sp placeholder / 15 sp query). Tests cover isolated changes, idempotence, retained formatting and links, draft-only editing, UI height reset and undo.
+- A saved copy of the original supplied backup retains its dark theme and original third-icon offset after reading and launcher-size changes.
+- Manual emulator check passed: Add widget → launcher confirmation → configurator showing 68 dp → Save. No physical-device/Nova test was performed.
+
 ## Candidate 1.13.3 — 2026-10-10
 
 - VersionCode 28, minimum API 31, target API 37.

@@ -259,7 +259,7 @@ class ConfigActivity:ComponentActivity() {
  }
  private fun select(id:Int){
   selected=id
-  val current=configs[id] ?: WidgetConfig()
+  val current=configs[id] ?: DefaultWidget.create(this)
   val options=AppWidgetManager.getInstance(this).getAppWidgetOptions(id)
   val width=WidgetViewport.from(this,options).width
   val anchored=if(current.referenceWidthDp==null && WidgetViewport.hasAllocation(options))current.copy(referenceWidthDp=width) else current
@@ -303,7 +303,7 @@ class ConfigActivity:ComponentActivity() {
     if(editorState.librarySelection.isEmpty())Text("Widget ${entry.key}")
     Preview(entry.value,wallpaperImage,viewport=launcherViewport(entry.key),engine=engines.firstOrNull {it.id==entry.value.engineId})
    }}
-   if(configs.isEmpty())item {Text(tr(R.string.default_preview));Preview(WidgetConfig(),wallpaperImage)}
+   if(configs.isEmpty())item {Text(tr(R.string.default_preview));Preview(DefaultWidget.create(this@ConfigActivity),wallpaperImage)}
    item {TemplateLibrary()}
   }
   TextButton(onClick={
@@ -328,7 +328,7 @@ class ConfigActivity:ComponentActivity() {
 
  } }
  private fun resetOuterHeight() {
-  config=config.copy(heightDp=64f,sizing=if(config.sizing.outerRatio!=null)config.sizing.copy(outerRatio=null,outerWidthDp=null,layoutHeightDp=null) else config.sizing.copy(layoutHeightDp=null))
+  config=config.resetWidgetHeight(DefaultWidget.create(this))
  }
  private fun updateOuterHeight(height:Float,previewWidth:Float) {
   val ratio=if(config.sizing.outerLocked)config.sizing.outerRatio ?: ((config.sizing.outerWidthDp ?: previewWidth)/config.heightDp) else null

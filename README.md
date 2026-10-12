@@ -9,7 +9,7 @@
 
 Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidget lets you create independent widgets and configure them through a **Material 3 Expressive** interface with a live preview.
 
-![MySearchWidget with a dark theme, search field and two action buttons](assets/screenshots/widget.png)
+![Default MySearchWidget in dark mode, with voice search, Chrome and incognito buttons](assets/screenshots/widget-default-dark.png)
 
 ## Features
 
@@ -23,18 +23,18 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ### Appearance
 
-- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Layout**. The default is **64 dp**, with a reset button. In automatic mode, icons, text and touch areas scale together; the available width limits their size. Resize the widget vertically on the Home screen to provide room for greater heights.
+- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Layout**. The default height and height reset are **68 dp**. In automatic mode, icons, text and touch areas scale together; the available width limits their size. Resize the widget vertically on the Home screen to provide room for greater heights.
 - **Independent dimensions and spacing:** set the outer capsule and search-field widths, search-field height, logo and icon sizes, each button background’s width and height, side padding, logo/text spacing and the gap before each button. Element dimension and spacing controls accept a manual dp value or automatic sizing. Restore automatic sizing to follow the overall widget height. Elements resize around fixed centers without moving neighbouring elements. The logo and text follow the search field while their movement link is enabled. Oversized elements fit the widget bounds; large sizes can overlap.
-- **Element positioning:** the **Layout** tab in the bottom navigation groups position, size and spacing controls. Adjust X/Y offsets in dp using numeric fields or arrows with a custom step; elements can overlap or move outside the visible area. Reset position clears the offsets.
-- **Separate resets:** each element in Layout has **Reset default dimensions** and **Reset position (0, 0)**. The first restores automatic sizes (outer height 64 dp; text 15 sp), while the second clears offsets. Lock settings are retained and positions are relative to the parent when linked.
+- **Element positioning:** the **Layout** tab in the bottom navigation groups position, size and spacing controls. Adjust X/Y offsets in dp using numeric fields or arrows with a custom step; elements can overlap or move outside the visible area. Reset position restores the selected element’s initial offset.
+- **Separate resets:** each element in Layout has **Reset default dimensions** and **Reset default position**. Each restores the selected element’s initial preset values: outer height 68 dp, search field 193 × 47 dp, placeholder 12.5 sp and query text 15 sp. Lock settings are retained and positions are relative to the parent when linked.
 - **Layer order:** in **Layout → Layer order**, the top of the list is the foreground. Arrows move each element above or below the others; stacking is independent of movement links and is included in backups.
 - **Movement links:** padlocks link the logo and text to the search field, and each icon to its button, by default. Moving the parent moves its linked children; moving a child leaves other elements in place. Linking or unlinking preserves the current position.
-- **Lock proportions:** the padlock and connector lines next to width and height link the two dimensions for the outer capsule, search field and each button. The padlock is closed by default. Locking keeps the current ratio; unlocking allows independent changes. The setting is saved per element and included in backups.
+- **Lock proportions:** the padlock and connector lines next to width and height link the two dimensions for the outer capsule, search field and each button. The initial preset locks the outer capsule and buttons; the search field can be resized independently. Locking keeps the current ratio; unlocking allows independent changes. The setting is saved per element and included in backups.
 - **Material You:** use the system’s dynamic color palette.
 - **Custom colors and gradients:** customize the outer capsule, search field, logo, each button background and its icon, with separate values for light and dark themes.
 - Choose colors with a graphical picker, sliders, HEX/RGB codes and presets. Gradients have two colors and a direction adjustable visually or in degrees.
 - Adjust background opacity and corner rounding. Button shapes include circle/square, squircle, flower, clover, leaf, pebble, scallop and teardrop.
-- Choose built-in icons or import images. Each logo/button has a **Monochrome icon** switch, enabled by default. Turn it off to preserve imported image colors and transparency, or use the native colors of the Google and Chrome symbols. Material symbols are naturally single-color.
+- Choose built-in icons or import images. Each logo/button has a **Monochrome icon** switch. The initial preset uses the Google logo’s original colors and monochrome action icons. Turn it off to preserve imported image colors and transparency, or use the native colors of the Google and Chrome symbols. Material symbols are naturally single-color.
 - Original icon colors take precedence over Material You for that icon only. Manual tint and gradient controls are disabled while original colors are active; saved values return when you switch back to monochrome.
 - Preview the widget on a solid background or a center crop of your home screen wallpaper.
 
@@ -97,9 +97,15 @@ The initial language is **English**. Tap **EN** to switch to Italian. The automa
 
 ## Initial settings and disabled controls
 
+Existing saved widgets keep their settings; the preset applies to new widgets and explicit resets.
+
+The default widget has a Google logo in its original colors and three buttons for voice search, Chrome and incognito browsing. Its rounded layout follows the appearance of Google Circle to Search.
+
 | Option | Default for a new widget | Behavior |
 | --- | --- | --- |
-| Material You colors | On | Manual color and gradient controls are greyed out and disabled. Turn this option off to customize them. |
+| Theme | Follow system | The widget follows Android’s light/dark mode. |
+| Search field text | Cerca con Google | Edit it freely, or clear it to use the automatic search engine name. |
+| Material You colors | Off | When enabled, manual color and gradient controls are greyed out and disabled. Turn this option off to customize them. |
 | Open Google search when tapping the field | Off | When enabled, search engine management is greyed out and disabled because the Google app handles the search. |
 
 **Your custom settings and saved search engines are not deleted.** They become available again when you turn off the corresponding option.
@@ -108,7 +114,7 @@ Google search opens its search interface; focus and keyboard behavior depend on 
 
 ## Icon colors
 
-In **Appearance → Logo** and **Appearance → Button N → Icon**, the **Monochrome icon** switch lets you choose between a customizable tint and the icon’s original colors. Monochrome mode is enabled by default, with an independent setting for each element.
+In **Appearance → Logo** and **Appearance → Button N → Icon**, the **Monochrome icon** switch lets you choose between a customizable tint and the icon’s original colors. The initial preset uses original colors for the Google logo and monochrome icons for the buttons. Each element has its own setting.
 
 With original colors, the image retains its own transparency and ignores tint, gradient and tint opacity. Material icons normally have a black source fill: monochrome mode lets you adapt them to the theme’s contrast.
 

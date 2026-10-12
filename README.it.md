@@ -9,7 +9,7 @@
 
 Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidget permette di creare più widget indipendenti e configurarli attraverso un’interfaccia **Material 3 Expressive**, con anteprima in tempo reale.
 
-![Widget MySearchWidget con tema scuro, campo di ricerca e due pulsanti](assets/screenshots/widget.png)
+![MySearchWidget predefinito in modalità scura, con pulsanti per voce, Chrome e navigazione in incognito](assets/screenshots/widget-default-dark.png)
 
 ## Funzionalità
 
@@ -23,18 +23,18 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Aspetto
 
-- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. Il valore predefinito è **64 dp**, con un pulsante di ripristino. In modalità automatica, icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
+- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. L’altezza predefinita e il suo ripristino sono **68 dp**. In modalità automatica, icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
 - **Dimensioni e spaziature indipendenti:** regola larghezza della capsula esterna e del campo di ricerca, altezza del campo, dimensione del logo e delle icone, larghezza e altezza dello sfondo di ogni pulsante, margini laterali, spazi prima del logo e tra logo e testo e distanza prima di ogni pulsante. I controlli delle dimensioni e delle spaziature degli elementi permettono un valore manuale in dp o il dimensionamento automatico. Il ripristino automatico segue l’altezza generale del widget. Gli elementi si ridimensionano attorno a centri fissi senza spostare quelli vicini. Logo e testo seguono il campo di ricerca quando il relativo collegamento è attivo. Le dimensioni eccessive si adattano ai limiti del widget; misure grandi possono sovrapporsi.
-- **Posizione degli elementi:** la scheda **Layout** nella barra inferiore raccoglie posizione, dimensioni e spaziature. Regola gli scostamenti X/Y in dp con campi numerici o frecce a passo personalizzabile; puoi sovrapporre gli elementi o spostarli fuori dall’area visibile. Il ripristino della posizione azzera gli scostamenti.
-- **Ripristini separati:** ogni elemento in Layout dispone di **Ripristina dimensioni predefinite** e **Ripristina posizione (0, 0)**. Il primo ripristina le dimensioni automatiche (altezza esterna 64 dp; testo 15 sp), il secondo azzera gli scostamenti. I lucchetti restano invariati e la posizione è relativa al padre quando collegata.
+- **Posizione degli elementi:** la scheda **Layout** nella barra inferiore raccoglie posizione, dimensioni e spaziature. Regola gli scostamenti X/Y in dp con campi numerici o frecce a passo personalizzabile; puoi sovrapporre gli elementi o spostarli fuori dall’area visibile. Il ripristino della posizione applica lo scostamento iniziale dell’elemento selezionato.
+- **Ripristini separati:** ogni elemento in Layout dispone di **Ripristina dimensioni predefinite** e **Ripristina posizione predefinita**. Ogni comando applica i valori del preset iniziale all’elemento selezionato: altezza esterna 68 dp, campo di ricerca 193 × 47 dp, placeholder 12,5 sp e query 15 sp. I lucchetti restano invariati e la posizione è relativa al padre quando collegata.
 - **Ordine dei livelli:** in **Layout → Ordine dei livelli**, la cima della lista rappresenta il primo piano. Le frecce portano ogni elemento sopra o sotto gli altri; l’ordine è indipendente dai collegamenti e viene salvato nei backup.
 - **Collegamenti:** i lucchetti collegano logo e testo al campo di ricerca e ogni icona al proprio pulsante, per default. Spostando il padre si spostano anche gli elementi collegati; spostando un figlio gli altri rimangono fermi. Scollegare o ricollegare conserva la posizione corrente.
-- **Blocca proporzioni:** il lucchetto con linee di collegamento accanto a larghezza e altezza lega le due misure per capsula esterna, campo di ricerca e ogni pulsante. Il lucchetto è chiuso per default. Il blocco mantiene il rapporto corrente; lo sblocco permette modifiche indipendenti. La scelta viene salvata per ciascun elemento e inclusa nei backup.
+- **Blocca proporzioni:** il lucchetto con linee di collegamento accanto a larghezza e altezza lega le due misure per capsula esterna, campo di ricerca e ogni pulsante. La configurazione iniziale blocca le proporzioni della capsula esterna e dei pulsanti; il campo di ricerca è ridimensionabile liberamente. Il blocco mantiene il rapporto corrente; lo sblocco permette modifiche indipendenti. La scelta viene salvata per ciascun elemento e inclusa nei backup.
 - **Material You:** usa la palette dinamica del sistema.
 - **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
 - Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.
 - Regola opacità e arrotondamento degli sfondi. Per i pulsanti scegli tra cerchio/quadrato, squircle, fiore, clover, leaf, pebble, scallop e teardrop.
-- Scegli icone predefinite o importa immagini. Logo e pulsanti hanno ciascuno lo switch **Icona monocromatica**, attivo di default. Disattivalo per mantenere colori e trasparenza delle immagini importate o usare i colori nativi dei simboli Google e Chrome. I simboli Material sono già a colore singolo.
+- Scegli icone predefinite o importa immagini. Logo e pulsanti hanno ciascuno lo switch **Icona monocromatica**. La configurazione iniziale usa il logo Google a colori e le icone dei pulsanti monocromatiche. Disattivalo per mantenere colori e trasparenza delle immagini importate o usare i colori nativi dei simboli Google e Chrome. I simboli Material sono già a colore singolo.
 - I colori originali hanno priorità su Material You solo per quell’icona. Tinta e gradienti sono disabilitati mentre i colori originali sono attivi; i valori salvati tornano disponibili riattivando lo stile monocromatico.
 - Visualizza l’anteprima su fondo solido oppure sul ritaglio centrale del wallpaper Home.
 
@@ -97,9 +97,15 @@ La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il p
 
 ## Impostazioni iniziali e controlli disabilitati
 
+I widget già salvati mantengono le loro impostazioni; il preset si applica ai nuovi widget e ai ripristini richiesti esplicitamente.
+
+Il widget predefinito ha il logo Google a colori e tre pulsanti per ricerca vocale, Chrome e navigazione in incognito. La composizione arrotondata riprende l’aspetto di Google Circle to Search.
+
 | Opzione | Default per un nuovo widget | Comportamento |
 | --- | --- | --- |
-| Colori Material You | Attivo | Colori e gradienti manuali sono grigi e non modificabili. Disattiva l’opzione per personalizzarli. |
+| Tema | Segui sistema | Il widget segue la modalità chiara/scura di Android. |
+| Testo del campo di ricerca | Cerca con Google | Puoi modificarlo o svuotarlo per usare automaticamente il nome del motore di ricerca. |
+| Colori Material You | Disattivo | Quando l’opzione è attiva, colori e gradienti manuali sono grigi e non modificabili. Disattiva l’opzione per personalizzarli. |
 | Ricerca con l’app Google al tocco del campo | Disattivo | Se attivata, la gestione dei motori di ricerca diventa grigia e non modificabile: la ricerca viene gestita dall’app Google. |
 
 **Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente.
@@ -108,7 +114,7 @@ La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono
 
 ## Colori delle icone
 
-In **Aspetto → Logo** e **Aspetto → Pulsante N → Icona**, lo switch **Icona monocromatica** permette di scegliere tra una tinta personalizzabile e i colori originali dell’icona. La modalità monocromatica è attiva di default e la scelta è indipendente per ogni elemento.
+In **Aspetto → Logo** e **Aspetto → Pulsante N → Icona**, lo switch **Icona monocromatica** permette di scegliere tra una tinta personalizzabile e i colori originali dell’icona. La configurazione iniziale usa i colori originali per il logo Google e icone monocromatiche per i pulsanti. La scelta è indipendente per ogni elemento.
 
 Con i colori originali, l’immagine conserva la propria trasparenza e ignora tinta, gradiente e opacità della tinta. Le icone Material hanno normalmente un riempimento nero: la modalità monocromatica permette di adattarle al contrasto del tema.
 
