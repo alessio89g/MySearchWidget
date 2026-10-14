@@ -26,7 +26,7 @@ object Renderer {
   val context=AppLanguage.context(baseContext)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
   val width=widthDp.coerceIn(180,1000)
-  val c=config.fitOuter(width.toFloat())
+  val c=ModeSettings.resolve(config,dark(context,config)).fitOuter(width.toFloat())
   val dimensions=ElementLayout(width.toFloat(),c)
   val bitmap=Bitmap.createBitmap((width*density).roundToInt(),(c.heightDp*density).roundToInt(),Bitmap.Config.ARGB_8888)
   val canvas=Canvas(bitmap);canvas.scale(density,density)

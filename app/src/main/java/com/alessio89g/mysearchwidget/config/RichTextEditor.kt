@@ -75,13 +75,15 @@ import com.alessio89g.mysearchwidget.i18n.placeholderText
     val all=listOf(TextRun(0,text.length,config.hint))+config.hintRuns
     all.forEach {run->if(run.end<=text.length && run.start<run.end){
      val s=run.style
-     val color=runCatching {Color(android.graphics.Color.parseColor(s.dark))}.getOrDefault(Color.Unspecified)
+     val dark=LocalEditingMode.current=="dark"
+     val color=runCatching {Color(android.graphics.Color.parseColor(if(dark)s.dark else s.light))}.getOrDefault(Color.Unspecified)
      val face=config.assets[s.font]?.let {runCatching {Assets.font(context,it)}.getOrNull()} ?: context.resources.getFont(R.font.google_sans)
      val ink=SpanStyle(fontFamily=FontFamily(face),color=color,fontSize=s.size.sp,fontWeight=FontWeight(s.weight),fontStyle=if(s.italic)FontStyle.Italic else FontStyle.Normal,
       textDecoration=TextDecoration.combine(listOfNotNull(if(s.underline)TextDecoration.Underline else null,if(s.strike)TextDecoration.LineThrough else null)))
      val metrics=android.graphics.Paint().apply {typeface=face;textSize=s.size*density.density*density.fontScale}
      val left=metrics.measureText(text,0,run.start);val width=metrics.measureText(text,run.start,run.end).coerceAtLeast(1f)
-     val gradient=if(s.darkGradient.enabled)androidx.compose.ui.graphics.ShaderBrush(com.alessio89g.mysearchwidget.widget.Renderer.gradient(s.darkGradient,android.graphics.RectF(left,0f,left+width,metrics.textSize))) else null
+     val g=if(dark)s.darkGradient else s.lightGradient
+     val gradient=if(g.enabled)androidx.compose.ui.graphics.ShaderBrush(com.alessio89g.mysearchwidget.widget.Renderer.gradient(g,android.graphics.RectF(left,0f,left+width,metrics.textSize))) else null
      addStyle(if(gradient!=null)ink.copy(brush=gradient) else ink,run.start,run.end)
     }}
    }

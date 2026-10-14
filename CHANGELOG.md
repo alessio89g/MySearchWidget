@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.14.2 — 2026-10-14
+
+### English
+
+- Resize the widget horizontally while keeping its height and outer spacing unchanged, with the search field adapting to the available width.
+
+- Keep the initial widget height at 68 dp across launcher widths and let the height control grow it without being cancelled by proportional width fitting.
+
+- Choose which settings to share or edit separately in light and dark mode, with individual controls in Light/Dark linking.
+- Check for updates when opening the configurator, download the APK directly and install it through Android.
+- Automatically adjust the search field width and button spacing when changing the button count, and show the current design in the launcher widget picker.
+
+### Italiano
+
+- Ridimensiona il widget in larghezza mantenendo altezza e margini dal contorno invariati, con il campo di ricerca che si adatta allo spazio disponibile.
+
+- Mantieni l’altezza iniziale di 68 dp sulle diverse larghezze del launcher e aumenta l’altezza senza che l’adattamento proporzionale della larghezza annulli la modifica.
+
+- Scegli quali impostazioni condividere o modificare separatamente in modalità chiara e scura, con controlli individuali in Legame Chiaro/Scuro.
+- Controlla gli aggiornamenti all’apertura del configuratore, scarica direttamente l’APK e installalo tramite Android.
+- Adatta automaticamente la larghezza del campo e la spaziatura quando cambia il numero di pulsanti, e mostra il design attuale nel selettore dei widget del launcher.
+
 ## 1.13.4 — 2026-10-12
 
 ### English

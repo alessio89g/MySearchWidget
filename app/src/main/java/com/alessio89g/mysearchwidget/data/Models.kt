@@ -19,7 +19,7 @@ import java.util.Base64
  val sidePaddingDp:Float?=null, val logoInsetDp:Float?=null, val textGapDp:Float?=null, val outerRatio:Float?=null, val fieldRatio:Float?=null, val outerLocked:Boolean=true, val fieldLocked:Boolean=true, val layoutHeightDp:Float?=null
 )
 @Serializable data class WidgetConfig(
- val referenceWidthDp:Int?=null, val haptics:Map<String,Boolean> = emptyMap(),
+ val adaptiveButtons:Boolean=false, val modes:ThemeModes=ThemeModes(), val referenceWidthDp:Int?=null, val haptics:Map<String,Boolean> = emptyMap(),
  val placement:Placement=Placement(), val heightDp: Float = WidgetDimensions.DEFAULT_HEIGHT, val sizing:ElementSizing=ElementSizing(),
  val theme: String = "system", val dynamic: Boolean = true, val placeholder: String = "",
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
@@ -30,7 +30,7 @@ import java.util.Base64
  val hintRuns:List<TextRun> = emptyList(), val assets: Map<String, Asset> = emptyMap()
 )
 @Serializable data class Engine(val id: String, val name: String, val template: String)
-@Serializable data class Backup(val schemaVersion: Int, val config: WidgetConfig, val engine: Engine, val warnings: List<String> = emptyList())
+@Serializable data class Backup(val schemaVersion: Int, val config: WidgetConfig, val engine: Engine, val warnings: List<String> = emptyList(),val additionalEngines:List<Engine> = emptyList())
 @Serializable data class Template(val id: String, val name: String, val backup: Backup)
 
 object Catalog {
@@ -59,7 +59,8 @@ object Validation {
   require(uri != null && uri.scheme in listOf("https", "http") && !uri.host.isNullOrBlank() && uri.userInfo == null) { "Usa un URL http/https valido con %s" }
  }
  fun color(s: String) { require(s.isEmpty() || Regex("#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?").matches(s)) { "Colore non valido: usa #RRGGBB o #AARRGGBB" } }
- fun config(c: WidgetConfig) {
+ fun config(c: WidgetConfig, validateModes:Boolean=true) {
+  if(validateModes)ModeSettings.validate(c)
   require(c.theme in listOf("system","light","dark") && c.count in 0..3 && c.buttons.size == 3) { "Tema o numero di pulsanti non valido" }
   require(c.placeholder.length <= 500 && c.engineId.length in 1..100) { "Testo o motore non valido" }
   fun range(n: Float, a: Float, b: Float) { require(n.isFinite() && n in a..b) { "Valore numerico fuori intervallo" } }
@@ -99,7 +100,7 @@ object Validation {
     if(a.kind=="app") require(Regex("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+").matches(a.value)) { "Pacchetto app non valido" }
    }
   }
-  require(c.assets.size <= 6) { "Troppe risorse incorporate" }
+  require(c.assets.size <= 12) { "Troppe risorse incorporate" }
   var bytes = 0
   c.assets.forEach { (id,a) ->
    require(Regex("[a-zA-Z0-9_-]{1,100}").matches(id) && a.kind in listOf("font","image")) { "Risorsa non valida" }
@@ -124,6 +125,10 @@ object Validation {
   }
   val b = Catalog.json.decodeFromString<Backup>(text)
   config(b.config);engine(b.engine)
+  require(b.additionalEngines.none {it.id==b.engine.id})
+  require(b.additionalEngines.size<=1 && b.additionalEngines.map {it.id}.distinct().size==b.additionalEngines.size)
+  b.additionalEngines.forEach(::engine)
+  require(ModeSettings.resolve(b.config,true).engineId in (listOf(b.engine)+b.additionalEngines).map {it.id})
   require(b.config.engineId == b.engine.id) { "Riferimento al motore incoerente" }
   require(b.warnings.size <= 20 && b.warnings.all { it.length <= 500 })
   return b

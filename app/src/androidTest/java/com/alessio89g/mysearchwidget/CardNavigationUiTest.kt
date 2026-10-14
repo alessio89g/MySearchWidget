@@ -28,9 +28,16 @@ class CardNavigationUiTest {
   error("Missing $label")
  }
  private fun click(label:String) {
-  var n=wait(label)
-  while(!n.isClickable)n=n.parent ?: error("Not clickable $label")
-  assertTrue(n.performAction(Node.ACTION_CLICK));ins.uiAutomation.waitForIdle(200,5000)
+  wait(label)
+  repeat(30) {
+   var n=text(label)
+   while(n!=null && !n.isClickable)n=n.parent
+   if(n?.isEnabled==true && n.performAction(Node.ACTION_CLICK)) {
+    ins.uiAutomation.waitForIdle(200,5000);return
+   }
+   SystemClock.sleep(100)
+  }
+  error("Not clickable or not enabled: $label")
  }
  private fun reveal(label:String) {
   repeat(20) {
@@ -94,7 +101,7 @@ class CardNavigationUiTest {
  }
  @Test fun heightResetUsesNewPresetAndRemainsUndoableUntilSave()=scenario {scenario,original->
   scenario.onActivity {ViewModelProvider(it)[ConfigState::class.java].config=original.copy(heightDp=110f)}
-  click("Widget height");click("Reset to 68 dp")
+  click("Widget height");reveal("Reset to 68 dp");click("Reset to 68 dp")
   scenario.onActivity {
    val state=ViewModelProvider(it)[ConfigState::class.java]
    assertEquals(68f,state.config.heightDp,0f)
@@ -105,4 +112,63 @@ class CardNavigationUiTest {
   scenario.onActivity {assertEquals(110f,ViewModelProvider(it)[ConfigState::class.java].config.heightDp,0f)}
  }
 
+
+ @Test fun linkingTabKeepsChangesAsUndoableDrafts()=scenario {scenario,original->
+  click("Light/Dark linking")
+  reveal("Element dimensions");click("Element dimensions")
+  reveal("Outer border");click("Outer border")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertTrue("size.outer" in state.config.modes.separate)
+   assertEquals(original,state.configs[987663])
+  }
+  click("↶ Undo")
+  scenario.onActivity {assertFalse("size.outer" in ViewModelProvider(it)[ConfigState::class.java].config.modes.separate)}
+ }
+ @Test fun relinkingAsksWhichValuesToKeepAndCanBeCancelled()=scenario {scenario,original->
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   val split=ModeSettings.toggle(original,"size.outer",true,false)
+   state.config=ModeSettings.edit(split,ModeSettings.resolve(split,true).copy(heightDp=99f),true)
+  }
+  wait("Editing mode")
+  click("Light/Dark linking")
+  assertNull(text("Editing mode"))
+  scenario.onActivity {AppLanguage.select("it")}
+  wait("Legame Chiaro/Scuro")
+  SystemClock.sleep(500)
+  ins.uiAutomation.takeScreenshot()?.let {bitmap->java.io.File(ins.targetContext.cacheDir,"linking-it.png").outputStream().use {bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)}}
+  scenario.onActivity {AppLanguage.select("en")}
+  wait("Light/Dark linking")
+  click("Element dimensions");reveal("Outer border");click("Outer border")
+  wait("Which values should be kept?")
+  scenario.onActivity {assertTrue("size.outer" in ViewModelProvider(it)[ConfigState::class.java].config.modes.separate)}
+  click("Cancel")
+  click("Outer border");click("Keep dark values")
+  scenario.onActivity {
+   val state=ViewModelProvider(it)[ConfigState::class.java]
+   assertFalse("size.outer" in state.config.modes.separate)
+   assertEquals(99f,ModeSettings.resolve(state.config,false).heightDp)
+   assertEquals(original,state.configs[987663])
+  }
+  click("↶ Undo");click("Outer border");click("Keep light values")
+  scenario.onActivity {assertEquals(original.heightDp,ModeSettings.resolve(ViewModelProvider(it)[ConfigState::class.java].config,true).heightDp)}
+ }
+ @Test fun buttonCountReflowsPreviewAndKeepsChangesInDraft()=scenario {scenario,_->
+  val preset=DefaultWidget.create(ins.targetContext)
+  scenario.onActivity {val state=ViewModelProvider(it)[ConfigState::class.java];state.config=preset}
+  click("Number of buttons")
+  for(n in listOf(2,1,0,3)) {
+   click(n.toString())
+   scenario.onActivity {
+    val c=ViewModelProvider(it)[ConfigState::class.java].config
+    assertEquals(n,c.count)
+    val g=ElementLayout(374f,c)
+    assertEquals(g.field.left-g.outer.left,g.outer.right-(g.buttonBounds.lastOrNull()?.right ?: g.field.right),.001f)
+    val bitmap=com.alessio89g.mysearchwidget.widget.Renderer.render(it,c.copy(theme="dark"),374)
+    java.io.File(it.cacheDir,"count-$n.png").outputStream().use {out->bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out)}
+   }
+  }
+  ins.uiAutomation.takeScreenshot()?.let {bitmap->java.io.File(ins.targetContext.cacheDir,"count-en.png").outputStream().use {bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)}}
+ }
 }

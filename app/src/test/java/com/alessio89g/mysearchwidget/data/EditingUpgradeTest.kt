@@ -5,29 +5,37 @@ import org.junit.Test
 import kotlinx.serialization.encodeToString
 
 class EditingUpgradeTest {
- @Test fun launcherPaddingScalesAllBoundsUniformly() {
-  val c=WidgetConfig(referenceWidthDp=374,heightDp=69f,count=3,sizing=ElementSizing(fieldWidthDp=193f,fieldHeightDp=47f),placement=Placement(field=OffsetDp(5f,0f),text=OffsetDp(-5f,0f)))
-  val design=ElementLayout(374f,c)
-  for(width in listOf(220,374,391,600)) {
-   val p=WidgetPresentation(c,width,300f)
-   assertEquals(374,p.designWidth)
-   assertEquals(width/374f,p.scale,.0001f)
-   val bounds=listOf(design.outer,design.field,design.logo)+design.buttonBounds+design.iconBounds+design.buttonHits
-   for(b in bounds) {
-    val output=p.transform(b)
-    assertEquals(b.left/374f,output.left/p.width,.0001f)
-    assertEquals(b.width/374f,output.width/p.width,.0001f)
-    assertEquals(b.top/69f,output.top/p.height,.0001f)
+ @Test fun horizontalResizeKeepsHeightAndMargins() {
+  val original=Catalog.json.decodeFromString<WidgetConfig>(java.io.File("src/main/res/raw/default_widget.json").readText())
+  for(count in 0..3) {
+   val c=original.withButtonCount(count,original)
+   val baseline=ElementLayout(374f,c)
+   for(width in listOf(220,280,320,374,391,600)) {
+    val p=WidgetPresentation(c,width,300f)
+    val layout=ElementLayout(p.designWidth.toFloat(),p.config)
+    assertEquals(width,p.designWidth)
+    assertEquals(1f,p.scale,0f)
+    assertEquals(68f,p.height,.001f)
+    assertEquals(baseline.field.height,layout.field.height,.001f)
+    assertEquals(baseline.field.left-baseline.outer.left,layout.field.left-layout.outer.left,.001f)
+    assertEquals(baseline.field.top-baseline.outer.top,layout.field.top-layout.outer.top,.001f)
+    assertEquals(baseline.field.width+width-374,layout.field.width,.001f)
+    for(i in 0 until count) {
+     assertEquals(baseline.buttonBounds[i].width,layout.buttonBounds[i].width,.001f)
+     assertEquals(baseline.outer.right-baseline.buttonBounds[i].right,layout.outer.right-layout.buttonBounds[i].right,.001f)
+     assertEquals(baseline.buttonHits[i].left+width-374,layout.buttonHits[i].left,.001f)
+    }
    }
-   assertEquals(69f,c.heightDp,0f)
+   assertEquals(374,c.referenceWidthDp)
   }
  }
  @Test fun shortAllocationFitsWithoutDistortingOrChangingSavedSettings() {
   val c=WidgetConfig(referenceWidthDp=374,heightDp=69f)
   val p=WidgetPresentation(c,391,40f)
   assertEquals(40f,p.height,.001f)
-  assertEquals(374f/69f,p.width/p.height,.001f)
-  assertEquals(c,p.config)
+  assertEquals(391f/69f,p.width/p.height,.001f)
+  assertEquals(374,c.referenceWidthDp)
+  assertEquals(69f,c.heightDp,0f)
  }
  @Test fun undoRedoRestoresAssetsAndBranchesWithoutTouchingSavedConfig() {
   val saved=WidgetConfig()

@@ -42,6 +42,9 @@ class InputActivity:Activity() {
   setContentView(editor);window.setLayout(1,1)
   scope.launch {
    config=withContext(Dispatchers.IO) { Repository(this@InputActivity).config(id) }
+   val mode=intent.getStringExtra("renderedTheme")
+   config=ModeSettings.resolve(config,if(mode in listOf("light","dark"))mode=="dark" else Renderer.dark(this@InputActivity,config)).copy(theme=mode?.takeIf {it in listOf("light","dark")} ?: config.theme)
+   if(config.googleInput){Actions.openGoogleInput(this@InputActivity);finish();return@launch}
    if(state==null)WidgetHaptics.tap(this@InputActivity,config,intent.getStringExtra("element") ?: "field")
    editor.addTextChangedListener(object:TextWatcher {
     override fun beforeTextChanged(s:CharSequence?,start:Int,count:Int,after:Int){}

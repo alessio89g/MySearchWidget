@@ -14,13 +14,18 @@ class Repository(private val context: Context) {
  private val enginesKey=stringPreferencesKey("engines")
  private val hiddenKey=stringSetPreferencesKey("hidden_widgets")
  private val modelsKey=stringPreferencesKey("templates")
+ private fun initial(id:Int):WidgetConfig {
+  val preset=DefaultWidget.create(context)
+  val options=android.appwidget.AppWidgetManager.getInstance(context).getAppWidgetOptions(id)
+  return if(com.alessio89g.mysearchwidget.widget.WidgetViewport.hasAllocation(options))preset.initialWidth(com.alessio89g.mysearchwidget.widget.WidgetViewport.from(context,options).width) else preset
+ }
  suspend fun config(id: Int): WidgetConfig {
-  val raw=context.store.data.first()[stringPreferencesKey("widget_$id")] ?: return DefaultWidget.create(context)
+  val raw=context.store.data.first()[stringPreferencesKey("widget_$id")] ?: return initial(id)
   return Catalog.json.decodeFromString(raw)
  }
  // One-time migration captures the current composition without creating unsaved slots.
  suspend fun anchorWidth(id:Int,width:Int):WidgetConfig {
-  var result=DefaultWidget.create(context)
+  var result=DefaultWidget.create(context).initialWidth(width)
   context.store.edit {p->
    val key=stringPreferencesKey("widget_$id")
    p[key]?.let {raw->
@@ -43,7 +48,7 @@ class Repository(private val context: Context) {
   require(id>0)
   context.store.edit {p->
    val key=stringPreferencesKey("widget_$id")
-   if(!p.contains(key))p[key]=Catalog.json.encodeToString(DefaultWidget.create(context))
+   if(!p.contains(key))p[key]=Catalog.json.encodeToString(initial(id))
   }
  }
  suspend fun hasConfig(id:Int)=context.store.data.first().contains(stringPreferencesKey("widget_$id"))
@@ -71,7 +76,7 @@ class Repository(private val context: Context) {
  }
  suspend fun deleteEngine(id: String) {
   context.store.edit { p ->
-   require(p.asMap().filterKeys { it.name.startsWith("widget_") }.values.none { Catalog.json.decodeFromString<WidgetConfig>(it as String).engineId==id }) { tr(R.string.engine_in_use) }
+   require(p.asMap().filterKeys { it.name.startsWith("widget_") }.values.none { Catalog.json.decodeFromString<WidgetConfig>(it as String).let {c->c.engineId==id || ModeSettings.resolve(c,true).engineId==id} }) { tr(R.string.engine_in_use) }
    val old=p[enginesKey]?.let { Catalog.json.decodeFromString<List<Engine>>(it) } ?: emptyList()
    p[enginesKey]=Catalog.json.encodeToString(old.filterNot { it.id==id })
   }
@@ -94,11 +99,15 @@ class Repository(private val context: Context) {
  } }
  // Called only after the separate Apply confirmation. Resolve ID conflicts without changing other widgets.
  suspend fun prepareTemplate(t: Template): WidgetConfig {
-  val e=t.backup.engine
-  val same=engines().firstOrNull { it.id==e.id }
-  if(same==e) return t.backup.config
-  val newEngine=e.copy(id=UUID.randomUUID().toString())
-  saveEngine(newEngine)
-  return t.backup.config.copy(engineId=newEngine.id)
+  var config=t.backup.config
+  for(e in listOf(t.backup.engine)+t.backup.additionalEngines) {
+   val same=engines().firstOrNull {it.id==e.id}
+   if(same==e)continue
+   val newEngine=if(same==null)e else e.copy(id=UUID.randomUUID().toString())
+   saveEngine(newEngine)
+   if(config.engineId==e.id)config=config.copy(engineId=newEngine.id)
+   if(config.modes.dark["engineId"]==kotlinx.serialization.json.JsonPrimitive(e.id))config=config.copy(modes=config.modes.copy(dark=config.modes.dark+("engineId" to kotlinx.serialization.json.JsonPrimitive(newEngine.id))))
+  }
+  return config
  }
 }

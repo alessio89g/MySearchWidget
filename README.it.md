@@ -23,10 +23,10 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 
 ### Aspetto
 
-- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. L’altezza predefinita e il suo ripristino sono **68 dp**. In modalità automatica, icone, testo e aree di tocco si ridimensionano insieme; la larghezza disponibile ne limita la dimensione. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
+- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. L’altezza predefinita e il suo ripristino sono **68 dp**. In modalità automatica, le dimensioni degli elementi seguono l’altezza generale. Restringere il widget in larghezza accorcia il campo di ricerca senza ridurre l’altezza. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
 - **Dimensioni e spaziature indipendenti:** regola larghezza della capsula esterna e del campo di ricerca, altezza del campo, dimensione del logo e delle icone, larghezza e altezza dello sfondo di ogni pulsante, margini laterali, spazi prima del logo e tra logo e testo e distanza prima di ogni pulsante. I controlli delle dimensioni e delle spaziature degli elementi permettono un valore manuale in dp o il dimensionamento automatico. Il ripristino automatico segue l’altezza generale del widget. Gli elementi si ridimensionano attorno a centri fissi senza spostare quelli vicini. Logo e testo seguono il campo di ricerca quando il relativo collegamento è attivo. Le dimensioni eccessive si adattano ai limiti del widget; misure grandi possono sovrapporsi.
 - **Posizione degli elementi:** la scheda **Layout** nella barra inferiore raccoglie posizione, dimensioni e spaziature. Regola gli scostamenti X/Y in dp con campi numerici o frecce a passo personalizzabile; puoi sovrapporre gli elementi o spostarli fuori dall’area visibile. Il ripristino della posizione applica lo scostamento iniziale dell’elemento selezionato.
-- **Ripristini separati:** ogni elemento in Layout dispone di **Ripristina dimensioni predefinite** e **Ripristina posizione predefinita**. Ogni comando applica i valori del preset iniziale all’elemento selezionato: altezza esterna 68 dp, campo di ricerca 193 × 47 dp, placeholder 12,5 sp e query 15 sp. I lucchetti restano invariati e la posizione è relativa al padre quando collegata.
+- **Ripristini separati:** ogni elemento in Layout dispone di **Ripristina dimensioni predefinite** e **Ripristina posizione predefinita**. Ogni comando applica i valori del preset iniziale all’elemento selezionato: altezza esterna 68 dp, campo di ricerca 193 × 47 dp con larghezza di riferimento di 374 dp, placeholder 12,5 sp e query 15 sp. I lucchetti restano invariati e la posizione è relativa al padre quando collegata.
 - **Ordine dei livelli:** in **Layout → Ordine dei livelli**, la cima della lista rappresenta il primo piano. Le frecce portano ogni elemento sopra o sotto gli altri; l’ordine è indipendente dai collegamenti e viene salvato nei backup.
 - **Collegamenti:** i lucchetti collegano logo e testo al campo di ricerca e ogni icona al proprio pulsante, per default. Spostando il padre si spostano anche gli elementi collegati; spostando un figlio gli altri rimangono fermi. Scollegare o ricollegare conserva la posizione corrente.
 - **Blocca proporzioni:** il lucchetto con linee di collegamento accanto a larghezza e altezza lega le due misure per capsula esterna, campo di ricerca e ogni pulsante. La configurazione iniziale blocca le proporzioni della capsula esterna e dei pulsanti; il campo di ricerca è ridimensionabile liberamente. Il blocco mantiene il rapporto corrente; lo sblocco permette modifiche indipendenti. La scelta viene salvata per ciascun elemento e inclusa nei backup.
@@ -49,7 +49,7 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 ### Configurazione e backup
 
 - **Layout → Numero di pulsanti** permette di mostrare da 0 a 3 pulsanti. Le impostazioni dei pulsanti nascosti vengono conservate e tornano disponibili aumentando il numero.
-- Cinque sezioni: **Layout, Aspetto, Azioni, Ricerca e Backup**. Layout è la prima sezione e si apre quando inizi a configurare un widget.
+- Sei sezioni: **Layout, Aspetto, Azioni, Ricerca, Legame Chiaro/Scuro e Backup**. Layout è la prima sezione e si apre quando inizi a configurare un widget.
 - Le impostazioni sono organizzate in **gruppi di card**, con icona, titolo e descrizione. Tocca una voce per aprirne i controlli; **Tutte le impostazioni** o Indietro riportano alla lista della sezione.
 - In Layout, ogni elemento ha due pannelli: **Dimensioni** e **Posizione**, con i rispettivi ripristini. In Azioni, ogni area raccoglie la propria azione al tocco e il feedback aptico.
 - I selettori Material 3 Expressive mostrano direttamente le scelte più frequenti; le opzioni vanno a capo quando lo spazio è ridotto. Le impostazioni dello sfondo dell’anteprima si aprono dalla relativa voce sotto l’anteprima.
@@ -57,6 +57,24 @@ Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidge
 - Interfaccia in inglese e italiano, con cambio immediato tramite **EN / IT** in alto a destra e scelta persistente.
 - Esportazione e importazione della configurazione del singolo widget, inclusi layout, ordine dei livelli, collegamenti degli spostamenti, font e immagini importati.
 - Libreria di modelli riutilizzabili. I backup vengono validati prima dell’importazione; applicarli a un widget è un passaggio separato con conferma.
+
+Cambiando il numero di pulsanti, il campo di ricerca con larghezza automatica occupa lo spazio disponibile senza cambiare altezza. I pulsanti sono allineati a destra con margini uniformi rispetto al contorno; senza pulsanti, il campo mantiene margini simmetrici. Dimensioni, spaziature e spostamenti manuali restano personalizzabili.
+
+Il controllo dell’altezza globale cambia l’altezza mantenendo la larghezza corrente. I nuovi widget partono da 68 dp e si adattano orizzontalmente al launcher. Se lo spazio assegnato limita l’altezza visualizzata, l’anteprima lo segnala.
+
+## Legame Chiaro/Scuro
+
+La sezione **Legame Chiaro/Scuro**, accessibile da **Collegamenti** con il lucchetto dopo **Ricerca**, permette di scegliere quali impostazioni condividere tra le due modalità. Ogni elemento ha i propri interruttori per dimensioni, posizione, livello, colori e sfumature. Sono disponibili controlli distinti anche per motore di ricerca, apertura nell’app Google, logo, forme, numero e icone dei pulsanti, contenuto del placeholder, font, formattazione e azioni.
+
+Gli interruttori di separazione sono **disattivati di default**, tranne quelli dei **colori e delle sfumature**, che mantengono valori distinti. Con uno switch disattivato, le modifiche si applicano a entrambe le modalità; attivandolo, si modifica solo quella selezionata. Quando lo disattivi, se i valori sono diversi, scegli se mantenere quelli chiari o quelli scuri per entrambe le modalità. I colori manuali richiedono comunque **Material You disattivato**, dal suo controllo in Aspetto.
+
+Il selettore **Stai modificando**, vicino all’anteprima, compare nelle sezioni con impostazioni separate e indica su quale modalità stai lavorando. L’anteprima segue questa scelta e può essere invertita indipendentemente. Gli avvisi delle sezioni indicano se i valori sono condivisi o separati. **Annulla/Ripeti** comprende anche i collegamenti; **Salva** applica l’intera configurazione. I backup conservano entrambe le modalità e i relativi motori di ricerca personalizzati.
+
+## Aggiornamenti
+
+All’apertura del configuratore, l’app controlla su GitHub se esiste una release stabile più recente e propone di scaricare direttamente l’APK, senza browser o WebView. Il download è gestito da Android e, al termine, l’app propone l’installazione. Se il configuratore è stato chiuso, la proposta compare alla riapertura. Android può richiedere di consentire le installazioni da MySearchWidget: il pulsante apre la schermata dedicata.
+
+Prima dell’installazione vengono verificati il pacchetto, il numero di versione e la firma dell’APK. Non ci sono controlli periodici, servizi o processi permanenti dell’app in background. In assenza di rete il configuratore rimane utilizzabile.
 
 ## Gestione dell’elenco e cestino
 
@@ -85,7 +103,7 @@ Le modifiche e i modelli applicati restano in anteprima fino alla pressione di *
 
 Per i widget già presenti nella home, l’anteprima usa le dimensioni comunicate dal launcher e riduce l’intera composizione per mostrarla nel configuratore. Le posizioni degli elementi non vengono ricalcolate in base alla larghezza del riquadro di anteprima.
 
-Il widget conserva una composizione di riferimento e adatta proporzionalmente l’intero layout allo spazio fornito dal launcher. Cambiare il riempimento del launcher mantiene le dimensioni relative degli elementi, le distanze e le aree di tocco. I controlli delle dimensioni modificano la composizione di riferimento, inclusa nei backup.
+Restringendo o allargando il widget nel launcher, il campo di ricerca adatta la propria larghezza e i pulsanti rimangono allineati a destra. L’altezza e i margini dal contorno esterno restano invariati, rispettando gli spostamenti personalizzati. Se lo spazio verticale assegnato dal launcher è insufficiente, la composizione viene ridotta per rientrare nell’area disponibile. Anteprima e aree di tocco seguono la stessa disposizione.
 
 Le frecce **Annulla** e **Ripeti** permettono di ripercorrere le modifiche prima del salvataggio; il trascinamento di uno slider conta come una sola modifica. Il pulsante **Chiaro/Scuro** indica lo stato corrente e cambia soltanto l’anteprima. La selezione di una variante di colore la mostra automaticamente nell’anteprima, che rimane invertibile manualmente.
 
@@ -138,7 +156,7 @@ L’anteprima wallpaper è opzionale. Per leggere lo sfondo Home può essere nec
 
 Se l’accesso viene negato o lo sfondo non è leggibile, per esempio con un wallpaper animato, resta il fondo solido. L’app non scansiona la galleria e non include il wallpaper nei backup.
 
-MySearchWidget non richiede permessi **Internet, microfono o sovrapposizione ad altre app**. Le ricerche online e le azioni vocali vengono gestite dalle app esterne selezionate.
+MySearchWidget usa **Internet** per verificare le release su GitHub e scaricare gli aggiornamenti richiesti. Il permesso per installare app viene richiesto solo quando scegli di installare un aggiornamento. Non richiede accesso al microfono né la sovrapposizione ad altre app; ricerche online e azioni vocali vengono gestite dalle app esterne selezionate.
 
 ## Esempi BBCode
 

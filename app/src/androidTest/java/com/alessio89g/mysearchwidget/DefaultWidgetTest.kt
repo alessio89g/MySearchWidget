@@ -27,11 +27,11 @@ class DefaultWidgetTest {
   Assets.validate(context,preset.assets)
   assertEquals(Catalog.engines.first(),original.engine)
  }
- @Test fun newSlotsUsePresetWithoutSavingOrChangingReferenceWidth()=runBlocking {
+ @Test fun newSlotsAdaptInitialWidthWithoutSaving()=runBlocking {
   val repo=Repository(context);val id=80134
   assertFalse(repo.hasConfig(id))
   assertEquals(DefaultWidget.create(context),repo.config(id))
-  assertEquals(DefaultWidget.create(context),repo.anchorWidth(id,430))
+  assertEquals(DefaultWidget.create(context).initialWidth(430),repo.anchorWidth(id,430))
   assertFalse(repo.hasConfig(id));assertTrue(repo.library(setOf(id)).isEmpty())
  }
  @Test fun storedWidgetsAndLegacyBackupDefaultsStayUnchanged()=runBlocking {
@@ -100,4 +100,32 @@ class DefaultWidgetTest {
    images.forEach {it.recycle()}
   }
  }
+ @Test fun requestedHeightReachesRemoteViewsAtInitialLauncherWidth() {
+  ins.runOnMainSync {
+   val initial=DefaultWidget.create(context).initialWidth(356)
+   for(h in listOf(68f,80f,120f,200f)) {
+    val c=initial.withWidgetHeight(h,356f)
+    val view=SearchWidget.views(context,80138,c,356,availableHeight=240f).apply(context,FrameLayout(context))
+    val actual=view.findViewById<android.view.View>(R.id.widget_frame).layoutParams.height/context.resources.displayMetrics.density
+    assertEquals(h,actual,1f)
+   }
+  }
+ }
+ @Test fun narrowerHostKeepsHeightAndRendersMatchingHitGeometry() {
+  ins.runOnMainSync {
+   val original=DefaultWidget.create(context)
+   for(width in listOf(220,280,320,374)) {
+    val presentation=WidgetPresentation(original,width,120f)
+    val geometry=ElementLayout(width.toFloat(),presentation.config)
+    val view=SearchWidget.views(context,80139,original,width,availableHeight=120f).apply(context,FrameLayout(context))
+    val frame=view.findViewById<android.view.View>(R.id.widget_frame)
+    assertEquals(68f,frame.layoutParams.height/context.resources.displayMetrics.density,1f)
+    assertEquals(47f,geometry.field.height,.001f)
+    val bitmap=Renderer.render(context,presentation.config.copy(theme="dark"),width)
+    File(context.filesDir,"reflow-$width.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)}
+    bitmap.recycle()
+   }
+  }
+ }
+
 }

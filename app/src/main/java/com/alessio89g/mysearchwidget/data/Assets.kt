@@ -42,7 +42,14 @@ object Assets {
   return try { f.writeBytes(Base64.getDecoder().decode(asset.base64));Typeface.createFromFile(f).also { fonts.put(k,it) } } finally { f.delete() }
  }
  fun prune(c:WidgetConfig):WidgetConfig {
-  val used=(listOf(c.hint.font,c.query.font)+c.hintRuns.map {it.style.font}+(listOf(c.logo)+c.buttons).map { it.icon.asset }).toSet()
-  return c.copy(assets=c.assets.filterKeys { it in used })
+  val used=listOf(c,ModeSettings.resolve(c,false),ModeSettings.resolve(c,true)).flatMap {v->listOf(v.hint.font,v.query.font)+v.hintRuns.map {it.style.font}+(listOf(v.logo)+v.buttons).map {it.icon.asset}}.toSet()
+  val referenced=mutableSetOf<String>()
+  fun collect(value:kotlinx.serialization.json.JsonElement) {when(value){
+   is kotlinx.serialization.json.JsonPrimitive->if(value.isString && value.content in c.assets)referenced+=value.content
+   is kotlinx.serialization.json.JsonArray->value.forEach(::collect)
+   is kotlinx.serialization.json.JsonObject->value.values.forEach(::collect)
+  }}
+  (c.modes.dark.values+c.modes.sharedRuns.values).forEach(::collect)
+  return c.copy(assets=c.assets.filterKeys { it in used || it in referenced })
  }
 }

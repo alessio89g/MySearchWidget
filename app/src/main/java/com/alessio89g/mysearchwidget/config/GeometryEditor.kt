@@ -39,7 +39,7 @@ import com.alessio89g.mysearchwidget.i18n.*
  }
 }
 @Composable fun GeometryEditor(config:WidgetConfig,width:Float,onChange:(WidgetConfig)->Unit,onHeight:(Float)->Unit,onResetHeight:()->Unit,onNavigate:()->Unit={}) {
- val defaults=DefaultWidget.create(androidx.compose.ui.platform.LocalContext.current)
+ val defaults=DefaultWidget.create(androidx.compose.ui.platform.LocalContext.current).initialWidth(config.referenceWidthDp ?: 374)
  var target by rememberSaveable {mutableStateOf("")}
  var panel by rememberSaveable {mutableStateOf("size")}
  val options=listOf("outer" to tr(R.string.outer_border),"field" to tr(R.string.search_field),"logo" to "Logo","text" to tr(R.string.geometry_text))+
@@ -58,7 +58,9 @@ import com.alessio89g.mysearchwidget.i18n.*
   return
  }
  DetailBack {open("")}
+ ModeNotice(when(target){"height"->listOf("size.outer");"buttons"->listOf("count");"layers"->config.visibleLayers().map {"layer.$it"};else->listOf("$panel.$selected")})
  val unit=ElementLayout(width,config).unit
+ val autoCell=if(config.adaptiveButtons)47f/68f*(config.sizing.layoutHeightDp ?: config.heightDp) else 46f*unit
  if(target=="height") {
  SettingCard(tr(R.string.widget_height),tr(R.string.widget_height_help)) {
   NumberControl(tr(R.string.height_dp),config.heightDp,16f,256f,onChange=onHeight)
@@ -68,7 +70,7 @@ import com.alessio89g.mysearchwidget.i18n.*
  }
  if(target=="buttons") {
   SettingCard(tr(R.string.button_count),tr(R.string.buttons_help)) {
-   OptionButtons(config.count.toString(),(0..3).map {it.toString() to it.toString()}){onChange(config.copy(count=it.toInt()))}
+   OptionButtons(config.count.toString(),(0..3).map {it.toString() to it.toString()}){onChange(config.withButtonCount(it.toInt(),defaults))}
    Text(tr(R.string.hidden_buttons_preserved),style=MaterialTheme.typography.bodySmall)
   }
   return
@@ -116,10 +118,10 @@ import com.alessio89g.mysearchwidget.i18n.*
   when(selected) {
    "outer"->{
     DimensionPair(config.sizing.outerWidthDp,config.heightDp,width,defaults.heightDp,config.sizing.outerRatio,16f,1000f,16f,256f,requiredHeight=true,locked=config.sizing.outerLocked){w,h,r,l->onChange(config.copy(heightDp=h ?: defaults.heightDp,sizing=config.sizing.copy(outerWidthDp=w,outerRatio=r,outerLocked=l,layoutHeightDp=config.sizing.layoutHeightDp ?: config.heightDp)))}
-    DimensionControl(tr(R.string.side_padding_dp),config.sizing.sidePaddingDp,9f*unit,0f,128f){onChange(config.copy(sizing=config.sizing.copy(sidePaddingDp=it)))}
+    DimensionControl(tr(R.string.side_padding_dp),config.sizing.sidePaddingDp,if(config.adaptiveButtons)(config.heightDp-autoCell)/2f else 9f*unit,0f,128f){onChange(config.copy(sizing=config.sizing.copy(sidePaddingDp=it)))}
    }
    "field"->{
-    DimensionPair(config.sizing.fieldWidthDp,config.sizing.fieldHeightDp,ElementLayout(width,config.copy(sizing=config.sizing.copy(fieldWidthDp=null))).field.width,46f*unit,config.sizing.fieldRatio,16f,1000f,locked=config.sizing.fieldLocked){w,h,r,l->onChange(config.copy(sizing=config.sizing.copy(fieldWidthDp=w,fieldHeightDp=h,fieldRatio=r,fieldLocked=l)))}
+    DimensionPair(config.sizing.fieldWidthDp,config.sizing.fieldHeightDp,ElementLayout(width,config.copy(sizing=config.sizing.copy(fieldWidthDp=null))).field.width,autoCell,config.sizing.fieldRatio,16f,1000f,locked=config.sizing.fieldLocked){w,h,r,l->onChange(config.copy(sizing=config.sizing.copy(fieldWidthDp=w,fieldHeightDp=h,fieldRatio=r,fieldLocked=l)))}
    }
    "logo"->{
     DimensionControl(tr(R.string.icon_size_dp),config.logo.icon.sizeDp,32f*unit){onChange(config.copy(logo=config.logo.copy(icon=config.logo.icon.copy(sizeDp=it))))}
@@ -133,8 +135,8 @@ import com.alessio89g.mysearchwidget.i18n.*
     val index=selected.last().digitToInt();val slot=config.buttons[index]
     fun change(s:Slot){onChange(config.copy(buttons=config.buttons.mapIndexed {i,v->if(i==index)s else v}))}
     if(selected.startsWith("button")) {
-     DimensionPair(slot.widthDp,slot.heightDp,46f*unit,46f*unit,slot.aspectRatio,locked=slot.proportionsLocked){w,h,r,l->change(slot.copy(widthDp=w,heightDp=h,aspectRatio=r,proportionsLocked=l))}
-     DimensionControl(tr(R.string.gap_before_dp),slot.gapDp,(if(index==0)4f else 6f)*unit,0f,128f){change(slot.copy(gapDp=it))}
+     DimensionPair(slot.widthDp,slot.heightDp,autoCell,autoCell,slot.aspectRatio,locked=slot.proportionsLocked){w,h,r,l->change(slot.copy(widthDp=w,heightDp=h,aspectRatio=r,proportionsLocked=l))}
+     DimensionControl(tr(R.string.gap_before_dp),slot.gapDp,(if(config.adaptiveButtons)3f else if(index==0)4f else 6f)*unit,0f,128f){change(slot.copy(gapDp=it))}
     }else {
      DimensionControl(tr(R.string.icon_size_dp),slot.icon.sizeDp,25f*unit){change(slot.copy(icon=slot.icon.copy(sizeDp=it)))}
     }

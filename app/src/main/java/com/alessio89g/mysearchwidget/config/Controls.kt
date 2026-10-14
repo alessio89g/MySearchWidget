@@ -130,11 +130,11 @@ val LocalEditGesture=staticCompositionLocalOf<(Boolean)->Unit> {{}}
 }
 private fun normalizedColor(value:String):String = if(value.contains(','))value.split(',').map {it.trim().toIntOrNull()}.let {parts->if(parts.size==3 && parts.all {it!=null && it in 0..255})"#%02X%02X%02X".format(parts[0],parts[1],parts[2]) else value} else value
 val LocalPreviewTheme=staticCompositionLocalOf<(String)->Unit> {{}}
+val LocalEditingMode=staticCompositionLocalOf {"dark"}
 @Composable fun EditingTheme():String {
- var mode by remember {mutableStateOf("dark")}
- val preview=LocalPreviewTheme.current
- LaunchedEffect(mode){preview(mode)}
- Choice(tr(R.string.edit_colors),mode,listOf("dark" to tr(R.string.dark_theme),"light" to tr(R.string.light_theme))){mode=it;preview(it)}
+ val mode=LocalEditingMode.current
+ val change=LocalPreviewTheme.current
+ Choice(tr(R.string.edit_colors),mode,listOf("dark" to tr(R.string.dark_theme),"light" to tr(R.string.light_theme))){change(it)}
  return mode
 }
 @Composable fun SurfaceEditor(value:Surface,shapes:Boolean=false,showColors:Boolean=true,onChange:(Surface)->Unit) {

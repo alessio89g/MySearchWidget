@@ -17,7 +17,9 @@ class ActionActivity:Activity() {
   val id=intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,0)
   if(id !in SearchWidget.ids(this)) { finish();return }
   scope.launch {
-   val c=Repository(this@ActionActivity).config(id)
+   val stored=Repository(this@ActionActivity).config(id)
+   val mode=intent.getStringExtra("renderedTheme")
+   val c=ModeSettings.resolve(stored,if(mode in listOf("light","dark"))mode=="dark" else com.alessio89g.mysearchwidget.widget.Renderer.dark(this@ActionActivity,stored))
    val index=intent.getIntExtra("slot",-1)
    if(state==null)WidgetHaptics.tap(this@ActionActivity,c,intent.getStringExtra("element") ?: if(index==-2)"field" else if(index==-1)"logo" else "button$index")
    if(index==-2){if(c.googleInput)Actions.openGoogleInput(this@ActionActivity);finish();return@launch}

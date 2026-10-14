@@ -23,10 +23,10 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 
 ### Appearance
 
-- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Layout**. The default height and height reset are **68 dp**. In automatic mode, icons, text and touch areas scale together; the available width limits their size. Resize the widget vertically on the Home screen to provide room for greater heights.
+- **Widget height:** set a value from 16 to 256 dp, including decimals, in **Layout**. The default height and height reset are **68 dp**. In automatic mode, element sizes follow the overall height. Narrowing the widget shortens the search field without reducing its height. Resize the widget vertically on the Home screen to provide room for greater heights.
 - **Independent dimensions and spacing:** set the outer capsule and search-field widths, search-field height, logo and icon sizes, each button background’s width and height, side padding, logo/text spacing and the gap before each button. Element dimension and spacing controls accept a manual dp value or automatic sizing. Restore automatic sizing to follow the overall widget height. Elements resize around fixed centers without moving neighbouring elements. The logo and text follow the search field while their movement link is enabled. Oversized elements fit the widget bounds; large sizes can overlap.
 - **Element positioning:** the **Layout** tab in the bottom navigation groups position, size and spacing controls. Adjust X/Y offsets in dp using numeric fields or arrows with a custom step; elements can overlap or move outside the visible area. Reset position restores the selected element’s initial offset.
-- **Separate resets:** each element in Layout has **Reset default dimensions** and **Reset default position**. Each restores the selected element’s initial preset values: outer height 68 dp, search field 193 × 47 dp, placeholder 12.5 sp and query text 15 sp. Lock settings are retained and positions are relative to the parent when linked.
+- **Separate resets:** each element in Layout has **Reset default dimensions** and **Reset default position**. Each restores the selected element’s initial preset values: outer height 68 dp, search field 193 × 47 dp at a 374 dp reference width, placeholder 12.5 sp and query text 15 sp. Lock settings are retained and positions are relative to the parent when linked.
 - **Layer order:** in **Layout → Layer order**, the top of the list is the foreground. Arrows move each element above or below the others; stacking is independent of movement links and is included in backups.
 - **Movement links:** padlocks link the logo and text to the search field, and each icon to its button, by default. Moving the parent moves its linked children; moving a child leaves other elements in place. Linking or unlinking preserves the current position.
 - **Lock proportions:** the padlock and connector lines next to width and height link the two dimensions for the outer capsule, search field and each button. The initial preset locks the outer capsule and buttons; the search field can be resized independently. Locking keeps the current ratio; unlocking allows independent changes. The setting is saved per element and included in backups.
@@ -49,7 +49,7 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 ### Configuration and backup
 
 - **Layout → Number of buttons** lets you show 0 to 3 buttons. Hidden buttons retain their settings and become available again when you increase the number.
-- Five sections: **Layout, Appearance, Actions, Search and Backup**. Layout is the first section and opens when you start configuring a widget.
+- Six sections: **Layout, Appearance, Actions, Search, Light/Dark linking and Backup**. Layout is the first section and opens when you start configuring a widget.
 - Settings use **grouped cards** with an icon, title and description. Tap a row to open its controls; **All settings** or Back returns to the section list.
 - Each element in Layout has **Dimensions** and **Position** panels with their respective resets. Each area in Actions groups its tap action and haptic feedback.
 - Material 3 Expressive selectors show frequent choices directly and wrap on narrower screens. Preview background settings open from the row below the preview.
@@ -57,6 +57,24 @@ Inspired by the appearance of the **Google Circle to Search** bar, MySearchWidge
 - English and Italian interfaces, with instant switching through **EN / IT** in the top-right corner and a persistent language preference.
 - Export and import individual widget configurations, including layout, layer order, movement links, imported fonts and images.
 - A library of reusable templates. Backups are validated before import; applying one to a widget is a separate step that requires confirmation.
+
+Changing the button count lets the search field’s automatic width fill the available space without changing its height. Buttons align to the right with uniform outer insets; with no buttons, the field has symmetric insets. Manual dimensions, spacing and offsets remain customizable.
+
+The global height control changes height while retaining the current width. New widgets start at 68 dp, adapting horizontally to the launcher. If the launcher allocation limits the displayed height, the preview reports it.
+
+## Light/Dark linking
+
+**Light/Dark linking**, opened from **Links** with the padlock after **Search**, lets you choose which settings to share between the two modes. Each element has individual switches for dimensions, position, stacking order, colors and gradients. Separate controls also cover the search engine, Google app search, logo, shapes, button count and icons, placeholder content, fonts, formatting and actions.
+
+Separation switches are **off by default**, except for **colors and gradients**, which keep distinct values. With a switch off, edits apply to both modes; with it on, only the selected mode changes. When turning it off, if values differ, choose whether to keep the light or dark values for both modes. Manual colors still require **Material You to be off**, using its control in Appearance.
+
+**Editing mode**, beside the preview, appears in sections with separate settings and selects the mode you are editing. The preview follows this selection and can also be switched independently. Section notices indicate whether settings are shared or separate. **Undo/Redo** includes linking changes; **Save** applies the entire configuration. Backups preserve both modes and their custom search engines.
+
+## Updates
+
+When the configurator opens, it checks GitHub for a newer stable release and offers to download the APK directly, without a browser or WebView. Android manages the download, and the app offers installation when it finishes. If the configurator was closed, the offer appears when it is reopened. Android may ask you to allow installations from MySearchWidget; the button opens the relevant settings screen.
+
+The package, version code and APK signature are checked before installation. The app has no periodic update checks, background services or permanent background processes. The configurator remains usable without a network connection.
 
 ## Managing the list and trash button
 
@@ -85,7 +103,7 @@ Edits and applied templates remain in the preview until you tap **Save**. **Canc
 
 For widgets already placed on the home screen, the preview uses the dimensions reported by the launcher and scales the complete composition to fit the configurator. Element positions are not recalculated from the width of the preview card.
 
-The widget keeps a reference composition and scales the entire layout proportionally to the space provided by the launcher. Changing launcher padding preserves relative element sizes, spacing and touch targets. Dimension controls edit the reference composition, which is included in backups.
+When the widget becomes narrower or wider in the launcher, the search field adjusts its width and the buttons stay aligned to the right. Height and spacing from the outer outline remain unchanged, respecting custom offsets. If the launcher provides insufficient vertical space, the composition scales down to fit. The preview and touch targets follow the same layout.
 
 **Undo** and **Redo** step through edits before saving; a slider drag is one edit. The **Light/Dark** preview button shows its current state and changes only the preview. Choosing a colour variant automatically previews that variant, and you can still switch it manually.
 
@@ -138,7 +156,7 @@ Wallpaper preview is optional. Reading the home screen wallpaper may require ima
 
 If access is denied or the wallpaper cannot be read, for example with a live wallpaper, the preview keeps its solid background. The app does not scan your gallery or include the wallpaper in backups.
 
-MySearchWidget does not request **Internet, microphone or draw-over-other-apps permissions**. Online searches and voice actions are handled by the selected external apps.
+MySearchWidget uses **Internet access** to check GitHub releases and download requested updates. Permission to install apps is requested only when you choose to install an update. It does not request microphone or draw-over-other-apps access; online searches and voice actions are handled by the selected external apps.
 
 ## BBCode examples
 

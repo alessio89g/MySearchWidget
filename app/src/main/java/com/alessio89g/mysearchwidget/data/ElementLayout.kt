@@ -13,20 +13,24 @@ class ElementLayout(val width:Float,requested:WidgetConfig) {
  val height=config.heightDp
  val outerWidth=min(width,config.sizing.outerWidthDp ?: width)
  val outer=Bounds((width-outerWidth)/2f,0f,(width+outerWidth)/2f,height).shift(config.placement.outer)
- val unit=WidgetDimensions(width,config.sizing.layoutHeightDp ?: height,config.count).scale
+ // Width is absorbed by the search field, not by the vertical dimensions or gaps.
+ val unit=WidgetDimensions(config.referenceWidthDp?.toFloat() ?: width,config.sizing.layoutHeightDp ?: height,config.count).scale
  private val slots=config.buttons.take(config.count)
- private val pad=config.sizing.sidePaddingDp ?: 9f*unit
- private val rightPad=pad+if(config.count>0 && config.sizing.sidePaddingDp==null)3f*unit else 0f
+ private val adaptive=config.adaptiveButtons
+ private val nominalCell=if(adaptive)47f/68f*(config.sizing.layoutHeightDp ?: height) else 46f*unit
+ private val pad=config.sizing.sidePaddingDp ?: if(adaptive)(height-nominalCell)/2f else 9f*unit
+ private val rightPad=pad+if(!adaptive && config.count>0 && config.sizing.sidePaddingDp==null)3f*unit else 0f
  private val inset=config.sizing.logoInsetDp ?: 8f*unit
  private val textGap=config.sizing.textGapDp ?: 11f*unit
- private val gaps=slots.mapIndexed {i,s->s.gapDp ?: (if(i==0)4f else 6f)*unit}
+ private val gaps=slots.mapIndexed {i,s->s.gapDp ?: (if(adaptive)3f else if(i==0)4f else 6f)*unit}
  // Position allocation uses the automatic sizes, never the user-sized artwork.
  // Changing a size therefore cannot push a neighbour or recenter the group.
  private val minimumField=inset+32f*unit+textGap+34f*unit
- val fit=min(1f,width/(pad+rightPad+minimumField+slots.size*46f*unit+gaps.sum()))
- private val cell=46f*unit*fit
- private val fieldLeft=pad*fit
- private val fieldRight=width-(rightPad+slots.size*46f*unit+gaps.sum())*fit
+ val fit=if(config.referenceWidthDp!=null)min(1f,((outerWidth-pad-rightPad-16f)/(slots.size*nominalCell+gaps.sum()).coerceAtLeast(1f)).coerceAtLeast(.001f)) else min(1f,(if(adaptive)outerWidth else width)/(pad+rightPad+minimumField+slots.size*nominalCell+gaps.sum()))
+ private val edgeFit=if(config.referenceWidthDp!=null)1f else fit
+ private val cell=nominalCell*fit
+ private val fieldLeft=(if(adaptive)(width-outerWidth)/2f else 0f)+pad*edgeFit
+ private val fieldRight=(if(adaptive)(width+outerWidth)/2f else width)-rightPad*edgeFit-(slots.size*nominalCell+gaps.sum())*fit
  private val fieldCenter=(fieldLeft+fieldRight)/2f
  private fun centered(cx:Float,w:Float,h:Float)=Bounds(cx-w/2f,(height-h)/2f,cx+w/2f,(height+h)/2f)
  private fun artwork(cx:Float,w:Float,h:Float,locked:Boolean):Bounds {
@@ -35,7 +39,7 @@ class ElementLayout(val width:Float,requested:WidgetConfig) {
    val scale=min(1f,min(limit/w,height/h));centered(cx,w*scale,h*scale)
   }else centered(cx,min(w,limit),min(h,height))
  }
- private val baseField=artwork(fieldCenter,config.sizing.fieldWidthDp ?: (fieldRight-fieldLeft),config.sizing.fieldHeightDp ?: 46f*unit,config.sizing.fieldLocked)
+ private val baseField=artwork(fieldCenter,config.sizing.fieldWidthDp ?: (fieldRight-fieldLeft).coerceAtLeast(1f),config.sizing.fieldHeightDp ?: nominalCell,config.sizing.fieldLocked)
  val field=baseField.shift(config.placement.field)
  private val contentField=if(config.placement.fieldLinked)baseField else centered(fieldCenter,config.placement.detachedFieldWidth ?: (fieldRight-fieldLeft),config.placement.detachedFieldHeight ?: (46f*unit))
  private val parentOffset=if(config.placement.fieldLinked)config.placement.field else OffsetDp()
@@ -58,7 +62,7 @@ class ElementLayout(val width:Float,requested:WidgetConfig) {
  init {
   var x=fieldRight
   val centers=slots.indices.map {i->x+=gaps[i]*fit;val center=x+cell/2f;x+=cell;center}
-  buttonBounds=slots.mapIndexed {i,s->artwork(centers[i],s.widthDp ?: 46f*unit*fit,s.heightDp ?: 46f*unit*fit,s.proportionsLocked).shift(s.position)}
+  buttonBounds=slots.mapIndexed {i,s->artwork(centers[i],s.widthDp ?: cell,s.heightDp ?: cell,s.proportionsLocked).shift(s.position)}
   iconBounds=slots.mapIndexed {i,s->val size=s.icon.sizeDp ?: 25f*unit*fit;artwork(centers[i],size,size,true).shift(s.iconPosition+if(s.iconLinked)s.position else OffsetDp())}
   // Stable action partitions prevent enlarged artwork from stealing neighbouring taps.
   val hitLeft=baseField.left

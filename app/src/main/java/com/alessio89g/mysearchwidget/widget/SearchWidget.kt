@@ -42,10 +42,19 @@ class SearchWidget:AppWidgetProvider() {
    val size=WidgetViewport.from(context,options)
    val actual=size.width
    val config=c ?: Repository(context).let {if(WidgetViewport.hasAllocation(options))it.anchorWidth(id,actual) else it.config(id)}
-   manager.updateAppWidget(id,views(context,id,config,actual,text,size.availableHeight,Repository(context).engine(config.engineId)))
+   manager.updateAppWidget(id,views(context,id,config,actual,text,size.availableHeight,Repository(context).engine(ModeSettings.resolve(config,config.theme=="dark").engineId),Repository(context).engine(ModeSettings.resolve(config,true).engineId)))
   }
-  fun views(context:Context,id:Int,config:WidgetConfig,width:Int,text:SessionText?=null,availableHeight:Float?=null,engine:Engine?=null):RemoteViews {
-   val presentation=WidgetPresentation(config,width.coerceIn(180,1000),availableHeight)
+  fun views(context:Context,id:Int,config:WidgetConfig,width:Int,text:SessionText?=null,availableHeight:Float?=null,engine:Engine?=null,darkEngine:Engine?=engine):RemoteViews {
+   if(config.theme=="system" && config.modes.dark.isNotEmpty()) {
+    val rv=RemoteViews(context.packageName,R.layout.widget_modes)
+    rv.addView(R.id.light_variant,views(context,id,ModeSettings.resolve(config,false).copy(theme="light"),width,text,availableHeight,engine))
+    rv.addView(R.id.dark_variant,views(context,id,ModeSettings.resolve(config,true).copy(theme="dark"),width,text,availableHeight,darkEngine))
+    rv.setColorInt(R.id.light_variant,"setVisibility",View.VISIBLE,View.GONE)
+    rv.setColorInt(R.id.dark_variant,"setVisibility",View.GONE,View.VISIBLE)
+    return rv
+   }
+   val resolved=ModeSettings.resolve(config,Renderer.dark(context,config))
+   val presentation=WidgetPresentation(resolved,width.coerceIn(180,1000),availableHeight)
    val c=presentation.config
    val designWidth=presentation.designWidth
    val rv=RemoteViews(context.packageName,R.layout.widget)
@@ -65,8 +74,8 @@ class SearchWidget:AppWidgetProvider() {
    fun pending(slot:Int,input:Boolean=false,element:String):PendingIntent {
     val intent=Intent(context,if(input && !c.googleInput)InputActivity::class.java else ActionActivity::class.java)
      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id).putExtra("slot",slot).putExtra("element",element)
-     .setData(android.net.Uri.parse("mysearchwidget://widget/$id/${element}"))
+     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id).putExtra("slot",slot).putExtra("element",element).putExtra("renderedTheme",c.theme)
+     .setData(android.net.Uri.parse("mysearchwidget://widget/$id/${element}/${c.theme}"))
     return PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
    }
    rv.removeAllViews(R.id.hit_row)
