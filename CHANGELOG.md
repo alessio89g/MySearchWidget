@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.16.5 — 2026-10-16
+
+### English
+
+- Reset individual settings to their defaults, including appearance, text formatting, actions and search, while respecting Light/Dark links.
+- Return to the app home screen using the Home button beside Save. Home, Save and language controls have matching outlines and uniform spacing.
+- See the installed app version on the home screen.
+- Use an automatic search-engine placeholder by default and when resetting its text.
+- Choose original app icons or icons from installed compatible packs for the logo and buttons. Compatible packs open their own icon picker.
+- Apply monochrome tint, gradients and outline to imported icons. Monochrome mode preserves internal contrast; “Keep outer outline” lets you include the original border or exclude an identifiable uniform background.
+- Use an English widget preview in the launcher picker.
+- The Italian Links navigation button is named “Legami”.
+
+### Italiano
+
+- Ripristina i valori predefiniti delle singole impostazioni, inclusi aspetto, formattazione del testo, azioni e ricerca, rispettando i legami Chiaro/Scuro.
+- Torna alla home dell’app con la casetta accanto al pulsante Salva. I pulsanti Home, Salva e lingua hanno bordi coerenti e spaziatura uniforme.
+- Visualizza la versione installata nella home dell’app.
+- Usa il testo a riposo automatico del motore di ricerca come impostazione predefinita e al ripristino del testo.
+- Scegli le icone originali delle app o quelle degli icon pack compatibili installati per logo e pulsanti. I pack compatibili aprono il proprio selettore.
+- Applica tinta monocromatica, gradienti e outline alle icone importate. La modalità monocromatica conserva i contrasti interni; “Mantieni contorno esterno” permette di includere il bordo originale oppure escludere lo sfondo uniforme riconoscibile.
+- Visualizza l’anteprima del widget in inglese nel selettore del launcher.
+- Il pulsante di navigazione dei collegamenti Chiaro/Scuro si chiama “Legami”.
+
 ## 1.14.2 — 2026-10-14
 
 ### English

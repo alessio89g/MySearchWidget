@@ -53,6 +53,7 @@ import com.alessio89g.mysearchwidget.i18n.placeholderText
   if(it)bbcodeDraft=RichText.bbcode(if(query)"{query}" else text,if(query)emptyList() else config.hintRuns,if(query)config.query else config.hint)
   bbcode=it;error=false
  }
+ TextButton(onClick={bbcode=false;error=false}){Text(tr(R.string.reset_named,tr(R.string.bbcode_mode)))}
  if(bbcode) {
   Text(tr(R.string.bbcode_help),style=MaterialTheme.typography.bodySmall)
   if(query)Text(tr(R.string.query_bbcode_help),style=MaterialTheme.typography.bodySmall)

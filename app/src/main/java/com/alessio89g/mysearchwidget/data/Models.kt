@@ -11,7 +11,7 @@ import java.util.Base64
 @Serializable data class Surface(val light: Tone = Tone(), val dark: Tone = Tone(), val rounding: Float = 100f, val shape: String = "circle")
 @Serializable data class TextStyle(val font: String = "", val size: Float = 15f, val weight: Int = 400, val light: String = "", val dark: String = "", val italic:Boolean=false,val underline:Boolean=false,val strike:Boolean=false,val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient())
 @Serializable data class Shortcut(val kind: String = "none", val value: String = "", val label: String = "")
-@Serializable data class IconSpec(val name: String = "Search", val monochrome:Boolean = true, val outline: Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient(),val sizeDp:Float?=null)
+@Serializable data class IconSpec(val name: String = "Search", val monochrome:Boolean = true, val outline: Boolean = false, val keepOuterOutline:Boolean = false, val asset: String = "", val light: String = "", val dark: String = "",val lightGradient:Gradient=Gradient(),val darkGradient:Gradient=Gradient(),val sizeDp:Float?=null)
 @Serializable data class Slot(val icon: IconSpec = IconSpec(), val surface: Surface = Surface(), val tap: Shortcut = Shortcut(), val up: Shortcut = Shortcut(), val down: Shortcut = Shortcut(), val widthDp:Float?=null, val heightDp:Float?=null, val gapDp:Float?=null, val aspectRatio:Float?=null, val proportionsLocked:Boolean=true, val position:OffsetDp=OffsetDp(), val iconPosition:OffsetDp=OffsetDp(), val iconLinked:Boolean=true)
 @Serializable data class Asset(val kind: String, val base64: String)
 @Serializable data class ElementSizing(

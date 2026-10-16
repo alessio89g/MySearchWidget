@@ -369,4 +369,27 @@
  <string name="mode_keep_dark">Keep dark values</string>
  <string name="mode_nav">Links</string>
  <string name="height_allocation_notice">Displayed height: %1$s dp (configured: %2$s dp). The launcher allocation scales the widget down. Increase its space on the Home screen to display it at full size.</string>
+ <string name="reset_options">Reset defaults</string>
+ <string name="reset_option">Reset</string>
+ <string name="reset_named">Reset %1$s</string>
+ <string name="reset_color">Solid color</string>
+ <string name="reset_options_help">Reset one option without changing the others. Resets follow light/dark links, can be undone, and apply only after Save.</string>
+ <string name="app_home">App home</string>
+ <string name="app_version">Version %1$s</string>
+ <string name="icon_packs">Icon packs</string>
+ <string name="no_icon_packs">No compatible icon packs installed.</string>
+ <string name="pack_no_icons">This pack does not expose a readable icon catalogue.</string>
+ <string name="icon_load_failed">Unable to load this icon. Your current selection is unchanged.</string>
+ <string name="action_icon">Icon for this action</string>
+ <string name="keep_icon">Keep current icon</string>
+ <string name="original_app_icon">Use original app icon</string>
+ <string name="from_icon_pack">Choose from icon pack</string>
+ <string name="launcher_icon_help">The launcher’s custom icon is not shared with other apps. Choose the same installed icon pack and icon here. Existing outline, monochrome and color settings still apply.</string>
+ <string name="use_action_icon">Use selection</string>
+ <string name="bitmap_outline_help">Choose whether to include the original outer border. When off, outline excludes an identifiable uniform background; transparent symbols retain their outline.</string>
+<string name="action_icon_links">The icon follows its Logo or Button icon link in Links; the action follows its own separate link.</string>
+<string name="native_pack_help">Select a pack to open its own icon picker. Only the chosen image is imported.</string>
+<string name="native_pack_unavailable">This pack has no compatible picker, or could not return a readable icon. You can browse its catalogue here instead.</string>
+<string name="browse_pack_here">Browse in MySearchWidget</string>
+ <string name="keep_outer_outline">Keep outer outline</string>
 </resources>

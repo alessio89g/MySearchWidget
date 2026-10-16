@@ -175,7 +175,7 @@ class ConfigActivity:ComponentActivity() {
   setContent {
    val deviceConfiguration=LocalConfiguration.current
    val languageContext=remember(AppLanguage.code,deviceConfiguration){AppLanguage.context(this)}
-   CompositionLocalProvider(LocalContext provides languageContext,LocalConfiguration provides languageContext.resources.configuration) {
+   CompositionLocalProvider(androidx.activity.compose.LocalActivityResultRegistryOwner provides this@ConfigActivity,LocalContext provides languageContext,LocalConfiguration provides languageContext.resources.configuration) {
    val dark=isSystemInDarkTheme()
    val notices=remember {SnackbarHostState()}
    LaunchedEffect(message,AppLanguage.code) {
@@ -239,6 +239,7 @@ class ConfigActivity:ComponentActivity() {
  }
  @Composable private fun WallpaperControl() {
   Toggle(tr(R.string.wallpaper_preview),wallpaperEnabled){setWallpaper(it)}
+  TextButton(onClick={setWallpaper(false)}){Text(tr(R.string.reset_named,tr(R.string.wallpaper_preview)))}
   if(wallpaperPermission)AlertDialog(onDismissRequest={wallpaperPermission=false},title={Text(tr(R.string.wallpaper_permission_title))},text={Text(tr(if(wallpaperBroadPermission)R.string.wallpaper_permission_help else R.string.wallpaper_images_help))},confirmButton={TextButton(onClick={
    wallpaperPermission=false
    if(wallpaperBroadPermission && android.os.Build.VERSION.SDK_INT>=33 && !android.os.Environment.isExternalStorageManager()) {
@@ -248,9 +249,11 @@ class ConfigActivity:ComponentActivity() {
   }){Text(tr(R.string.wallpaper_grant))}},dismissButton={TextButton(onClick={wallpaperPermission=false}){Text(tr(R.string.cancel))}})
  }
 
+ @Composable private fun headerBorder()=BorderStroke(1.dp,MaterialTheme.colorScheme.outline.copy(alpha=if(busy).12f else 1f))
+ @Composable private fun headerIconColors()=IconButtonDefaults.outlinedIconButtonColors(contentColor=MaterialTheme.colorScheme.onSurface)
  @Composable private fun LanguageButton() {
   val description=tr(R.string.switch_language)
-  OutlinedIconButton(onClick={
+  OutlinedIconButton(enabled=!busy,border=headerBorder(),colors=headerIconColors(),onClick={
    AppLanguage.select(if(AppLanguage.code=="en")"it" else "en")
    lifecycleScope.launch {SearchWidget.ids(this@ConfigActivity).forEach {SearchWidget.update(this@ConfigActivity,it)}}
   },modifier=Modifier.size(48.dp).semantics {contentDescription=description}) {
@@ -298,6 +301,12 @@ class ConfigActivity:ComponentActivity() {
   editorState.editDark=Renderer.dark(this,anchored)
  }
  private fun setSlot(index:Int,slot:Slot){config=if(index==-1)config.copy(logo=slot) else config.copy(buttons=config.buttons.mapIndexed {i,s->if(i==index)slot else s})}
+ private fun setExternalIcon(index:Int,choice:Pair<String,Asset>?,action:Shortcut?=null) {
+  val current=config
+  val old=if(index<0)current.logo else current.buttons[index]
+  val slot=old.copy(icon=choice?.let {old.icon.copy(asset=it.first)} ?: old.icon,tap=action ?: old.tap)
+  config=current.copy(assets=choice?.let {current.assets+it} ?: current.assets,logo=if(index<0)slot else current.logo,buttons=if(index<0)current.buttons else current.buttons.mapIndexed {i,v->if(i==index)slot else v})
+ }
  private fun task(block:suspend ()->Unit){lifecycleScope.launch {busy=true;try {block()}catch(e:Exception){message=tr(R.string.operation_failed,errorText(e))}finally{busy=false}}}
  private fun save(){task {
   val id=selected ?: return@task
@@ -336,6 +345,7 @@ class ConfigActivity:ComponentActivity() {
    if(configs.isEmpty())item {Text(tr(R.string.default_preview));Preview(DefaultWidget.create(this@ConfigActivity),wallpaperImage)}
    item {TemplateLibrary()}
   }
+  Text(tr(R.string.app_version,com.alessio89g.mysearchwidget.BuildConfig.VERSION_NAME),modifier=Modifier.fillMaxWidth(),textAlign=androidx.compose.ui.text.style.TextAlign.Center,style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
   TextButton(onClick={
    try {startActivity(Intent(Intent.ACTION_VIEW,android.net.Uri.parse("https://github.com/alessio89g/MySearchWidget")))}
    catch(_:android.content.ActivityNotFoundException){message=tr(R.string.link_unavailable)}
@@ -390,16 +400,29 @@ class ConfigActivity:ComponentActivity() {
   LaunchedEffect(compactHeight){if(compactHeight)previewExpanded=false}
   val pageStates=rememberSaveableStateHolder()
   var confirmDiscard by remember {mutableStateOf(false)}
+  var goHomeAfterDiscard by remember {mutableStateOf(false)}
   val dirty=editorState.config!=configs[id]
-  fun leaveEditor(){if(dirty)confirmDiscard=true else if(configuring)finish() else {selected=null}}
+  fun leaveConfirmed(home:Boolean) {
+   if(home && configuring) {
+    // Start the ordinary library without the launcher configuration action or widget ID.
+    // Keep RESULT_CANCELED for an abandoned configuration; Home must never save a draft.
+    startActivity(Intent(this@ConfigActivity,ConfigActivity::class.java).setAction(Intent.ACTION_MAIN))
+    finish()
+   } else if(configuring)finish() else {selected=null}
+  }
+  fun leaveEditor(home:Boolean=false){goHomeAfterDiscard=home;if(dirty)confirmDiscard=true else leaveConfirmed(home)}
   BackHandler(enabled=!busy && editorState.librarySelection.isEmpty()){leaveEditor()}
   if(editorState.librarySelection.isNotEmpty())Spacer(Modifier.height(64.dp))
   else Row(Modifier.fillMaxWidth().padding(vertical=8.dp),verticalAlignment=Alignment.CenterVertically) {
    TextButton(onClick={leaveEditor()},enabled=!busy){Text(tr(R.string.cancel))}
-   Text("Widget $id",Modifier.weight(1f),style=MaterialTheme.typography.titleMedium)
-   Button(onClick={save()},shapes=ButtonDefaults.shapes(),enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text(tr(R.string.save))}
-   Spacer(Modifier.width(4.dp))
+   Text("Widget $id",Modifier.weight(1f),style=MaterialTheme.typography.titleMedium,maxLines=1,overflow=androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+   Row(horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=Alignment.CenterVertically) {
+   OutlinedIconButton(onClick={leaveEditor(true)},enabled=!busy,border=headerBorder(),colors=headerIconColors(),modifier=Modifier.size(48.dp)) {
+    Icon(IconCatalog.vector("Home",true),contentDescription=tr(R.string.app_home))
+   }
+   OutlinedButton(onClick={save()},shape=androidx.compose.foundation.shape.CircleShape,border=headerBorder(),colors=ButtonDefaults.outlinedButtonColors(contentColor=MaterialTheme.colorScheme.onSurface),enabled=!busy,modifier=Modifier.height(48.dp)){Text(tr(R.string.save))}
    LanguageButton()
+   }
   }
   Card(shape=RoundedCornerShape(28.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.secondaryContainer)) {
    Column(Modifier.padding(horizontal=12.dp,vertical=8.dp)) {
@@ -470,17 +493,20 @@ class ConfigActivity:ComponentActivity() {
          Choice(tr(R.string.theme),config.theme,listOf("system" to tr(R.string.system),"light" to tr(R.string.light),"dark" to tr(R.string.dark))){config=config.copy(theme=it);previewTheme=if(Renderer.dark(this@ConfigActivity,config))"dark" else "light"}
          Toggle(tr(R.string.material_you),config.dynamic){config=config.copy(dynamic=it)}
          Text(tr(R.string.material_notice),style=MaterialTheme.typography.bodySmall)
+         ResetOptions(config,listOf(resetOption(R.string.theme,"theme"),resetOption(R.string.material_you,"dynamic"))){config=it}
         }
        }
        "Barra" -> {
         Section(tr(R.string.outer_border),true){
          ModeNotice(listOf("shape.outer","color.outer"))
          SurfaceEditor(config.outer){config=config.copy(outer=it)}
+         ResetOptions(config,surfaceResets("outer",editorState.editDark,config,config.outer)){config=it}
         }
         Section(tr(R.string.search_field)){
          ModeNotice(listOf("shape.field","color.field"))
          Text(tr(R.string.dimensions_help),style=MaterialTheme.typography.bodySmall)
          SurfaceEditor(config.field){config=config.copy(field=it)}
+         ResetOptions(config,surfaceResets("field",editorState.editDark,config,config.field)){config=it}
         }
        }
        "Testo" -> {
@@ -493,6 +519,7 @@ class ConfigActivity:ComponentActivity() {
          if(!queryPreview && end>start && config.placeholder.isEmpty())config=config.copy(placeholder=placeholderText(config,engines.firstOrNull {it.id==config.engineId}))
          editorState.fontStart=start;editorState.fontEnd=end;fontDocument.launch(arrayOf("*/*"))
         }}
+        ResetOptions(config,textResets(if(queryPreview)"query" else "hint",editorState.editDark,config)){config=it}
         }
        }
        else -> {
@@ -500,7 +527,10 @@ class ConfigActivity:ComponentActivity() {
         val slot=if(slotIndex==-1)config.logo else config.buttons[slotIndex]
         ModeNotice(if(slotIndex==-1)listOf("logo","color.logo") else listOf("icon.$slotIndex","shape.button$slotIndex","color.icon$slotIndex","color.button$slotIndex"))
         if(config.dynamic)Text(tr(R.string.disable_dynamic_help),style=MaterialTheme.typography.bodySmall)
-        SlotEditor(slot,slotIndex>=0,{setSlot(slotIndex,it)},showAction=false,unit=sizeUnit,firstButton=slotIndex==0){iconTarget=slotIndex;iconDocument.launch(arrayOf("image/*"))}
+        SlotEditor(slot,slotIndex>=0,{setSlot(slotIndex,it)},showAction=false,unit=sizeUnit,firstButton=slotIndex==0,onExternalIcon={setExternalIcon(slotIndex,it)}){iconTarget=slotIndex;iconDocument.launch(arrayOf("image/*"))}
+        val prefix=if(slotIndex<0)"logo" else "buttons.$slotIndex"
+        ResetOptions(config,iconResets("$prefix.icon",editorState.editDark,config,slot.icon).map {it.copy(label=tr(R.string.icon)+" · "+it.label)}+
+         if(slotIndex>=0)surfaceResets("$prefix.surface",editorState.editDark,config,slot.surface).map {it.copy(label=tr(R.string.button_background)+" · "+it.label)} else emptyList()){config=it}
        }
       }}
       }
@@ -530,11 +560,13 @@ class ConfigActivity:ComponentActivity() {
           } else {
            val index=if(area=="logo")-1 else area.last().digitToInt()
            val slot=if(index==-1)config.logo else config.buttons[index]
-           ActionPicker(tr(R.string.tap_action),slot.tap){setSlot(index,slot.copy(tap=it))}
+           ActionPicker(tr(R.string.tap_action),slot.tap,onChange={setSlot(index,slot.copy(tap=it))},onWithIcon={action,icon->setExternalIcon(index,icon,action)})
+           ResetOptions(config,listOf(resetOption(R.string.tap_action,if(index<0)"logo.tap" else "buttons.$index.tap"))){config=it}
           }
          }
          SettingCard(tr(R.string.touch_feedback),if(area.startsWith("button"))tr(R.string.haptic_area_help) else "") {
           Toggle(tr(R.string.haptic_feedback),config.hapticEnabled(area)){config=config.copy(haptics=config.haptics+(area to it))}
+          ResetOptions(config,listOf(resetOption(R.string.haptic_feedback,"haptics.$area"))){config=it}
          }
         }
        }
@@ -554,16 +586,18 @@ class ConfigActivity:ComponentActivity() {
       if(searchTarget=="text")SettingCard(tr(R.string.search_field),tr(R.string.placeholder_help)) {
        ModeNotice(listOf("placeholder"))
        OutlinedTextField(config.placeholder,{config=config.copy(placeholder=it.take(500),hintRuns=RichText.edit(config.placeholder,it.take(500),config.hintRuns,config.hint))},label={Text(tr(R.string.placeholder_label))},placeholder={Text(placeholderText(config,engines.firstOrNull {it.id==config.engineId}))},supportingText={Text(tr(R.string.placeholder_empty))},modifier=Modifier.fillMaxWidth(),singleLine=true)
+       ResetOptions(config,listOf(resetOption(R.string.placeholder_label,"placeholder"))){config=it}
        TextButton(onClick={page="Aspetto";element="Testo";queryPreview=false}){Text(tr(R.string.format_search_text))}
       }
       if(searchTarget=="google")SettingCard(tr(R.string.google_input_title),tr(R.string.google_input_help)){
        ModeNotice(listOf("search.google"))
        Toggle(tr(R.string.google_input_toggle),config.googleInput){config=config.copy(googleInput=it)}
+       ResetOptions(config,listOf(resetOption(R.string.google_input_toggle,"googleInput"))){config=it}
       }
       if(searchTarget=="engine")SettingCard(tr(R.string.search_engine),tr(R.string.engine_help)){
        if(config.googleInput)Text(tr(R.string.google_engine_disabled),style=MaterialTheme.typography.bodySmall)
        CompositionLocalProvider(LocalControlsEnabled provides !config.googleInput){
-        Column(Modifier.graphicsLayer {alpha=if(config.googleInput).45f else 1f}){EngineLibrary()}
+        Column(Modifier.graphicsLayer {alpha=if(config.googleInput).45f else 1f}){EngineLibrary();ResetOptions(config,listOf(resetOption(R.string.search_engine,"engineId"))){config=it}}
        }
       }
       }
@@ -597,7 +631,7 @@ class ConfigActivity:ComponentActivity() {
     }
    }
   }
-  if(confirmDiscard)AlertDialog(onDismissRequest={confirmDiscard=false},title={Text(tr(R.string.discard_title))},text={Text(tr(R.string.discard_help))},confirmButton={TextButton(onClick={confirmDiscard=false;if(configuring)finish() else {selected=null}}){Text(tr(R.string.discard))}},dismissButton={TextButton(onClick={confirmDiscard=false}){Text(tr(R.string.keep_editing))}})
+  if(confirmDiscard)AlertDialog(onDismissRequest={confirmDiscard=false},title={Text(tr(R.string.discard_title))},text={Text(tr(R.string.discard_help))},confirmButton={TextButton(onClick={confirmDiscard=false;leaveConfirmed(goHomeAfterDiscard)}){Text(tr(R.string.discard))}},dismissButton={TextButton(onClick={confirmDiscard=false}){Text(tr(R.string.keep_editing))}})
   applyModel?.let {t->AlertDialog(onDismissRequest={applyModel=null},title={Text(tr(R.string.apply_widget,id))},text={Text(tr(R.string.replace_template,t.name))},confirmButton={TextButton(onClick={applyModel=null;task {
    editorState.config=repo.prepareTemplate(t).let {it.copy(referenceWidthDp=it.referenceWidthDp ?: config.referenceWidthDp)};engines=repo.engines()
   }}){Text(tr(R.string.apply))}},dismissButton={TextButton(onClick={applyModel=null}){Text(tr(R.string.cancel))}})}

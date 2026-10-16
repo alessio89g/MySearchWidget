@@ -36,6 +36,26 @@ object Assets {
  } }
  private fun key(asset:Asset)=java.security.MessageDigest.getInstance("SHA-256").digest(asset.base64.toByteArray()).joinToString("") { "%02x".format(it) }
  fun bitmap(asset:Asset):Bitmap? { val k=key(asset); return bitmaps[k] ?: Base64.getDecoder().decode(asset.base64).let { b -> BitmapFactory.decodeByteArray(b,0,b.size)?.also { bitmaps.put(k,it) } } }
+ /** Preserve internal contrast in flattened icons instead of tinting their entire opaque disc. */
+ fun monochromeBitmap(asset:Asset):Bitmap? {
+  val k=key(asset)+":monochrome";bitmaps[k]?.let {return it}
+  val source=bitmap(asset) ?: return null
+  val pixels=IntArray(source.width*source.height)
+  source.getPixels(pixels,0,source.width,0,0,source.width,source.height)
+  val output=IconToneMask.convert(pixels)
+  return Bitmap.createBitmap(output,source.width,source.height,Bitmap.Config.ARGB_8888).also {bitmaps.put(k,it)}
+ }
+ /** Trace silhouette and internal color boundaries, preserving source RGB. */
+ fun outlinedBitmap(asset:Asset,keepOuterOutline:Boolean=false):Bitmap? {
+  val k=key(asset)+":outline:$keepOuterOutline";bitmaps[k]?.let {return it}
+  val source=bitmap(asset) ?: return null
+  val scale=minOf(1f,256f/maxOf(source.width,source.height))
+  val b=Bitmap.createScaledBitmap(source,(source.width*scale).toInt().coerceAtLeast(1),(source.height*scale).toInt().coerceAtLeast(1),true)
+  val w=b.width;val h=b.height;val pixels=IntArray(w*h);b.getPixels(pixels,0,w,0,0,w,h)
+  val output=IconOutline.convert(pixels,w,h,(minOf(w,h)/64).coerceAtLeast(1),keepOuterOutline)
+  if(b!==source)b.recycle()
+  return Bitmap.createBitmap(output,w,h,Bitmap.Config.ARGB_8888).also {bitmaps.put(k,it)}
+ }
  fun font(context:Context,asset:Asset):Typeface {
   val k=key(asset);fonts[k]?.let { return it }
   val f=File.createTempFile("renderfont", ".font",context.cacheDir)

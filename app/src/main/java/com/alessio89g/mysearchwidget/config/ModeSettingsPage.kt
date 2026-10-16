@@ -26,10 +26,14 @@ import com.alessio89g.mysearchwidget.i18n.*
   DetailBack {selected=0;onNavigate()}
   val (title,keys)=sections.first {it.first==selected}
   SettingCard(tr(title),tr(R.string.mode_switch_detail)) {
-   keys.forEach {key->Toggle(modeLabel(key),key in config.modes.separate){enabled->
-    if(!enabled && ModeSettings.hasDifferentValues(config,key))pendingLink=key
-    else onChange(ModeSettings.toggle(config,key,enabled,false))
-   }}
+   keys.forEach {key->
+    fun change(enabled:Boolean) {
+     if(!enabled && ModeSettings.hasDifferentValues(config,key))pendingLink=key
+     else onChange(ModeSettings.toggle(config,key,enabled,false))
+    }
+    Toggle(modeLabel(key),key in config.modes.separate){change(it)}
+    TextButton(onClick={change(key in COLOR_GROUPS)}){Text(tr(R.string.reset_named,modeLabel(key)))}
+   }
   }
  }
  pendingLink?.let {key->

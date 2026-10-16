@@ -50,7 +50,7 @@
   },
   "theme": "system",
   "dynamic": false,
-  "placeholder": "Cerca con Google",
+  "placeholder": "",
   "outer": {
     "light": {
       "color": "",

@@ -10,11 +10,11 @@ android {
   applicationId = "com.alessio89g.mysearchwidget"
   minSdk = 31 // Material You requires Android 12; the input technique does not.
   targetSdk = 37
-  versionCode = 32
-  versionName = "1.14.2"
+  versionCode = 45
+  versionName = "1.16.5"
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
- buildFeatures { compose = true }
+ buildFeatures { compose = true; buildConfig = true }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  buildTypes { release { isMinifyEnabled = true; isShrinkResources = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt")) } }
 }

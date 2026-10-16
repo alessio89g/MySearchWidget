@@ -1,198 +1,82 @@
 # MySearchWidget
 
 > [!NOTE]
-> **L'intero progetto è stato realizzato in vibe coding.In questo repository non esiste codice scritto da un umano.**
+> **L'intero progetto è stato realizzato in vibe coding. In questo repository non esiste codice scritto da un umano.**
 
-**Un widget di ricerca Android personalizzabile, con colori Material You, gradienti, testo formattato e scorciatoie alle tue app.**
+[English](README.md) · **Italiano** · [Scarica l’APK](https://github.com/alessio89g/MySearchWidget/releases)
 
-[English](README.md) · **Italiano**
+Un widget di ricerca per Android ispirato all’aspetto della barra di **Google Circle to Search**. Personalizza ricerca, azioni e grafica con un configuratore **Material 3 Expressive** e un’anteprima dal vivo. Ogni widget ha impostazioni indipendenti.
 
-Ispirato all’aspetto della barra di **Google Circle to Search**, MySearchWidget permette di creare più widget indipendenti e configurarli attraverso un’interfaccia **Material 3 Expressive**, con anteprima in tempo reale.
+![MySearchWidget predefinito in modalità scura, con pulsanti per voce, Chrome e navigazione in incognito](assets/screenshots/widget-default-dark-en-capture.png)
 
-![MySearchWidget predefinito in modalità scura, con pulsanti per voce, Chrome e navigazione in incognito](assets/screenshots/widget-default-dark.png)
+## Per iniziare
 
-## Funzionalità
+Richiede **Android 12 o successivo** e un launcher compatibile con i widget.
 
-### Ricerca e azioni
+1. Installa l’APK dalla sezione [Releases](https://github.com/alessio89g/MySearchWidget/releases).
+2. Apri l’app e premi **Aggiungi widget**, oppure usa il selettore widget del launcher.
+3. Conferma il posizionamento, personalizza il widget e premi **Salva**.
 
-- Digita la query nel widget e inviala al browser predefinito, usando il motore di ricerca scelto.
-- In alternativa, tocca il campo di ricerca per aprire la ricerca nell’app Google.
-- Scegli un motore predefinito oppure aggiungi motori personalizzati.
-- Assegna azioni al logo a sinistra e a **0, 1, 2 o 3 pulsanti** a destra: azioni predefinite, apertura di app o scorciatoie raggruppate per app.
-- Crea più widget sulla home, ciascuno con aspetto e azioni indipendenti.
+Per modificarlo, selezionalo nella home dell’app o apri la configurazione dal launcher. La **casetta** accanto a Salva riporta alla home dell’app. Le modifiche restano in anteprima fino al salvataggio; prima di scartarle viene chiesta conferma.
 
-### Aspetto
+L’interfaccia parte in inglese: il pulsante **EN / IT** cambia lingua immediatamente e ricorda la scelta.
 
-- **Altezza del widget:** imposta un valore da 16 a 256 dp, anche decimale, in **Layout**. L’altezza predefinita e il suo ripristino sono **68 dp**. In modalità automatica, le dimensioni degli elementi seguono l’altezza generale. Restringere il widget in larghezza accorcia il campo di ricerca senza ridurre l’altezza. Per altezze maggiori, amplia verticalmente lo spazio del widget sulla Home.
-- **Dimensioni e spaziature indipendenti:** regola larghezza della capsula esterna e del campo di ricerca, altezza del campo, dimensione del logo e delle icone, larghezza e altezza dello sfondo di ogni pulsante, margini laterali, spazi prima del logo e tra logo e testo e distanza prima di ogni pulsante. I controlli delle dimensioni e delle spaziature degli elementi permettono un valore manuale in dp o il dimensionamento automatico. Il ripristino automatico segue l’altezza generale del widget. Gli elementi si ridimensionano attorno a centri fissi senza spostare quelli vicini. Logo e testo seguono il campo di ricerca quando il relativo collegamento è attivo. Le dimensioni eccessive si adattano ai limiti del widget; misure grandi possono sovrapporsi.
-- **Posizione degli elementi:** la scheda **Layout** nella barra inferiore raccoglie posizione, dimensioni e spaziature. Regola gli scostamenti X/Y in dp con campi numerici o frecce a passo personalizzabile; puoi sovrapporre gli elementi o spostarli fuori dall’area visibile. Il ripristino della posizione applica lo scostamento iniziale dell’elemento selezionato.
-- **Ripristini separati:** ogni elemento in Layout dispone di **Ripristina dimensioni predefinite** e **Ripristina posizione predefinita**. Ogni comando applica i valori del preset iniziale all’elemento selezionato: altezza esterna 68 dp, campo di ricerca 193 × 47 dp con larghezza di riferimento di 374 dp, placeholder 12,5 sp e query 15 sp. I lucchetti restano invariati e la posizione è relativa al padre quando collegata.
-- **Ordine dei livelli:** in **Layout → Ordine dei livelli**, la cima della lista rappresenta il primo piano. Le frecce portano ogni elemento sopra o sotto gli altri; l’ordine è indipendente dai collegamenti e viene salvato nei backup.
-- **Collegamenti:** i lucchetti collegano logo e testo al campo di ricerca e ogni icona al proprio pulsante, per default. Spostando il padre si spostano anche gli elementi collegati; spostando un figlio gli altri rimangono fermi. Scollegare o ricollegare conserva la posizione corrente.
-- **Blocca proporzioni:** il lucchetto con linee di collegamento accanto a larghezza e altezza lega le due misure per capsula esterna, campo di ricerca e ogni pulsante. La configurazione iniziale blocca le proporzioni della capsula esterna e dei pulsanti; il campo di ricerca è ridimensionabile liberamente. Il blocco mantiene il rapporto corrente; lo sblocco permette modifiche indipendenti. La scelta viene salvata per ciascun elemento e inclusa nei backup.
-- **Material You:** usa la palette dinamica del sistema.
-- **Colori manuali e gradienti:** personalizza capsula esterna, campo di ricerca, logo, sfondo di ogni pulsante e relativa icona, con valori separati per tema chiaro e scuro.
-- Scegli i colori con selettore grafico, slider, codici HEX/RGB e preset. I gradienti hanno due colori e direzione regolabile graficamente o in gradi.
-- Regola opacità e arrotondamento degli sfondi. Per i pulsanti scegli tra cerchio/quadrato, squircle, fiore, clover, leaf, pebble, scallop e teardrop.
-- Scegli icone predefinite o importa immagini. Logo e pulsanti hanno ciascuno lo switch **Icona monocromatica**. La configurazione iniziale usa il logo Google a colori e le icone dei pulsanti monocromatiche. Disattivalo per mantenere colori e trasparenza delle immagini importate o usare i colori nativi dei simboli Google e Chrome. I simboli Material sono già a colore singolo.
-- I colori originali hanno priorità su Material You solo per quell’icona. Tinta e gradienti sono disabilitati mentre i colori originali sono attivi; i valori salvati tornano disponibili riattivando lo stile monocromatico.
-- Visualizza l’anteprima su fondo solido oppure sul ritaglio centrale del wallpaper Home.
+## Cosa puoi personalizzare
 
-### Testo
+| Sezione | Controlli |
+| --- | --- |
+| **Layout** | Altezza e larghezza, spaziature, posizione di ogni elemento con frecce o valori numerici, proporzioni bloccabili, collegamenti degli spostamenti e ordine dei livelli. Da **0 a 3 pulsanti**. |
+| **Aspetto** | Tema chiaro, scuro o di sistema; Material You; colori, opacità e gradienti a due colori con direzione libera; forme dei pulsanti; icone integrate, icone delle app, icon pack o immagini importate, monocromatiche o nei colori originali. |
+| **Azioni** | Azioni predefinite, apertura di app e scorciatoie per logo e pulsanti. Feedback aptico separato per campo di ricerca, logo e ciascun pulsante, attivo di default. |
+| **Ricerca** | Motori integrati o personalizzati, ricerca tramite app Google, testo a riposo e stile del testo digitato. |
+| **Legami** | Impostazioni condivise oppure separate tra modalità chiara e scura, per elemento e funzione. |
+| **Backup** | Esportazione delle configurazioni e importazione come modelli riutilizzabili, inclusi font e immagini. |
 
-- Personalizza il **placeholder**, cioè il testo visualizzato prima della digitazione: font, dimensione, peso, grassetto, corsivo, sottolineatura, barrato, colori e gradienti.
-- Applica la formattazione all’intero placeholder oppure a una selezione di testo.
-- Configura separatamente lo stile della query: si applica all’intero testo digitato.
-- Usa l’editor visuale oppure la modalità **BBCode**.
-- Il font incluso è **Google Sans Regular 14.000**, sotto licenza [SIL OFL 1.1](LICENSE-Google-Sans.txt); puoi importare altri font TTF, TTC e OTF.
+**Aspetto.** I pulsanti possono avere forma cerchio/quadrato, squircle, fiore, clover, leaf, pebble, scallop o teardrop. Il selettore colori combina area grafica, slider, codici HEX/RGB e preset.
 
-### Configurazione e backup
+Per logo e pulsanti puoi scegliere icone integrate, immagini, icone originali delle app o icon pack. Scegliendo un pack compatibile si apre il suo selettore; in alternativa puoi sfogliarne il catalogo disponibile nell’app. Le personalizzazioni private del launcher non vengono lette automaticamente: scegli lo stesso pack e la stessa icona per riprodurle.
 
-- **Layout → Numero di pulsanti** permette di mostrare da 0 a 3 pulsanti. Le impostazioni dei pulsanti nascosti vengono conservate e tornano disponibili aumentando il numero.
-- Sei sezioni: **Layout, Aspetto, Azioni, Ricerca, Legame Chiaro/Scuro e Backup**. Layout è la prima sezione e si apre quando inizi a configurare un widget.
-- Le impostazioni sono organizzate in **gruppi di card**, con icona, titolo e descrizione. Tocca una voce per aprirne i controlli; **Tutte le impostazioni** o Indietro riportano alla lista della sezione.
-- In Layout, ogni elemento ha due pannelli: **Dimensioni** e **Posizione**, con i rispettivi ripristini. In Azioni, ogni area raccoglie la propria azione al tocco e il feedback aptico.
-- I selettori Material 3 Expressive mostrano direttamente le scelte più frequenti; le opzioni vanno a capo quando lo spazio è ridotto. Le impostazioni dello sfondo dell’anteprima si aprono dalla relativa voce sotto l’anteprima.
-- In fondo alla schermata iniziale, il collegamento con il logo GitHub apre il repository del progetto.
-- Interfaccia in inglese e italiano, con cambio immediato tramite **EN / IT** in alto a destra e scelta persistente.
-- Esportazione e importazione della configurazione del singolo widget, inclusi layout, ordine dei livelli, collegamenti degli spostamenti, font e immagini importati.
-- Libreria di modelli riutilizzabili. I backup vengono validati prima dell’importazione; applicarli a un widget è un passaggio separato con conferma.
+Outline, tinta monocromatica e gradienti si applicano anche alle icone importate. La modalità monocromatica conserva i contrasti; **Mantieni contorno esterno**, disattivato di default, permette di includere il bordo dello sfondo nell’outline. Quando escluso, viene rimosso lo sfondo uniforme riconoscibile; i simboli già trasparenti conservano il proprio contorno. Le tinte manuali richiedono Material You disattivato e modalità monocromatica attiva.
 
-Cambiando il numero di pulsanti, il campo di ricerca con larghezza automatica occupa lo spazio disponibile senza cambiare altezza. I pulsanti sono allineati a destra con margini uniformi rispetto al contorno; senza pulsanti, il campo mantiene margini simmetrici. Dimensioni, spaziature e spostamenti manuali restano personalizzabili.
+**Azioni.** Le scorciatoie sono raggruppate per app. Per quelle dinamiche puoi usare l’accesso temporaneo come app Home: seleziona e salva la scorciatoia, poi premi **Ripristina il launcher**. Le scorciatoie fissate restano utilizzabili; dopo una reinstallazione o un cambio di dispositivo può essere necessario selezionarle nuovamente. La disponibilità dipende dalle app installate.
 
-Il controllo dell’altezza globale cambia l’altezza mantenendo la larghezza corrente. I nuovi widget partono da 68 dp e si adattano orizzontalmente al launcher. Se lo spazio assegnato limita l’altezza visualizzata, l’anteprima lo segnala.
+Quando scegli un’app o una scorciatoia, **Icona per questa azione** permette di mantenere l’icona attuale, usare quella dell’app o sceglierla da un pack. L’icona segue il proprio legame chiaro/scuro, indipendentemente da quello dell’azione.
 
-## Legame Chiaro/Scuro
+**Ricerca.** Per il testo sono disponibili font importabili, dimensione, peso, grassetto, corsivo, sottolineatura, barrato, colori e gradienti. Puoi formattare singole porzioni del testo a riposo con l’editor visuale o **BBCode**; lo stile della query si applica invece a tutto il testo digitato.
 
-La sezione **Legame Chiaro/Scuro**, accessibile da **Collegamenti** con il lucchetto dopo **Ricerca**, permette di scegliere quali impostazioni condividere tra le due modalità. Ogni elemento ha i propri interruttori per dimensioni, posizione, livello, colori e sfumature. Sono disponibili controlli distinti anche per motore di ricerca, apertura nell’app Google, logo, forme, numero e icone dei pulsanti, contenuto del placeholder, font, formattazione e azioni.
+L’anteprima può mostrare un fondo solido o il wallpaper e alternare chiaro/scuro. **Annulla/Ripeti** ripercorre le modifiche. I comandi **Ripristina** agiscono sulle singole opzioni usando i valori predefiniti della versione installata, senza modificare automaticamente i widget già salvati.
 
-Gli interruttori di separazione sono **disattivati di default**, tranne quelli dei **colori e delle sfumature**, che mantengono valori distinti. Con uno switch disattivato, le modifiche si applicano a entrambe le modalità; attivandolo, si modifica solo quella selezionata. Quando lo disattivi, se i valori sono diversi, scegli se mantenere quelli chiari o quelli scuri per entrambe le modalità. I colori manuali richiedono comunque **Material You disattivato**, dal suo controllo in Aspetto.
+## Come si comporta il widget
 
-Il selettore **Stai modificando**, vicino all’anteprima, compare nelle sezioni con impostazioni separate e indica su quale modalità stai lavorando. L’anteprima segue questa scelta e può essere invertita indipendentemente. Gli avvisi delle sezioni indicano se i valori sono condivisi o separati. **Annulla/Ripeti** comprende anche i collegamenti; **Salva** applica l’intera configurazione. I backup conservano entrambe le modalità e i relativi motori di ricerca personalizzati.
+- **Configurazione iniziale:** altezza di 68 dp, tema di sistema, logo Google a colori e tre pulsanti per ricerca vocale, Chrome e navigazione in incognito. Material You e apertura della ricerca nell’app Google sono disattivati.
+- **Testo automatico:** lasciando vuoto il testo a riposo compare “Cerca con…” seguito dal motore selezionato, anche personalizzato. Un testo inserito manualmente resta invariato; il cambio di motore conserva la formattazione.
+- **Ricerca:** la query viene inviata al motore scelto nel browser. In alternativa, il tocco del campo apre la ricerca nell’app Google; in questo caso i controlli dei motori sono disabilitati, ma le impostazioni vengono conservate.
+- **Colori:** Material You disabilita i controlli manuali di colori e gradienti. Le icone nei colori originali ignorano la tinta personalizzata. Le scelte manuali restano memorizzate.
+- **Chiaro/scuro:** le impostazioni sono condivise per default, tranne colori e gradienti. In **Legami** puoi separarle; il configuratore indica quale modalità stai modificando.
+- **Ridimensionamento:** restringendo il widget, il campo di ricerca si adatta alla larghezza disponibile mantenendo altezza e margini, salvo personalizzazioni. Gli elementi possono sovrapporsi o uscire dall’area visibile. Se il launcher assegna spazio verticale insufficiente, l’intera composizione viene ridotta.
 
-## Aggiornamenti
+## Backup
 
-All’apertura del configuratore, l’app controlla su GitHub se esiste una release stabile più recente e propone di scaricare direttamente l’APK, senza browser o WebView. Il download è gestito da Android e, al termine, l’app propone l’installazione. Se il configuratore è stato chiuso, la proposta compare alla riapertura. Android può richiedere di consentire le installazioni da MySearchWidget: il pulsante apre la schermata dedicata.
+Il backup è un unico file JSON che incorpora le impostazioni, i font importati e le immagini utilizzate. Non occorre conservare file separati né mantenere installato l’icon pack. Il wallpaper non è incluso; le app associate alle azioni devono essere installate per poterle aprire.
 
-Prima dell’installazione vengono verificati il pacchetto, il numero di versione e la firma dell’APK. Non ci sono controlli periodici, servizi o processi permanenti dell’app in background. In assenza di rete il configuratore rimane utilizzabile.
+I backup importati diventano **modelli**: applicarli a un widget è un passaggio distinto. Un tocco prolungato su widget o modelli attiva la selezione multipla; il **cestino in alto a destra** richiede conferma. Elimina i modelli selezionati, mentre nasconde le voci dei widget senza rimuoverli dalla Home né cancellarne le impostazioni. Per rimuovere un widget dalla Home usa il launcher.
 
-## Gestione dell’elenco e cestino
+## Aggiornamenti e permessi
 
-Tieni premuto un widget o un modello importato per attivare la selezione. Tocca altri elementi per selezionarli insieme, poi usa il **cestino in alto a destra** e conferma. **Annulla** o il tasto Indietro chiudono la selezione senza rimuovere nulla.
+Il configuratore controlla le release GitHub all’apertura e propone download diretto e installazione dell’APK, verificandone pacchetto, versione e firma. Non esegue controlli periodici né mantiene servizi permanenti in background. La configurazione è utilizzabile offline.
 
-- **Modelli importati:** vengono eliminati dalla libreria; i widget ai quali sono stati applicati mantengono le proprie impostazioni.
-- **Widget:** la voce viene nascosta dall’elenco, conservando le impostazioni del widget sulla Home. Per rimuovere il widget dalla Home usa il launcher. Aprendo di nuovo la sua configurazione dal launcher e salvandola, la voce torna visibile nell’elenco.
+L’anteprima del wallpaper è opzionale e può richiedere accesso alle immagini o a tutti i file, secondo il sistema. Senza accesso resta il fondo solido; il wallpaper non viene incluso nei backup. Android può inoltre richiedere l’autorizzazione a installare gli aggiornamenti. Ricerche e azioni vocali sono gestite dalle app esterne; MySearchWidget non richiede il permesso microfono.
 
-## Download
+Dimensioni, scorciatoie e apertura della ricerca Google dipendono anche dal launcher e dalle app installate. **Il progetto non è affiliato a Google e non implementa Circle to Search.**
 
-Scarica l’APK e i sorgenti corrispondenti dalla sezione [Releases](https://github.com/alessio89g/MySearchWidget/releases). Ogni release include anche i checksum SHA-256.
+## Sorgenti e licenza
 
-Per compilare il progetto consulta le [istruzioni di build](docs/BUILD.md). I risultati delle verifiche e i loro limiti sono nelle [note di collaudo](docs/TESTING.md).
+Consulta le [istruzioni di compilazione](docs/BUILD.md), le [verifiche eseguite](docs/TESTING.md) e il [changelog](CHANGELOG.md).
 
-## Requisiti e primi passi
+La [MySearchWidget Non-Commercial Source-Available License 1.1](LICENSE) consente uso, modifica, fork e ridistribuzione **non commerciali**:
 
-- **Android 12 o successivo** e un launcher che supporti i widget.
-- Un browser per le ricerche web; l’app Google per le funzioni che la richiedono.
+- Ogni ridistribuzione deve conservare licenza e avvisi e citare il [repository originale](https://github.com/alessio89g/MySearchWidget) nei crediti.
+- Per versioni **non modificate**, il collegamento nei crediti basta: non è richiesta la consegna dei sorgenti.
+- Per versioni **modificate**, occorre distribuire anche i sorgenti completi corrispondenti e le istruzioni di build, mantenere la stessa licenza e documentare le modifiche.
 
-1. Installa l’APK di MySearchWidget, consentendo l’installazione da quella sorgente se Android lo richiede.
-2. Nella schermata iniziale dell’app, usa **Aggiungi widget** per posizionare un nuovo widget nella home. Puoi anche usare il selettore widget del launcher.
-3. Conferma il posizionamento nel launcher. Si apre il configuratore del nuovo widget: personalizzalo e premi **Salva**. Per modificare un widget esistente, selezionalo nella schermata iniziale dell’app.
-4. Tocca il campo di ricerca per iniziare oppure usa il logo e i pulsanti per le azioni assegnate.
-
-Le modifiche e i modelli applicati restano in anteprima fino alla pressione di **Salva**. Il pulsante **Annulla** permette di uscire scartando le modifiche, dopo conferma. Il tasto Indietro torna prima alla lista della sezione; dalla schermata principale del configuratore permette di uscire con la stessa conferma.
-
-Per i widget già presenti nella home, l’anteprima usa le dimensioni comunicate dal launcher e riduce l’intera composizione per mostrarla nel configuratore. Le posizioni degli elementi non vengono ricalcolate in base alla larghezza del riquadro di anteprima.
-
-Restringendo o allargando il widget nel launcher, il campo di ricerca adatta la propria larghezza e i pulsanti rimangono allineati a destra. L’altezza e i margini dal contorno esterno restano invariati, rispettando gli spostamenti personalizzati. Se lo spazio verticale assegnato dal launcher è insufficiente, la composizione viene ridotta per rientrare nell’area disponibile. Anteprima e aree di tocco seguono la stessa disposizione.
-
-Le frecce **Annulla** e **Ripeti** permettono di ripercorrere le modifiche prima del salvataggio; il trascinamento di uno slider conta come una sola modifica. Il pulsante **Chiaro/Scuro** indica lo stato corrente e cambia soltanto l’anteprima. La selezione di una variante di colore la mostra automaticamente nell’anteprima, che rimane invertibile manualmente.
-
-Il **feedback aptico** è attivo di default e può essere attivato o disattivato indipendentemente in **Azioni** per il campo di ricerca, il logo e ciascun pulsante funzione. Pulsante e icona condividono la stessa impostazione. Il feedback rispetta le impostazioni della vibrazione al tocco di Android.
-
-La lingua iniziale è **inglese**. Tocca **EN** per passare all’italiano. Il placeholder automatico segue il motore selezionato: **“Cerca con Bing” / “Search with Bing”**, anche per motori aggiunti manualmente come Qwant. La formattazione viene conservata. Un testo personalizzato ha precedenza e non viene tradotto né sostituito al cambio del motore. Con la ricerca tramite app Google, il testo automatico indica Google.
-
-> L’APK è firmato con una **chiave di debug**. Per aggiornare un’installazione esistente è necessaria una firma compatibile.
-
-## Impostazioni iniziali e controlli disabilitati
-
-I widget già salvati mantengono le loro impostazioni; il preset si applica ai nuovi widget e ai ripristini richiesti esplicitamente.
-
-Il widget predefinito ha il logo Google a colori e tre pulsanti per ricerca vocale, Chrome e navigazione in incognito. La composizione arrotondata riprende l’aspetto di Google Circle to Search.
-
-| Opzione | Default per un nuovo widget | Comportamento |
-| --- | --- | --- |
-| Tema | Segui sistema | Il widget segue la modalità chiara/scura di Android. |
-| Testo del campo di ricerca | Cerca con Google | Puoi modificarlo o svuotarlo per usare automaticamente il nome del motore di ricerca. |
-| Colori Material You | Disattivo | Quando l’opzione è attiva, colori e gradienti manuali sono grigi e non modificabili. Disattiva l’opzione per personalizzarli. |
-| Ricerca con l’app Google al tocco del campo | Disattivo | Se attivata, la gestione dei motori di ricerca diventa grigia e non modificabile: la ricerca viene gestita dall’app Google. |
-
-**Le impostazioni manuali e i motori salvati non vengono eliminati.** Tornano utilizzabili disattivando l’opzione corrispondente.
-
-La ricerca Google apre la sua interfaccia di ricerca; focus e tastiera dipendono dalla versione dell’app Google. Gli stili della query del widget non modificano l’interfaccia Google.
-
-## Colori delle icone
-
-In **Aspetto → Logo** e **Aspetto → Pulsante N → Icona**, lo switch **Icona monocromatica** permette di scegliere tra una tinta personalizzabile e i colori originali dell’icona. La configurazione iniziale usa i colori originali per il logo Google e icone monocromatiche per i pulsanti. La scelta è indipendente per ogni elemento.
-
-Con i colori originali, l’immagine conserva la propria trasparenza e ignora tinta, gradiente e opacità della tinta. Le icone Material hanno normalmente un riempimento nero: la modalità monocromatica permette di adattarle al contrasto del tema.
-
-## Scorciatoie delle app
-
-Il selettore raggruppa le scorciatoie per app ed esclude le app senza voci disponibili. Alcune azioni possono essere visibili ma disabilitate, con una spiegazione.
-
-Per accedere alle scorciatoie dinamiche pubblicate dalle app:
-
-1. In **Azioni**, scegli **Abilita accesso temporaneo** e imposta temporaneamente MySearchWidget come app Home.
-2. Torna alla configurazione, seleziona **Scorciatoie → app → azione** e salva.
-3. Usa **Ripristina il launcher** per tornare al launcher abituale.
-
-Il cambio di launcher è reale e temporaneo; una schermata di recupero permette di raggiungere le impostazioni Home. Le scorciatoie fissate possono essere avviate anche dopo il ripristino del launcher precedente.
-
-La disponibilità dipende dalle scorciatoie effettivamente pubblicate e abilitate dalle altre app. Dopo una reinstallazione o il trasferimento su un altro telefono, le scorciatoie dinamiche devono essere selezionate e fissate nuovamente.
-
-## Wallpaper e permessi
-
-L’anteprima wallpaper è opzionale. Per leggere lo sfondo Home può essere necessario concedere accesso alle immagini e, su alcuni sistemi, l’accesso speciale a tutti i file: l’app lo propone separatamente con una spiegazione.
-
-Se l’accesso viene negato o lo sfondo non è leggibile, per esempio con un wallpaper animato, resta il fondo solido. L’app non scansiona la galleria e non include il wallpaper nei backup.
-
-MySearchWidget usa **Internet** per verificare le release su GitHub e scaricare gli aggiornamenti richiesti. Il permesso per installare app viene richiesto solo quando scegli di installare un aggiornamento. Non richiede accesso al microfono né la sovrapposizione ad altre app; ricerche online e azioni vocali vengono gestite dalle app esterne selezionate.
-
-## Esempi BBCode
-
-Placeholder con formattazione parziale:
-
-```text
-[b]Cerca[/b] [gradient=#00C8FF,#00D99B,45]sul web[/gradient]
-```
-
-Stile globale della query:
-
-```text
-[b][i]{query}[/i][/b]
-```
-
-Sono disponibili anche `[u]`, `[s]`, `[size=20]`, `[weight=500]`, `[font=default]` e `[color=#FF0000]`, con i rispettivi tag di chiusura. Per la query, `{query}` deve comparire una sola volta e avere un unico stile. Dopo la modifica, premi **Applica BBCode**. I colori manuali richiedono Material You disattivato.
-
-## Compatibilità e limiti
-
-- Dimensioni e posizionamento del widget dipendono anche dalla griglia e dal ridimensionamento del launcher.
-- Il comportamento delle azioni Google e delle scorciatoie dipende dalle app installate e dalle loro versioni.
-- Il progetto è indipendente e non è affiliato a Google. L’ispirazione grafica non implica la presenza della funzione Circle to Search.
-
-## Licenza e crediti
-
-Il codice originale del progetto è distribuito con la **MySearchWidget Non-Commercial Source-Available License 1.1**, una licenza personalizzata. Il testo completo e vincolante è disponibile in inglese nel file [LICENSE](LICENSE).
-
-- **Consentiti:** uso non commerciale, studio, copia, modifica, fork e ridistribuzione non commerciale.
-- **Vietati:** uso commerciale, vendita e sfruttamento del software in prodotti o servizi commerciali, inclusa la monetizzazione tramite pubblicità.
-- **Versioni non modificate:** non occorre consegnare i sorgenti; è sufficiente un collegamento al [repository originale](https://github.com/alessio89g/MySearchWidget) nei crediti.
-- **Versioni modificate:** la ridistribuzione deve includere i sorgenti completi corrispondenti, comprese le modifiche, le istruzioni e gli script di compilazione. Il solo link a un repository non basta.
-- **Crediti obbligatori:** ogni ridistribuzione, modificata o meno, deve citare MySearchWidget e collegare il repository originale nei crediti. Vedi [CREDITS.md](CREDITS.md).
-- **Stessi termini:** le versioni modificate devono mantenere questa licenza, gli avvisi di attribuzione e una descrizione delle modifiche. Le modifiche mantenute private non devono essere pubblicate.
-
-Il progetto è **source available per uso non commerciale**, non open source secondo la [definizione OSI](https://opensource.org/osd), che non consente restrizioni all’uso commerciale.
-
-Le risorse di terzi sono escluse da questa licenza e mantengono i rispettivi termini: le icone Material sono distribuite sotto [Apache 2.0](LICENSE-Material-Icons.txt); il font Google Sans è distribuito sotto [SIL OFL 1.1](LICENSE-Google-Sans.txt). I marchi e le altre risorse di terzi non vengono rilicenziati da questo progetto.
-
-Il logo GitHub proviene da Octicons ed è distribuito con [licenza MIT](LICENSE-Octicons.txt).
+Fa fede il testo completo della licenza. Font, icone e altre risorse di terzi mantengono le proprie licenze: vedi [Crediti](CREDITS.md).

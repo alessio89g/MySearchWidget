@@ -4,6 +4,7 @@ import com.alessio89g.mysearchwidget.R
 import com.alessio89g.mysearchwidget.i18n.*
 
 import android.content.Intent
+import kotlinx.serialization.encodeToString
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.layout.*
@@ -18,9 +19,13 @@ import com.alessio89g.mysearchwidget.icons.IconCatalog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Composable fun ActionPicker(label:String,value:Shortcut,onChange:(Shortcut)->Unit) {
+@Composable fun ActionPicker(label:String,value:Shortcut,onChange:(Shortcut)->Unit,onWithIcon:((Shortcut,Pair<String,Asset>?)->Unit)?=null) {
+ var pendingJson by rememberSaveable {mutableStateOf("")}
+ val pending=pendingJson.takeIf {it.isNotEmpty()}?.let {Catalog.json.decodeFromString<Shortcut>(it)}
+ fun selectedAction(action:Shortcut){if(onWithIcon!=null)pendingJson=Catalog.json.encodeToString(action) else onChange(action)}
+ pending?.let {ActionIconDialog(it,{pendingJson=""}){a,icon->onWithIcon?.invoke(a,icon);pendingJson=""}}
  var shortcuts by remember {mutableStateOf(false)}
- if(shortcuts)ShortcutDialog({shortcuts=false}){onChange(it);shortcuts=false}
+ if(shortcuts)ShortcutDialog({shortcuts=false}){selectedAction(it);shortcuts=false}
  var apps by remember {mutableStateOf(false)}
  val options=listOf("none" to tr(R.string.no_action),"app" to tr(R.string.choose_app),"static" to tr(R.string.shortcuts))+Catalog.functions.map {it.key to builtinTitle(it.key)}
  Choice(label,if(value.kind=="builtin")value.value else if(value.kind=="pinned")"static" else value.kind,options){key->
@@ -37,11 +42,13 @@ import kotlinx.coroutines.withContext
   AlertDialog(onDismissRequest={apps=false},title={Text(tr(R.string.installed_apps))},text={Column {
    OutlinedTextField(filter,{filter=it},label={Text(tr(R.string.find_app))})
    if(installed==null)CircularProgressIndicator()
-   LazyColumn(Modifier.heightIn(max=360.dp)){items(installed.orEmpty().filter {it.second.contains(filter,true) || it.first.contains(filter,true)}) { (pkg,name)->TextButton(onClick={onChange(Shortcut("app",pkg,name));apps=false}){Text(name)} }}
+   LazyColumn(Modifier.heightIn(max=360.dp)){items(installed.orEmpty().filter {it.second.contains(filter,true) || it.first.contains(filter,true)}) { (pkg,name)->TextButton(onClick={selectedAction(Shortcut("app",pkg,name));apps=false}){Text(name)} }}
   }},confirmButton={TextButton(onClick={apps=false}){Text(tr(R.string.close))}})
  }
 }
-@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,pickImage:()->Unit) {
+@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,onExternalIcon:((Pair<String,Asset>)->Unit)?=null,pickImage:()->Unit) {
+ var packs by rememberSaveable {mutableStateOf(false)}
+ if(packs)IconPackDialog({packs=false}){onExternalIcon?.invoke(it);packs=false}
  var catalog by remember {mutableStateOf(false)}
  var part by rememberSaveable {mutableStateOf("Icona")}
  if(background)OptionButtons(part,listOf("Icona","Cerchio").map {it to navigationTitle(it)}){part=it}
@@ -51,9 +58,14 @@ import kotlinx.coroutines.withContext
  } else SettingCard(tr(R.string.icon),if(value.icon.asset.isNotEmpty())tr(R.string.imported_image) else value.icon.name) {
   FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    FilledTonalButton(onClick={catalog=true}){Text(tr(R.string.choose_icon))}
+   if(onExternalIcon!=null)OutlinedButton(onClick={packs=true}){Text(tr(R.string.from_icon_pack))}
    OutlinedButton(onClick=pickImage){Text(tr(R.string.from_file))}
   }
   Toggle(tr(R.string.outline),value.icon.outline){onChange(value.copy(icon=value.icon.copy(outline=it)))}
+  if(value.icon.asset.isNotEmpty()) {
+   if(value.icon.outline)Toggle(tr(R.string.keep_outer_outline),value.icon.keepOuterOutline){onChange(value.copy(icon=value.icon.copy(keepOuterOutline=it)))}
+   Text(tr(R.string.bitmap_outline_help),style=MaterialTheme.typography.bodySmall)
+  }
   Toggle(tr(R.string.monochrome_icon),value.icon.monochrome){onChange(value.copy(icon=value.icon.copy(monochrome=it)))}
   Text(tr(R.string.icon_color_mode_help),style=MaterialTheme.typography.bodySmall)
   CompositionLocalProvider(LocalControlsEnabled provides (LocalControlsEnabled.current && value.icon.monochrome)) {
@@ -74,5 +86,5 @@ import kotlinx.coroutines.withContext
    }
   }},confirmButton={TextButton(onClick={catalog=false}){Text(tr(R.string.close))}})
  }
- if(showAction)ActionPicker(tr(R.string.primary_tap),value.tap){onChange(value.copy(tap=it))}
+ if(showAction)ActionPicker(tr(R.string.primary_tap),value.tap,onChange={onChange(value.copy(tap=it))})
 }

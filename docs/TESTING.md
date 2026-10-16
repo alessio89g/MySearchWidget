@@ -1,5 +1,78 @@
 # Validation
 
+## Candidate 1.16.5 — 2026-10-16
+
+- VersionCode 45. Release assembly/lint passed; 86 JVM tests passed. Signature and 16 KB alignment verified.
+- `keepOuterOutline` defaults to false, is persisted per icon, has its own reset and follows logo/icon Light/Dark links. Unit coverage includes serialization, legacy default, independent theme values, removal of circular/rectangular uniform backgrounds and preservation of transparent symbols.
+- Runtime tests on the delivered signed APK: import circular bitmap with internal cross from native picker; enable outline and monochrome; toggle Keep outer outline off/on/off and visually verify cross alone versus cross + circle; switch EN/IT; Save, force-stop/reopen and verify persisted result. No crash-buffer entries. Launcher screenshot retained.
+- Background removal is conservative: detects a mostly uniform perimeter, flood-fills matching background pixels and retains a separate foreground. Ambiguous/nonuniform backgrounds retain their silhouette rather than erasing the symbol.
+- Evidence in workspace work/: outer-outline-off.png, outer-outline-on.png, outer-outline-it.png, outer-outline-reopened.png, outer-outline-widget.png.
+- Same APK before/after testing, no rebuild: outputs/1.16.5/MySearchWidget-1.16.5.apk; SHA-256 `f070f369ab4a024aec1be6232b31372d742bce9471632eeaf2b198ff3ef442bc`.
+
+## Candidate 1.16.4 — 2026-10-16
+
+- Final versionCode 43. Release assembly/lint passed. 83 JVM tests passed for the implementation, including four outline regressions (internal contours, transparent silhouette, chromatic edges and low-level noise). Build 43 additionally updates the EN/IT help text.
+- Tested the delivered signed APK on API 37.1: native picker returns resource, bitmap and android.resource URI; transparent star outline; opaque circular bitmap with internal cross outline; monochrome enabled; Save, force-stop/reopen and actual launcher widget rendering. No crash-buffer entries.
+- Native cancellation, malformed result and explicit internal-catalogue fallback were verified on build 42 (same implementation, older help text).
+- Screenshot evidence: work/outline-final-star.png, work/outline-final-controls.png, work/outline-final-reopened.png, work/outline-final-widget.png. Tests use a controlled picker fixture, not every third-party icon pack.
+- Outline traces alpha and contrasting RGB boundaries. Embedded backgrounds are not semantically removed; low-contrast details can remain faint. Original assets remain unchanged.
+- Signature and 16 KB alignment passed. Final APK: outputs/1.16.4/MySearchWidget-1.16.4-build43.apk. SHA-256 unchanged after testing: `01f6ea97900c3b9d5b4238d1baf71fb1fe6d7b683ea55246f3ec9ccc1bc25d8c`.
+
+## Candidate 1.16.3 — 2026-10-16 — runtime validation incomplete
+
+- VersionCode 41. Release assembly and lint passed. All 79 JVM tests passed, including three tests for internal monochrome contrast, transparent edges and colored details.
+- Signed APK installed on the API 37.1 emulator. Opening the external ADW picker from Appearance was verified. This also verified the fix for the localized context missing an ActivityResultRegistryOwner.
+- Native return formats (resource, bitmap and URI), cancellation, fallback and visual monochrome/gradient appearance still require completion on this candidate. The fixture's action bar obscured its first controls; no successful return should be inferred from the recorded tap.
+- On resuming, the emulator was no longer running and /dev/kvm was absent. Restart failed before boot (work/emulator-native-final.log). Do not describe this candidate as fully runtime-tested.
+- Monochrome conversion uses luminance-dependent alpha to retain detail in flattened icons; it does not extract a foreground symbol or remove embedded backgrounds. Flat silhouettes preserve alpha. Outline still follows the image's alpha boundary.
+- Signature and 16 KB alignment verified. APK SHA-256: `07fb8b93b881ecda80691c85d0d04e3a14b94ab5ae37e9962212ea3cf73b76d4`; unchanged on resumption. No rebuild after signing.
+
+## Candidate 1.16.1 — 2026-10-15
+
+- VersionCode 39. Release build/lint passed; 76 JVM tests passed, including external-image asset round-trip, independent action/icon theme links and retained icon styling.
+- Signed release APK installed on Android API 37.1 emulator. Tested shortcut selection (Calendar/New event), expanding icon options, selecting the test ADW pack and image, saving, reopening and applying an outline gradient. No debug APK used for UI tests.
+- Original Chrome app icon, direct Appearance pack browser and original-color/outline/monochrome rendering were exercised on candidate 1.16.0; the final candidate additionally has a scrollable card and transparent picker-image exterior.
+- Final launcher confirmation preview visually verified: English placeholder, complete outer capsule, transparent exterior. Image is cropped from actual emulator rendering, not AI-generated.
+- Pack fixture: a local resource-only APK with a vector star and res/xml/appfilter.xml. This is targeted compatibility coverage, not testing every third-party pack or private Nova icon customization.
+- UI screenshots in workspace work/: launcher-preview-final.png, icon-selection-final.png, icon-gradient-final.png. No crash-buffer entries during these checks.
+- Signed APK SHA-256, unchanged after runtime tests: `8bcf3141c8ed54b14aadc2ccc4e5f8be0d03529558a67f7eaf3f3007f07b87f2`.
+
+## Candidate 1.15.4 — 2026-10-15
+
+- VersionCode 37. Release assembly and lint passed. Header actions use one Row with 8 dp spacing.
+- Installed and tested the signed release APK on the accelerated API 37.1 emulator (1080×2400, 420 dpi). No debug APK used and no rebuild after testing.
+- Visually checked English/light and Italian/dark headers. Italian accessibility bounds: Home [529,149][655,275], Save [676,149][891,275], language [912,149][1038,275]. Both gaps are 21 px (8 dp), all heights 126 px (48 dp).
+- Added a widget through the app and launcher confirmation. Save persisted a test placeholder after reopening configuration; Home from APPWIDGET_CONFIGURE reached the app library. Unsaved edits displayed the discard confirmation. These are targeted checks, not a full regression suite.
+- Signature and 16 KB alignment passed. SHA-256 before and after UI tests: `33a36553064a98b976885e854c953e8322d3a342850ddaa509b27b506d0adb12`.
+- Screenshots retained locally: work/header-light.png and work/header-dark-it.png (workspace root).
+
+## Candidate 1.15.3 — 2026-10-15
+
+- VersionCode 36. Release assembly and lint passed. Home, Save and language controls now explicitly share outline color, content color and 48 dp height.
+- Existing signing certificate and 16 KB alignment verified. APK SHA-256: `aa99973af9d6b37575e7225ff57f994639a06c3505975861d0df4d9257270a47`.
+- Runtime UI verification remains blocked: the resumed environment does not expose `/dev/kvm`. An unaccelerated API 37.1 emulator starts but remains offline without completing Android boot. No successful installation or visual/Save-navigation test is claimed for this APK. Emulator stopped after the attempt.
+- The signed APK was retained unchanged for subsequent runtime testing and delivery; no separate debug APK was built.
+
+## Candidate 1.15.2 — 2026-10-14
+
+- VersionCode 35. Release build/lint passed; 74 JVM tests passed. No device/emulator UI tests in this iteration.
+- Current preset has an empty placeholder. Reset coverage verifies automatic text restoration, preservation of the selected engine/general text style, no mutation of existing text, and use of updated defaults.
+- Home/Save use outlined controls; installed version uses BuildConfig.VERSION_NAME.
+- Existing signing certificate and 16 KB alignment verified. APK SHA-256: `032abcf94d444ad3ef660fde9e4eb4171d49240004fd89d78bf3254d1f80eff1`.
+
+## Candidate 1.15.1 — 2026-10-14
+
+- VersionCode 34. Release build and lint passed; signature and 16 KB alignment verified.
+- Home icon navigation reviewed for normal app entry, launcher configuration, and discard/cancel branches. No device/emulator UI test performed in this iteration.
+- APK SHA-256: `f8440806dac21292528a82fc4bba617273fb16ff956e09d979dfad56a93ff3ae`.
+
+## Candidate 1.15.0 — 2026-10-14
+
+- VersionCode 33. 73 JVM tests passed, including nine selective reset tests covering individual colors, gradient angle, rich-text ranges, asset restoration, linked/separate modes, haptics/actions, coordinates/layers, adaptive field width and undo.
+- Release build and lint passed; existing warnings remain. One release APK generated, signed with the existing certificate and verified for 16 KB ZIP alignment. No debug APK generated.
+- SHA-256: `4ba1077a55f79519dfdaeee775a5027c53011e6ea2856ee18f16cbc58fbdb97c`.
+- No emulator or physical-device UI tests performed in this iteration. Manual verification of the reset cards remains pending.
+
 ## Candidate 1.14.2 — 2026-10-14
 
 - Release build and lint passed; existing warnings remain. Signature matches the previous APK and 16 KB alignment is verified. APK SHA-256: `1f24c4c0e868f3fd8b59df5b0a9fa4c58cd84ac04c2e97fb44b3e13bb5bef9a4`.

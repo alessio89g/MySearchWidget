@@ -21,7 +21,7 @@ class DefaultWidgetTest {
  @Test fun presetMatchesBackupWithSystemThemeAndCenteredThirdIcon() {
   val original=ins.context.assets.open("default-reference.json").bufferedReader().use {Validation.parse(it.readText())}
   val preset=DefaultWidget.create(context)
-  assertEquals(original.config.copy(theme="system",buttons=original.config.buttons.mapIndexed {i,b->if(i==2)b.copy(iconPosition=b.iconPosition.copy(x=0f)) else b}),preset)
+  assertEquals(original.config.copy(theme="system",placeholder="",buttons=original.config.buttons.mapIndexed {i,b->if(i==2)b.copy(iconPosition=b.iconPosition.copy(x=0f)) else b}),preset)
   val layout=ElementLayout(374f,preset)
   assertEquals(layout.buttonBounds[2].centerX,layout.iconBounds[2].centerX,.001f)
   Assets.validate(context,preset.assets)

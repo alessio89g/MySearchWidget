@@ -21,6 +21,7 @@ import com.alessio89g.mysearchwidget.i18n.*
  NumberControl(tr(R.string.position_x),value.x,-10000f,10000f,showSlider=false){onChange(value.copy(x=it))}
  NumberControl(tr(R.string.position_y),value.y,-10000f,10000f,showSlider=false){onChange(value.copy(y=it))}
  NumberControl(tr(R.string.position_step),step,.1f,100f,showSlider=false){step=it}
+ TextButton(onClick={step=1f}){Text(tr(R.string.reset_named,tr(R.string.position_step)))}
  Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
   OutlinedButton(onClick={move(0f,-step)},modifier=Modifier.semantics {contentDescription=tr(R.string.move_up)}){Text("↑")}
   Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
@@ -72,6 +73,7 @@ import com.alessio89g.mysearchwidget.i18n.*
   SettingCard(tr(R.string.button_count),tr(R.string.buttons_help)) {
    OptionButtons(config.count.toString(),(0..3).map {it.toString() to it.toString()}){onChange(config.withButtonCount(it.toInt(),defaults))}
    Text(tr(R.string.hidden_buttons_preserved),style=MaterialTheme.typography.bodySmall)
+   ResetOptions(config,listOf(resetOption(R.string.button_count,"count")),onChange)
   }
   return
  }
@@ -86,12 +88,14 @@ import com.alessio89g.mysearchwidget.i18n.*
     IconButton(onClick={onChange(config.moveLayer(id,false))},enabled=id!=visible.first(),modifier=Modifier.semantics {contentDescription=tr(R.string.layer_backward,options.first {it.first==id}.second)}){Text("↓")}
    }
   }
+  ResetOptions(config,visible.map {id->ResetOption(options.first {it.first==id}.second,listOf("layer:$id"))},onChange)
   TextButton(onClick={onChange(config.copy(placement=config.placement.copy(layers=defaults.placement.layers)))}){Text(tr(R.string.reset_layers))}
  }
  return
  }
  key(selected) {SettingCard(options.first {it.first==selected}.second) {
   OptionButtons(panel,listOf("size" to tr(R.string.layout_dimensions),"position" to tr(R.string.layout_position))){panel=it}
+  ResetOptions(config,geometryResets(selected,panel=="position"),onChange)
   if(panel=="position") {
    Text(tr(R.string.position_help),style=MaterialTheme.typography.bodySmall)
    val p=config.placement

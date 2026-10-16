@@ -140,7 +140,7 @@ object Renderer {
  private fun drawIconSolid(canvas:Canvas,c:WidgetConfig,s:IconSpec,r:RectF,color:Int) {
   val p=Paint(3).apply { this.color=if(s.monochrome)color else Color.WHITE }
   val asset=c.assets[s.asset]
-  if(asset!=null) { Assets.bitmap(asset)?.let { b ->
+  if(asset!=null) { (if(s.outline)Assets.outlinedBitmap(asset,s.keepOuterOutline) else if(s.monochrome)Assets.monochromeBitmap(asset) else Assets.bitmap(asset))?.let { b ->
    if(s.monochrome)p.colorFilter=PorterDuffColorFilter(color,PorterDuff.Mode.SRC_IN)
    val scale=min(r.width()/b.width,r.height()/b.height);val w=b.width*scale;val h=b.height*scale
    canvas.drawBitmap(b,null,RectF(r.centerX()-w/2,r.centerY()-h/2,r.centerX()+w/2,r.centerY()+h/2),p)

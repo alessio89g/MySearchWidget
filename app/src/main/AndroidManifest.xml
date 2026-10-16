@@ -5,6 +5,13 @@
  <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
  <queries>
+  <intent><action android:name="org.adw.launcher.icons.ACTION_PICK_ICON"/></intent>
+  <intent><action android:name="org.adw.launcher.THEMES"/></intent>
+  <intent><action android:name="org.adw.ActivityStarter.THEMES"/></intent>
+  <intent><action android:name="com.gau.go.launcherex.theme"/></intent>
+  <intent><action android:name="com.novalauncher.THEME"/></intent>
+  <intent><action android:name="app.lawnchair.icons.THEMED_ICON"/></intent>
+
   <intent><action android:name="android.service.wallpaper.WallpaperService"/></intent>
   <intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.HOME"/></intent>
   <intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent>
