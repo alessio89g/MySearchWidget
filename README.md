@@ -38,6 +38,8 @@ For the logo and buttons, choose built-in icons, images, original app icons or i
 
 Outline, monochrome tint and gradients also apply to imported icons. Monochrome mode preserves tonal detail; **Keep outer outline**, off by default, lets you include the background border in the outline. When excluded, an identifiable uniform background is removed; already transparent symbols retain their outline. Manual tints require Material You to be off and monochrome mode to be on.
 
+SVG icons can be imported from a file. Their original artwork and transparency are preserved on import. Enable Outline to trace filled shapes, or leave it off for icons that already have outline strokes; monochrome mode applies the selected colour or gradient. The SVG file is included in backups.
+
 **Actions.** Shortcuts are grouped by app. For dynamic shortcuts, use temporary access as the Home app: select and save the shortcut, then tap **Restore your launcher**. Pinned shortcuts remain usable; reinstalling or changing devices may require selecting them again. Availability depends on installed apps.
 
 When choosing an app or shortcut, **Icon for this action** lets you keep the current icon, use the app icon or choose one from a pack. The icon follows its own light/dark link, independently of the action’s link.

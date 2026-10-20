@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.16.6 — 2026-10-20
+
+### English
+
+- Import SVG icons in their original form, with optional outline, colour and gradient.
+
+- Imported icons have a slightly thicker outline, with smoother edges and more consistent stroke weight.
+
+### Italiano
+
+- Importa icone SVG nel loro aspetto originale, con outline, colore e sfumatura opzionali.
+
+- Outline delle icone importate leggermente più spesso, con bordi più morbidi e tratti più uniformi.
+
 ## 1.16.5 — 2026-10-16
 
 ### English

@@ -147,7 +147,7 @@ class ConfigActivity:ComponentActivity() {
  private val iconDocument=registerForActivityResult(ActivityResultContracts.OpenDocument()){uri->if(uri!=null)task {
   val (id,asset)=withContext(Dispatchers.IO){Assets.read(this@ConfigActivity,uri,"image")}
   val slot=if(iconTarget==-1)config.logo else config.buttons[iconTarget]
-  config=config.copy(assets=config.assets+(id to asset));setSlot(iconTarget,slot.copy(icon=slot.icon.copy(asset=id)));editorState.config=Assets.prune(editorState.config)
+  config=config.copy(assets=config.assets+(id to asset));setSlot(iconTarget,slot.copy(icon=slot.icon.copy(asset=id,outline=if(Assets.isVector(asset))false else slot.icon.outline)));editorState.config=Assets.prune(editorState.config)
  }}
  override fun onCreate(state:Bundle?) {
   super.onCreate(state);setResult(RESULT_CANCELED)
@@ -304,7 +304,7 @@ class ConfigActivity:ComponentActivity() {
  private fun setExternalIcon(index:Int,choice:Pair<String,Asset>?,action:Shortcut?=null) {
   val current=config
   val old=if(index<0)current.logo else current.buttons[index]
-  val slot=old.copy(icon=choice?.let {old.icon.copy(asset=it.first)} ?: old.icon,tap=action ?: old.tap)
+  val slot=old.copy(icon=choice?.let {old.icon.copy(asset=it.first,outline=if(Assets.isVector(it.second))false else old.icon.outline)} ?: old.icon,tap=action ?: old.tap)
   config=current.copy(assets=choice?.let {current.assets+it} ?: current.assets,logo=if(index<0)slot else current.logo,buttons=if(index<0)current.buttons else current.buttons.mapIndexed {i,v->if(i==index)slot else v})
  }
  private fun task(block:suspend ()->Unit){lifecycleScope.launch {busy=true;try {block()}catch(e:Exception){message=tr(R.string.operation_failed,errorText(e))}finally{busy=false}}}
@@ -527,7 +527,7 @@ class ConfigActivity:ComponentActivity() {
         val slot=if(slotIndex==-1)config.logo else config.buttons[slotIndex]
         ModeNotice(if(slotIndex==-1)listOf("logo","color.logo") else listOf("icon.$slotIndex","shape.button$slotIndex","color.icon$slotIndex","color.button$slotIndex"))
         if(config.dynamic)Text(tr(R.string.disable_dynamic_help),style=MaterialTheme.typography.bodySmall)
-        SlotEditor(slot,slotIndex>=0,{setSlot(slotIndex,it)},showAction=false,unit=sizeUnit,firstButton=slotIndex==0,onExternalIcon={setExternalIcon(slotIndex,it)}){iconTarget=slotIndex;iconDocument.launch(arrayOf("image/*"))}
+        SlotEditor(slot,slotIndex>=0,{setSlot(slotIndex,it)},showAction=false,unit=sizeUnit,firstButton=slotIndex==0,vectorArtwork=config.assets[slot.icon.asset]?.let {Assets.isVector(it)}==true,onExternalIcon={setExternalIcon(slotIndex,it)}){iconTarget=slotIndex;iconDocument.launch(arrayOf("image/*"))}
         val prefix=if(slotIndex<0)"logo" else "buttons.$slotIndex"
         ResetOptions(config,iconResets("$prefix.icon",editorState.editDark,config,slot.icon).map {it.copy(label=tr(R.string.icon)+" · "+it.label)}+
          if(slotIndex>=0)surfaceResets("$prefix.surface",editorState.editDark,config,slot.surface).map {it.copy(label=tr(R.string.button_background)+" · "+it.label)} else emptyList()){config=it}

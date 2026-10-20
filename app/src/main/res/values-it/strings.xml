@@ -391,4 +391,5 @@
 <string name="native_pack_unavailable">Questo pack non ha un selettore compatibile o non ha restituito un’icona leggibile. Puoi consultare qui il suo catalogo.</string>
 <string name="browse_pack_here">Sfoglia in MySearchWidget</string>
  <string name="keep_outer_outline">Mantieni contorno esterno</string>
+ <string name="svg_icon_help">Le icone SVG mantengono il disegno originale quando vengono importate. Attiva Outline per ricavare il contorno di un’icona piena; lascialo disattivato per le icone già outline. La modalità monocromatica applica il colore o la sfumatura scelti.</string>
 </resources>

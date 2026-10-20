@@ -1,5 +1,16 @@
 # Validation
 
+## Release 1.16.6 — 2026-10-20
+
+- VersionCode 48. Release assembly/lint and 90 JVM tests passed. Existing signing certificate and 16 KB alignment verified.
+- Outline resolution is normalized; stroke weight is slightly increased and premultiplied edge smoothing avoids dark fringes. Unit tests cover transparency, hollow centers, original colors and comparable inner/outer stroke weight.
+- Static SVG import uses AndroidSVG 1.4; original SVG bytes remain embedded in backups. Rasterization is bounded to 512 px. Entity declarations, embedded raster images and scripts are rejected. This is not support for every SVG feature (animation/filter effects are not supported).
+- SVG imports start with Outline off; it remains available for filled vector artwork. Monochrome mode tints SVG alpha without raster tonal conversion. Existing raster settings remain unchanged.
+- Tested the exact signed APK on the API 37.1 emulator: import Lawnicons mono.svg from Android DocumentsUI; original strokes/transparency; monochrome tint; filled SVG outline off/on; import a new SVG while outline was enabled and verify outline resets off; Save, force-stop/reopen and launcher rendering; export/reimport backup. Exported SVG bytes match the input exactly.
+- Raster file test: uniform circular background with a rounded internal symbol, outline enabled, outer-border retention off/on. Both render correctly. Native test-pack round trip left a stuck dialog without a crash entry; that route is not validated by this run. Direct file import and subsequent app restart worked. No physical phone was used.
+- No crash-buffer entries during these checks. No rebuild after runtime testing. APK: outputs/1.16.6/MySearchWidget-1.16.6-build48.apk; SHA-256 `ef3ea258450133154bd07bdc105bf4cc516d9ec0ad3c2c95d7a1df30b3ca91da`.
+- Screenshot and backup evidence were inspected locally before publication; local test artefacts are not included in the repository.
+
 ## Candidate 1.16.5 — 2026-10-16
 
 - VersionCode 45. Release assembly/lint passed; 86 JVM tests passed. Signature and 16 KB alignment verified.

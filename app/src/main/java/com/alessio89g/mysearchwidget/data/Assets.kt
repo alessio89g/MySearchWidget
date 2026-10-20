@@ -13,6 +13,7 @@ import android.util.LruCache
 
 object Assets {
  private val bitmaps=object:LruCache<String,Bitmap>(8*1024*1024) { override fun sizeOf(key:String,value:Bitmap)=value.byteCount }
+ private val vectors=LruCache<String,Boolean>(24)
  private val fonts=LruCache<String,Typeface>(12)
  fun read(context:Context, uri:Uri, kind:String): Pair<String,Asset> {
   val bytes=context.contentResolver.openInputStream(uri)?.use { it.readLimited(Validation.MAX_ASSET+1) } ?: error(tr(R.string.file_unreadable))
@@ -23,6 +24,7 @@ object Assets {
  fun validate(context:Context, assets:Map<String,Asset>) { assets.forEach { (_,a) ->
   val data=Base64.getDecoder().decode(a.base64)
   if(a.kind=="image") {
+   if(SvgIcons.recognizes(data)){SvgIcons.decode(data).recycle();return@forEach}
    val bounds=BitmapFactory.Options().apply { inJustDecodeBounds=true };BitmapFactory.decodeByteArray(data,0,data.size,bounds)
    require(bounds.outWidth in 1..4096 && bounds.outHeight in 1..4096 && bounds.outWidth.toLong()*bounds.outHeight<=8_000_000) { tr(R.string.invalid_image) }
    val bitmap=BitmapFactory.decodeByteArray(data,0,data.size) ?: error(tr(R.string.damaged_image));bitmap.recycle()
@@ -35,9 +37,11 @@ object Assets {
   }
  } }
  private fun key(asset:Asset)=java.security.MessageDigest.getInstance("SHA-256").digest(asset.base64.toByteArray()).joinToString("") { "%02x".format(it) }
- fun bitmap(asset:Asset):Bitmap? { val k=key(asset); return bitmaps[k] ?: Base64.getDecoder().decode(asset.base64).let { b -> BitmapFactory.decodeByteArray(b,0,b.size)?.also { bitmaps.put(k,it) } } }
+ fun isVector(asset:Asset):Boolean { val k=key(asset);return vectors[k] ?: SvgIcons.recognizes(Base64.getDecoder().decode(asset.base64)).also {vectors.put(k,it)} }
+ fun bitmap(asset:Asset):Bitmap? { val k=key(asset); return bitmaps[k] ?: Base64.getDecoder().decode(asset.base64).let { b -> (if(isVector(asset))SvgIcons.decode(b) else BitmapFactory.decodeByteArray(b,0,b.size))?.also { bitmaps.put(k,it) } } }
  /** Preserve internal contrast in flattened icons instead of tinting their entire opaque disc. */
  fun monochromeBitmap(asset:Asset):Bitmap? {
+  if(isVector(asset))return bitmap(asset)
   val k=key(asset)+":monochrome";bitmaps[k]?.let {return it}
   val source=bitmap(asset) ?: return null
   val pixels=IntArray(source.width*source.height)
@@ -49,10 +53,11 @@ object Assets {
  fun outlinedBitmap(asset:Asset,keepOuterOutline:Boolean=false):Bitmap? {
   val k=key(asset)+":outline:$keepOuterOutline";bitmaps[k]?.let {return it}
   val source=bitmap(asset) ?: return null
-  val scale=minOf(1f,256f/maxOf(source.width,source.height))
+  // Normalize outline resolution so stroke weight does not depend on the imported file size.
+  val scale=256f/maxOf(source.width,source.height)
   val b=Bitmap.createScaledBitmap(source,(source.width*scale).toInt().coerceAtLeast(1),(source.height*scale).toInt().coerceAtLeast(1),true)
   val w=b.width;val h=b.height;val pixels=IntArray(w*h);b.getPixels(pixels,0,w,0,0,w,h)
-  val output=IconOutline.convert(pixels,w,h,(minOf(w,h)/64).coerceAtLeast(1),keepOuterOutline)
+  val output=IconOutline.convert(pixels,w,h,(minOf(w,h)/48).coerceAtLeast(1),keepOuterOutline)
   if(b!==source)b.recycle()
   return Bitmap.createBitmap(output,w,h,Bitmap.Config.ARGB_8888).also {bitmaps.put(k,it)}
  }

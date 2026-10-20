@@ -7,7 +7,7 @@ object IconOutline {
  fun convert(pixels:IntArray,w:Int,h:Int,radius:Int,keepOuterOutline:Boolean=false):IntArray {
   require(w>0 && h>0 && pixels.size==w*h && radius>0)
   val background=if(keepOuterOutline)BooleanArray(pixels.size) else background(pixels,w,h)
-  return IntArray(pixels.size){i->
+  val edges=IntArray(pixels.size){i->
    val c=pixels[i];val a=if(background[i])0 else c ushr 24;val x=i%w;val y=i/w
    var edge=0
    if(a>0)for(dy in -radius..radius)for(dx in -radius..radius)if(dx*dx+dy*dy<=radius*radius){
@@ -18,9 +18,28 @@ object IconOutline {
     // Ignore RGB of transparent pixels and suppress small compression/color noise.
     val difference=maxOf(abs(((c ushr 16) and 255)-((other ushr 16) and 255)),abs(((c ushr 8) and 255)-((other ushr 8) and 255)),abs((c and 255)-(other and 255)))
     val contrast=((difference-24).coerceAtLeast(0)/136f).coerceAtMost(1f)
-    edge=maxOf(edge,(minOf(a,oa)*contrast).toInt())
+    // Color transitions have two sides; use half the radius to match silhouette width.
+    val colorRadius=maxOf(1,radius/2)
+    if(dx*dx+dy*dy<=colorRadius*colorRadius)edge=maxOf(edge,(minOf(a,oa)*contrast).toInt())
    }
    (edge shl 24) or (c and 0x00ffffff)
+  }
+  return if(radius<2)edges else soften(edges,w,h)
+ }
+ /** Small premultiplied filter: smooth coverage without dark halos or a broad blur. */
+ private fun soften(p:IntArray,w:Int,h:Int):IntArray {
+  val weights=intArrayOf(1,2,1)
+  return IntArray(p.size){i->
+   val x=i%w;val y=i/w
+   var alpha=0;var red=0;var green=0;var blue=0
+   for(dy in -1..1)for(dx in -1..1){
+    val nx=x+dx;val ny=y+dy
+    if(nx in 0 until w && ny in 0 until h){
+     val c=p[ny*w+nx];val a=(c ushr 24)*weights[dx+1]*weights[dy+1]
+     alpha+=a;red+=((c ushr 16) and 255)*a;green+=((c ushr 8) and 255)*a;blue+=(c and 255)*a
+    }
+   }
+   if(alpha==0)0 else (((alpha+8)/16) shl 24) or ((red/alpha) shl 16) or ((green/alpha) shl 8) or (blue/alpha)
   }
  }
  private fun distance(a:Int,b:Int)=maxOf(abs(((a ushr 16) and 255)-((b ushr 16) and 255)),abs(((a ushr 8) and 255)-((b ushr 8) and 255)),abs((a and 255)-(b and 255)))

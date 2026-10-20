@@ -392,4 +392,5 @@
 <string name="native_pack_unavailable">This pack has no compatible picker, or could not return a readable icon. You can browse its catalogue here instead.</string>
 <string name="browse_pack_here">Browse in MySearchWidget</string>
  <string name="keep_outer_outline">Keep outer outline</string>
+ <string name="svg_icon_help">SVG icons preserve their original artwork on import. Enable Outline to trace a filled icon; leave it off for icons that already use outline strokes. Monochrome mode applies the selected colour or gradient.</string>
 </resources>

@@ -38,6 +38,8 @@ Per logo e pulsanti puoi scegliere icone integrate, immagini, icone originali de
 
 Outline, tinta monocromatica e gradienti si applicano anche alle icone importate. La modalità monocromatica conserva i contrasti; **Mantieni contorno esterno**, disattivato di default, permette di includere il bordo dello sfondo nell’outline. Quando escluso, viene rimosso lo sfondo uniforme riconoscibile; i simboli già trasparenti conservano il proprio contorno. Le tinte manuali richiedono Material You disattivato e modalità monocromatica attiva.
 
+Le icone SVG si possono importare da file. Mantengono il disegno e la trasparenza originali all’importazione. Attiva Outline per ricavare i contorni delle forme piene, oppure lascialo disattivato per le icone già outline; la modalità monocromatica applica il colore o la sfumatura scelti. Il file SVG è incluso nei backup.
+
 **Azioni.** Le scorciatoie sono raggruppate per app. Per quelle dinamiche puoi usare l’accesso temporaneo come app Home: seleziona e salva la scorciatoia, poi premi **Ripristina il launcher**. Le scorciatoie fissate restano utilizzabili; dopo una reinstallazione o un cambio di dispositivo può essere necessario selezionarle nuovamente. La disponibilità dipende dalle app installate.
 
 Quando scegli un’app o una scorciatoia, **Icona per questa azione** permette di mantenere l’icona attuale, usare quella dell’app o sceglierla da un pack. L’icona segue il proprio legame chiaro/scuro, indipendentemente da quello dell’azione.

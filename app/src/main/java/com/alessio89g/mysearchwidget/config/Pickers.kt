@@ -46,7 +46,7 @@ import kotlinx.coroutines.withContext
   }},confirmButton={TextButton(onClick={apps=false}){Text(tr(R.string.close))}})
  }
 }
-@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,onExternalIcon:((Pair<String,Asset>)->Unit)?=null,pickImage:()->Unit) {
+@Composable fun SlotEditor(value:Slot,background:Boolean,onChange:(Slot)->Unit,showAction:Boolean=true,unit:Float=1f,firstButton:Boolean=false,vectorArtwork:Boolean=false,onExternalIcon:((Pair<String,Asset>)->Unit)?=null,pickImage:()->Unit) {
  var packs by rememberSaveable {mutableStateOf(false)}
  if(packs)IconPackDialog({packs=false}){onExternalIcon?.invoke(it);packs=false}
  var catalog by remember {mutableStateOf(false)}
@@ -61,6 +61,7 @@ import kotlinx.coroutines.withContext
    if(onExternalIcon!=null)OutlinedButton(onClick={packs=true}){Text(tr(R.string.from_icon_pack))}
    OutlinedButton(onClick=pickImage){Text(tr(R.string.from_file))}
   }
+  if(vectorArtwork)Text(tr(R.string.svg_icon_help),style=MaterialTheme.typography.bodySmall)
   Toggle(tr(R.string.outline),value.icon.outline){onChange(value.copy(icon=value.icon.copy(outline=it)))}
   if(value.icon.asset.isNotEmpty()) {
    if(value.icon.outline)Toggle(tr(R.string.keep_outer_outline),value.icon.keepOuterOutline){onChange(value.copy(icon=value.icon.copy(keepOuterOutline=it)))}

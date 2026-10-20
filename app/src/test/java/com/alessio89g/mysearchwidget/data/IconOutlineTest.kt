@@ -46,4 +46,27 @@ class IconOutlineTest {
   assertTrue(out[2*9+5] ushr 24>0)
  }
 
+ @Test fun smoothEdgesRetainHollowCenterAndOriginalColor(){
+  val w=81;val p=IntArray(w*w)
+  for(y in 0 until w)for(x in 0 until w)if((x-40)*(x-40)+(y-40)*(y-40)<=900)p[y*w+x]=0xff22aacc.toInt()
+  val out=IconOutline.convert(p,w,w,3,true)
+  assertTrue(out.any {it ushr 24 in 1..254})
+  assertEquals(0,out[40*w+40] ushr 24)
+  assertTrue(out.filter {it ushr 24>0}.all {it and 0xffffff==0x22aacc})
+  assertEquals(0,out[0] ushr 24)
+ }
+ @Test fun smoothInternalAndOuterStrokesHaveSimilarWeight(){
+  val w=81;val p=IntArray(w*w)
+  for(y in 10..70)for(x in 10..70)p[y*w+x]=0xff222222.toInt()
+  for(y in 25..55)for(x in 25..55)p[y*w+x]=0xffffffff.toInt()
+  val out=IconOutline.convert(p,w,w,5,true)
+  val outer=(6..17).sumOf {out[40*w+it] ushr 24}/255f
+  val inner=(19..31).sumOf {out[40*w+it] ushr 24}/255f
+  assertTrue(kotlin.math.abs(outer-inner)<=1.1f)
+  val noBackground=IconOutline.convert(p,w,w,5,false)
+  assertEquals(0,noBackground[40*w+10] ushr 24)
+  assertTrue(noBackground[40*w+25] ushr 24>0)
+  assertEquals(0,noBackground[40*w+40] ushr 24)
+ }
+
 }

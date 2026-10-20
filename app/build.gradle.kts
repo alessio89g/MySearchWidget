@@ -10,8 +10,8 @@ android {
   applicationId = "com.alessio89g.mysearchwidget"
   minSdk = 31 // Material You requires Android 12; the input technique does not.
   targetSdk = 37
-  versionCode = 45
-  versionName = "1.16.5"
+  versionCode = 48
+  versionName = "1.16.6"
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
  buildFeatures { compose = true; buildConfig = true }
@@ -19,6 +19,7 @@ android {
  buildTypes { release { isMinifyEnabled = true; isShrinkResources = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt")) } }
 }
 dependencies {
+ implementation("com.caverock:androidsvg-aar:1.4")
  implementation(platform("androidx.compose:compose-bom:2025.08.01"))
  implementation("androidx.activity:activity-compose:1.10.1")
  implementation("androidx.compose.material3:material3:1.5.0-alpha03")
