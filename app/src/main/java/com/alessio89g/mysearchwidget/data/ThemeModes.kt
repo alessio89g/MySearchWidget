@@ -10,7 +10,7 @@ import kotlinx.serialization.json.*
  val dark:Map<String,JsonElement> = emptyMap(),
  val sharedRuns:Map<String,JsonElement> = emptyMap()
 )
-val COLOR_GROUPS=listOf("color.outer","color.field","color.logo","color.hint","color.query")+
+val COLOR_GROUPS=listOf("color.outer","color.field","color.logo","color.hint","color.query","color.idleCursor","color.queryCursor")+
  (0..2).flatMap {listOf("color.button$it","color.icon$it")}
 object ModeSettings {
  private val runPaths=setOf("hintRuns","hintRunSizes","hintRunFonts","hintRunColors")
@@ -79,6 +79,8 @@ object ModeSettings {
   return result.copy(hintRuns=combineRuns(result,runs("hintRuns","format"),runs("hintRunSizes","size"),runs("hintRunColors","color"),runs("hintRunFonts","font")))
  }
  fun group(path:String):String? {
+  if(path.startsWith("idleCursorColors."))return "color.idleCursor"
+  if(path.startsWith("queryCursorColors."))return "color.queryCursor"
   if(path=="hintRunFonts")return "font.hint"
   if(path=="hintRunSizes")return "size.text"
   if(path=="hintRunColors")return "color.hint"
@@ -86,7 +88,7 @@ object ModeSettings {
   if(path=="engineId")return "search.engine"
   if(path=="googleInput")return "search.google"
   if(path=="count")return "count"
-  if(path=="placeholder")return "placeholder"
+  if(path=="placeholder" || path=="idleCursor")return "placeholder"
   if(path=="hintRuns")return "text.hint"
   if(path.startsWith("haptics."))return "action."+path.substringAfter('.')
   if(path=="heightDp" || path.startsWith("sizing.outer") || path in listOf("sizing.sidePaddingDp","sizing.layoutHeightDp"))return "size.outer"

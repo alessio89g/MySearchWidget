@@ -57,26 +57,50 @@ class SearchWidget:AppWidgetProvider() {
    val presentation=WidgetPresentation(resolved,width.coerceIn(180,1000),availableHeight)
    val c=presentation.config
    val designWidth=presentation.designWidth
-   val rv=RemoteViews(context.packageName,R.layout.widget)
+   val idle=text==null && c.idleCursor && !c.googleInput
+   val rv=RemoteViews(context.packageName,if(idle)R.layout.widget_blink else R.layout.widget)
    val dimensions=ElementLayout(designWidth.toFloat(),c)
    val dp=android.util.TypedValue.COMPLEX_UNIT_DIP
    // Keep bitmap and hit targets in the same dp coordinate space, even if a
    // launcher changes its padding without updating the reported dimensions.
    rv.setViewLayoutWidth(R.id.widget_frame,presentation.width,dp)
    rv.setViewLayoutHeight(R.id.widget_frame,presentation.height,dp)
-   if(c.theme=="system") {
-    // Android resolves these in the host configuration, even when our process is
-    // not running. Do not depend on CONFIGURATION_CHANGED delivery to a receiver.
-    rv.setIcon(R.id.art,"setImageIcon",
-     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="light"),designWidth,text,engine)),
-     Icon.createWithBitmap(Renderer.render(context,c.copy(theme="dark"),designWidth,text,engine)))
-   }else rv.setImageViewBitmap(R.id.art,Renderer.render(context,c,designWidth,text,engine))
+   val light=if(c.theme=="system")c.copy(theme="light") else c
+   val base=Renderer.render(context,light,designWidth,text,engine,idleCaret=false)
+   val darkBase=if(c.theme=="system")Renderer.render(context,c.copy(theme="dark"),designWidth,text,engine,idleCaret=false) else base
+   if(c.theme=="system")rv.setIcon(R.id.art,"setImageIcon",Icon.createWithBitmap(base),Icon.createWithBitmap(darkBase))
+   else rv.setImageViewBitmap(R.id.art,base)
+   if(idle) {
+    // Like Android's clock widgets, animation belongs to a native host view.
+    // Only a narrow strip changes; no app timer, wake lock or per-tick bitmap allocation.
+    val density=base.width/designWidth.toFloat()
+    val left=kotlin.math.floor(dimensions.textLeft*density).toInt().coerceIn(0,base.width-1)
+    val top=kotlin.math.floor(dimensions.textTop*density).toInt().coerceIn(0,base.height-1)
+    val right=kotlin.math.ceil((dimensions.textLeft+dimensions.textScale)*density).toInt().coerceIn(left+1,base.width)
+    val bottom=kotlin.math.ceil(dimensions.textBottom*density).toInt().coerceIn(top+1,base.height)
+    fun patch(bitmap:android.graphics.Bitmap)=android.graphics.Bitmap.createBitmap(bitmap,left,top,right-left,bottom-top)
+    val on=patch(Renderer.render(context,light,designWidth,engine=engine,idleCaret=true))
+    val off=patch(base)
+    if(c.theme=="system") {
+     val darkOn=patch(Renderer.render(context,c.copy(theme="dark"),designWidth,engine=engine,idleCaret=true))
+     rv.setIcon(R.id.caret_on,"setImageIcon",Icon.createWithBitmap(on),Icon.createWithBitmap(darkOn))
+     rv.setIcon(R.id.caret_off,"setImageIcon",Icon.createWithBitmap(off),Icon.createWithBitmap(patch(darkBase)))
+    } else {rv.setImageViewBitmap(R.id.caret_on,on);rv.setImageViewBitmap(R.id.caret_off,off)}
+    val scale=presentation.scale/density
+    rv.setViewLayoutWidth(R.id.idle_caret,(right-left)*scale,dp)
+    rv.setViewLayoutHeight(R.id.idle_caret,(bottom-top)*scale,dp)
+    rv.setViewLayoutMargin(R.id.idle_caret,RemoteViews.MARGIN_LEFT,left*scale,dp)
+    rv.setViewLayoutMargin(R.id.idle_caret,RemoteViews.MARGIN_TOP,top*scale,dp)
+   }
    fun pending(slot:Int,input:Boolean=false,element:String):PendingIntent {
     val intent=Intent(context,if(input && !c.googleInput)InputActivity::class.java else ActionActivity::class.java)
      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
      .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,id).putExtra("slot",slot).putExtra("element",element).putExtra("renderedTheme",c.theme)
      .setData(android.net.Uri.parse("mysearchwidget://widget/$id/${element}/${c.theme}"))
-    return PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    // Only input needs the host-provided source bounds to align its touch editor.
+    // The target component, widget ID and route are explicit and cannot be replaced by fill-in.
+    val mutability=if(input && !c.googleInput)PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
+    return PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT or mutability)
    }
    rv.removeAllViews(R.id.hit_row)
    for(layer in c.visibleLayers()) {

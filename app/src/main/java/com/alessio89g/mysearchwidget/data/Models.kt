@@ -5,6 +5,7 @@ import kotlinx.serialization.json.*
 import java.net.URI
 import java.util.Base64
 
+@Serializable data class CursorColors(val light:String="",val dark:String="")
 @Serializable data class Gradient(val enabled:Boolean=false,val start:String="#00C8FF",val end:String="#00D99B",val angle:Float=0f)
 @Serializable data class TextRun(val start:Int,val end:Int,val style:TextStyle)
 @Serializable data class Tone(val color: String = "", val opacity: Float = 1f, val blur: Float = 0f, val gradient:Gradient=Gradient())
@@ -24,7 +25,8 @@ import java.util.Base64
  val theme: String = "system", val dynamic: Boolean = true, val placeholder: String = "",
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
  val field: Surface = Surface(), val hint: TextStyle = TextStyle(), val query: TextStyle = TextStyle(),
- val googleInput:Boolean = false, val engineId: String = "google", val count: Int = 2,
+ val idleCursorColors:CursorColors=CursorColors(), val queryCursorColors:CursorColors=CursorColors(),
+ val idleCursor:Boolean = false, val googleInput:Boolean = false, val engineId: String = "google", val count: Int = 2,
  val logo: Slot = Slot(icon=IconSpec("Google"), tap=Shortcut("app", "com.google.android.googlequicksearchbox", "Google")),
  val buttons: List<Slot> = listOf(Slot(icon=IconSpec("Chrome"), tap=Shortcut("app","com.android.chrome","Chrome")), Slot(icon=IconSpec("Mic"), tap=Shortcut("builtin","voice","Ricerca vocale")), Slot()),
  val hintRuns:List<TextRun> = emptyList(), val assets: Map<String, Asset> = emptyMap()
@@ -86,6 +88,7 @@ object Validation {
    range(s.rounding,0f,100f); require(s.shape in Catalog.shapes) { "Forma sconosciuta" }
    listOf(s.light,s.dark).forEach { color(it.color);gradient(it.gradient);range(it.opacity,0f,1f);range(it.blur,0f,100f) }
   }
+  listOf(c.idleCursorColors,c.queryCursorColors).forEach {color(it.light);color(it.dark)}
   surface(c.outer);surface(c.field)
   (listOf(c.hint,c.query)+c.hintRuns.map {it.style}).forEach { range(it.size,8f,32f);require(it.weight in 100..900);color(it.light);color(it.dark);gradient(it.lightGradient);gradient(it.darkGradient);require(it.font.isEmpty() || c.assets[it.font]?.kind=="font") { "Font mancante" } }
   require(c.hintRuns.size<=500 && c.hintRuns.all {it.start>=0 && it.end>it.start && it.end<=c.placeholder.length})

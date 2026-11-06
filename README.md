@@ -46,6 +46,8 @@ When choosing an app or shortcut, **Icon for this action** lets you keep the cur
 
 **Search.** Text supports imported fonts, size, weight, bold, italic, underline, strikethrough, colors and gradients. Format individual parts of the placeholder using the visual editor or **BBCode**; query styling applies to all typed text.
 
+The cursor blinks while you type. Move it with its handle or the keyboard, long-press to select text, or tap outside to cancel. In **Search → Search field**, you can enable placeholder blinking (off by default) and set separate colors for the two cursors when Material You is off. These controls apply to the widget’s own search field.
+
 The preview can use a solid background or your wallpaper and switch between light and dark. **Undo/Redo** steps through edits. **Reset** commands restore individual options to the installed version's defaults without automatically changing existing saved widgets.
 
 ## How the widget behaves

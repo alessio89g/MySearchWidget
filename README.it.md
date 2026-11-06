@@ -46,6 +46,8 @@ Quando scegli un’app o una scorciatoia, **Icona per questa azione** permette d
 
 **Ricerca.** Per il testo sono disponibili font importabili, dimensione, peso, grassetto, corsivo, sottolineatura, barrato, colori e gradienti. Puoi formattare singole porzioni del testo a riposo con l’editor visuale o **BBCode**; lo stile della query si applica invece a tutto il testo digitato.
 
+Il cursore lampeggia durante la digitazione. Puoi spostarlo con la maniglia o la tastiera, tenere premuto per selezionare il testo o toccare fuori dal campo per annullare. In **Ricerca → Campo di ricerca** puoi attivare il lampeggio del cursore sul testo a riposo (disattivato di default) e scegliere colori separati per i due cursori quando Material You è disattivato. Questi controlli valgono per il campo di ricerca del widget.
+
 L’anteprima può mostrare un fondo solido o il wallpaper e alternare chiaro/scuro. **Annulla/Ripeti** ripercorre le modifiche. I comandi **Ripristina** agiscono sulle singole opzioni usando i valori predefiniti della versione installata, senza modificare automaticamente i widget già salvati.
 
 ## Come si comporta il widget

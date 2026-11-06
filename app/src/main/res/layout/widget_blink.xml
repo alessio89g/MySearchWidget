@@ -1,0 +1,12 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent">
+ <FrameLayout android:id="@+id/widget_frame" android:layout_width="match_parent" android:layout_height="68dp" android:layout_gravity="center">
+  <ImageView android:id="@+id/art" android:src="@drawable/widget_preview" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:importantForAccessibility="no"/>
+  <!-- Only this narrow cursor patch flips; the widget artwork stays static. -->
+  <ViewFlipper android:id="@+id/idle_caret" android:layout_width="1dp" android:layout_height="1dp" android:autoStart="true" android:flipInterval="650" android:importantForAccessibility="no">
+   <ImageView android:id="@+id/caret_on" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:importantForAccessibility="no"/>
+   <ImageView android:id="@+id/caret_off" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:importantForAccessibility="no"/>
+  </ViewFlipper>
+  <!-- Absolute coordinates match the bitmap even in an RTL launcher. -->
+  <FrameLayout tools:ignore="RtlHardcoded" android:id="@+id/hit_row" android:layout_width="match_parent" android:layout_height="match_parent"/>
+ </FrameLayout>
+</FrameLayout>

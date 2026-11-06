@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.16.7 — 2026-11-06
+
+### English
+
+- The search cursor blinks while typing and has a drag handle. Long-press to select text or tap outside to cancel.
+- Optional placeholder cursor blinking is off by default. The two cursor colors can be customized separately.
+
+### Italiano
+
+- Il cursore lampeggia durante la digitazione e si può spostare con la maniglia. Tieni premuto per selezionare il testo o tocca fuori dal campo per annullare.
+- Il lampeggio sul testo a riposo è opzionale e disattivato di default. I colori dei due cursori si possono personalizzare separatamente.
+
 ## 1.16.6 — 2026-10-20
 
 ### English

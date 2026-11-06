@@ -48,6 +48,8 @@ import com.alessio89g.mysearchwidget.i18n.*
 fun modeLabel(key:String):String {
  val part=key.substringAfter('.')
  return when {
+  key=="color.idleCursor"->tr(R.string.idle_cursor_color)
+  key=="color.queryCursor"->tr(R.string.query_cursor_color)
   key=="search.engine"->tr(R.string.selected_engine)
   key=="search.google"->tr(R.string.google_input_title)
   key.startsWith("shape.")->tr(R.string.mode_shape,modeLabel("color.$part"))

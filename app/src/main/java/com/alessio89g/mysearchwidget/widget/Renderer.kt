@@ -19,10 +19,20 @@ import com.alessio89g.mysearchwidget.data.*
 import com.alessio89g.mysearchwidget.icons.IconCatalog
 import kotlin.math.*
 
-data class SessionText(val text:String,val cursor:Int=text.length,val editing:Boolean=true)
+data class SessionText(val text:String,val cursor:Int=text.length,val editing:Boolean=true,val cursorVisible:Boolean=true,val scrollOffset:Float?=null,val editorPaint:TextPaint?=null,val editorScale:Float=1f)
 object Renderer {
+ fun cursorColor(context:Context,config:WidgetConfig,idle:Boolean):Int {
+  val dark=dark(context,config)
+  val c=ModeSettings.resolve(config,dark)
+  val colors=if(idle)c.idleCursorColors else c.queryCursorColors
+  val custom=if(dark)colors.dark else colors.light
+  if(!c.dynamic && custom.isNotEmpty())return Color.parseColor(custom)
+  return if(c.dynamic)(if(dark)dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)).primary.toArgb()
+   else Color.parseColor(if(dark)"#B8B3A1" else "#48463B")
+ }
+
  fun dark(context:Context,c:WidgetConfig)=c.theme=="dark" || (c.theme=="system" && context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES)
- fun render(baseContext:Context,config:WidgetConfig,widthDp:Int,session:SessionText?=null,engine:Engine?=null):Bitmap {
+ fun render(baseContext:Context,config:WidgetConfig,widthDp:Int,session:SessionText?=null,engine:Engine?=null,idleCaret:Boolean=true):Bitmap {
   val context=AppLanguage.context(baseContext)
   val density=context.resources.displayMetrics.density.coerceAtMost(3f)
   val width=widthDp.coerceIn(180,1000)
@@ -49,7 +59,9 @@ object Renderer {
   fun drawText() {
   val textStyle=if(session!=null)c.query else c.hint
   val text=session?.text ?: placeholderText(c,engine)
-  val start=dimensions.textLeft;val end=dimensions.textRight;val available=end-start
+  val idle=session==null && c.idleCursor && !c.googleInput
+  val caretGap=if(idle)3f*dimensions.textScale else 0f
+  val start=dimensions.textLeft+caretGap;val end=dimensions.textRight;val available=(end-start).coerceAtLeast(1f)
   fun styledPaint(p:TextPaint,style:com.alessio89g.mysearchwidget.data.TextStyle) {
    val face=c.assets[style.font]?.let {runCatching {Assets.font(context,it)}.getOrNull()} ?: context.resources.getFont(R.font.google_sans)
    p.color=ink(style.light,style.dark);p.typeface=Typeface.create(face,style.weight,style.italic)
@@ -57,7 +69,15 @@ object Renderer {
    val gr=if(dark)style.darkGradient else style.lightGradient
    p.shader=if(!c.dynamic && gr.enabled)gradient(gr,RectF(0f,0f,available.coerceAtLeast(1f),dimensions.field.height)) else null
   }
-  val paint=TextPaint(3).apply {styledPaint(this,textStyle)}
+  val metricScale=if(session?.editorPaint!=null)session.editorScale else 1f
+  val paint=TextPaint(3).apply {
+   styledPaint(this,textStyle)
+   session?.editorPaint?.let {native->
+    val ink=color;val gradient=shader
+    set(native);color=ink;shader=gradient
+    isUnderlineText=textStyle.underline;isStrikeThruText=textStyle.strike
+   }
+  }
   // TextLine also calls updateDrawState while measuring. Never query the layout
   // from that callback: it would recursively measure the same span.
   val rangeShaders=mutableMapOf<TextRun,Shader>()
@@ -72,7 +92,7 @@ object Renderer {
    },run.start,run.end.coerceAtMost(rich.length),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
   }
   val display=if(session==null || !session.editing)TextUtils.ellipsize(rich,paint,available,TextUtils.TruncateAt.END) else rich
-  val layout=StaticLayout.Builder.obtain(display,0,display.length,paint,ceil(Layout.getDesiredWidth(display,paint).coerceAtLeast(available)).toInt().coerceIn(1,100000))
+  val layout=StaticLayout.Builder.obtain(display,0,display.length,paint,ceil(Layout.getDesiredWidth(display,paint).coerceAtLeast(available*metricScale)).toInt().coerceIn(1,100000))
    .setIncludePad(false).setMaxLines(1).build()
   // Resolve gradient geometry once, outside span callbacks. Measurement can
   // safely revisit spans because their callbacks only read cached shaders.
@@ -88,11 +108,13 @@ object Renderer {
   if(!c.dynamic && textGradient.enabled)paint.shader=gradient(textGradient,RectF(0f,0f,layout.getLineWidth(0).coerceAtLeast(1f),layout.height.toFloat()))
   val cursor=session?.cursor?.coerceIn(0,text.length) ?: 0
   val advance=if(session?.editing==true)layout.getPrimaryHorizontal(cursor) else 0f
-  val shift=if(session?.editing==true)max(0f,advance-available+2*dimensions.textScale) else 0f
-  canvas.save();canvas.clipRect(start,dimensions.textTop,end,dimensions.textBottom)
-  canvas.translate(start-shift,dimensions.textCenterY-layout.height/2f)
+  val shift=if(session?.editing==true)session.scrollOffset ?: max(0f,advance/metricScale-available+2*dimensions.textScale) else 0f
+  canvas.save();canvas.clipRect(dimensions.textLeft,dimensions.textTop,end,dimensions.textBottom)
+  canvas.translate(start-shift,dimensions.textCenterY-layout.height/(2f*metricScale))
+  canvas.scale(1f/metricScale,1f/metricScale)
   layout.draw(canvas)
-  if(session?.editing==true)canvas.drawRect(advance,0f,advance+dimensions.textScale,layout.height.toFloat(),Paint(3).apply {color=on})
+  if(idle && idleCaret)canvas.drawRect(-caretGap,0f,-caretGap+dimensions.textScale,layout.height.toFloat(),Paint(3).apply {color=cursorColor(context,c,true)})
+  if(session?.editing==true && session.cursorVisible)canvas.drawRect(advance,0f,advance+dimensions.textScale*metricScale,layout.height.toFloat(),Paint(3).apply {color=cursorColor(context,c,false)})
   canvas.restore()
   }
   for(layer in c.visibleLayers())when(layer) {

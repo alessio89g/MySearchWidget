@@ -587,6 +587,7 @@ class ConfigActivity:ComponentActivity() {
        ModeNotice(listOf("placeholder"))
        OutlinedTextField(config.placeholder,{config=config.copy(placeholder=it.take(500),hintRuns=RichText.edit(config.placeholder,it.take(500),config.hintRuns,config.hint))},label={Text(tr(R.string.placeholder_label))},placeholder={Text(placeholderText(config,engines.firstOrNull {it.id==config.engineId}))},supportingText={Text(tr(R.string.placeholder_empty))},modifier=Modifier.fillMaxWidth(),singleLine=true)
        ResetOptions(config,listOf(resetOption(R.string.placeholder_label,"placeholder"))){config=it}
+       CursorControls(config,editorState.editDark){config=it}
        TextButton(onClick={page="Aspetto";element="Testo";queryPreview=false}){Text(tr(R.string.format_search_text))}
       }
       if(searchTarget=="google")SettingCard(tr(R.string.google_input_title),tr(R.string.google_input_help)){

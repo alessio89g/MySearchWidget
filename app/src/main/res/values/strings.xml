@@ -393,4 +393,9 @@
 <string name="browse_pack_here">Browse in MySearchWidget</string>
  <string name="keep_outer_outline">Keep outer outline</string>
  <string name="svg_icon_help">SVG icons preserve their original artwork on import. Enable Outline to trace a filled icon; leave it off for icons that already use outline strokes. Monochrome mode applies the selected colour or gradient.</string>
+ <string name="idle_cursor">Blinking cursor on placeholder</string>
+ <string name="idle_cursor_help">The launcher animates the cursor while displaying the widget, without keeping this app running. Off by default; animation may use additional power.</string>
+ <string name="idle_cursor_google_disabled">Turn off search with the Google app to enable the placeholder cursor.</string>
+ <string name="idle_cursor_color">Idle cursor color</string>
+ <string name="query_cursor_color">Typing cursor and handle color</string>
 </resources>
