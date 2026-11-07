@@ -16,7 +16,7 @@ import com.alessio89g.mysearchwidget.i18n.*
   R.string.mode_positions to ModeSettings.elements.map {"position.$it"},
   R.string.mode_layers to ModeSettings.elements.map {"layer.$it"},
   R.string.mode_colors to COLOR_GROUPS,
-  R.string.mode_content to listOf("search.engine","search.google","logo","count","shape.outer","shape.field")+(0..2).flatMap {listOf("shape.button$it","icon.$it")},
+  R.string.mode_content to listOf("search.engine","search.google","search.url","logo","count","shape.outer","shape.field")+(0..2).flatMap {listOf("shape.button$it","icon.$it")},
   R.string.mode_text to listOf("placeholder","font.hint","text.hint","font.query","text.query"),
   R.string.actions to listOf("action.field","action.logo")+(0..2).map {"action.button$it"}
  )
@@ -52,6 +52,7 @@ fun modeLabel(key:String):String {
   key=="color.queryCursor"->tr(R.string.query_cursor_color)
   key=="search.engine"->tr(R.string.selected_engine)
   key=="search.google"->tr(R.string.google_input_title)
+  key=="search.url"->tr(R.string.open_typed_urls)
   key.startsWith("shape.")->tr(R.string.mode_shape,modeLabel("color.$part"))
   key=="placeholder"->tr(R.string.placeholder_label)
   key.startsWith("font.")->tr(R.string.mode_font,if(part=="hint")tr(R.string.placeholder_label) else tr(R.string.typed_text))

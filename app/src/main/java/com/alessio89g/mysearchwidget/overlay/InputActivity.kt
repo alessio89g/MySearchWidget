@@ -53,7 +53,7 @@ class InputActivity:Activity() {
    textCursorDrawable=ColorDrawable(Color.TRANSPARENT)
    setPadding(0,0,0,0);includeFontPadding=false;gravity=Gravity.CENTER_VERTICAL or Gravity.START
    minimumWidth=0;minimumHeight=0;isHorizontalScrollBarEnabled=false
-   inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+   inputType=InputType.TYPE_CLASS_TEXT
    imeOptions=EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_EXTRACT_UI
    setImeActionLabel(tr(R.string.search),EditorInfo.IME_ACTION_SEARCH)
    filters=arrayOf(InputFilter.LengthFilter(8192))
@@ -158,6 +158,12 @@ class InputActivity:Activity() {
  }
  private fun submit() {
   val query=editor.text.toString().trim();if(query.isEmpty())return
+  val url=if(config.openTypedUrls) typedWebUrl(query) else null
+  if(url!=null) {
+   Actions.openSearch(this,url)
+   finish()
+   return
+  }
   scope.launch {
    val engine=Repository(this@InputActivity).engine(config.engineId)
    runCatching { Validation.engine(engine);Actions.openSearch(this@InputActivity,engine.template.replace("%s",android.net.Uri.encode(query))) }

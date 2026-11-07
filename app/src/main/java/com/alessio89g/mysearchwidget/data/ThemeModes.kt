@@ -36,7 +36,7 @@ object ModeSettings {
 
  val elements=DEFAULT_LAYERS
  val groups=(elements.map {"size.$it"}+elements.map {"position.$it"}+elements.map {"layer.$it"}+COLOR_GROUPS+
- listOf("search.engine","search.google","logo","count","text.hint","text.query","font.hint","font.query","placeholder","size.query","shape.outer","shape.field")+
+ listOf("search.engine","search.google","search.url","logo","count","text.hint","text.query","font.hint","font.query","placeholder","size.query","shape.outer","shape.field")+
  (0..2).flatMap {listOf("shape.button$it","icon.$it")}+
  listOf("action.field","action.logo")+(0..2).map {"action.button$it"}).toSet()
  private fun flat(c:WidgetConfig):Map<String,JsonElement> {
@@ -87,6 +87,7 @@ object ModeSettings {
   if(path.startsWith("layer:"))return "layer."+path.substringAfter(':')
   if(path=="engineId")return "search.engine"
   if(path=="googleInput")return "search.google"
+  if(path=="openTypedUrls")return "search.url"
   if(path=="count")return "count"
   if(path=="placeholder" || path=="idleCursor")return "placeholder"
   if(path=="hintRuns")return "text.hint"

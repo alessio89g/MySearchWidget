@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.16.8 — 2026-11-07
+
+### English
+
+- Search typing no longer requests automatic capitalization.
+- Optionally open typed web addresses in the default browser, with separate light and dark settings. Off by default.
+
+### Italiano
+
+- Il campo di ricerca non richiede più le maiuscole automatiche.
+- Apertura facoltativa degli indirizzi web nel browser predefinito, con impostazioni separate per chiaro e scuro. Disattivata di default.
+
 ## 1.16.7 — 2026-11-06
 
 ### English

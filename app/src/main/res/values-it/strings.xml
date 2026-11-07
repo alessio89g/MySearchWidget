@@ -397,4 +397,7 @@
  <string name="idle_cursor_google_disabled">Disattiva la ricerca con l’app Google per abilitare il cursore sul testo a riposo.</string>
  <string name="idle_cursor_color">Colore del cursore a riposo</string>
  <string name="query_cursor_color">Colore del cursore di digitazione e della maniglia</string>
+ <string name="open_typed_urls">Apri gli URL digitati</string>
+ <string name="open_typed_urls_help">Apri gli indirizzi web nel browser predefinito invece di cercarli.</string>
+ <string name="open_typed_urls_google_disabled">Disattiva la ricerca nell’app Google per usare questa opzione.</string>
 </resources>

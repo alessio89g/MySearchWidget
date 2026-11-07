@@ -579,7 +579,8 @@ class ConfigActivity:ComponentActivity() {
        ),1)
        SettingsGroup(listOf(
         SettingsEntry(tr(R.string.google_input_title),tr(if(config.googleInput)R.string.setting_on else R.string.setting_off),"Search"){searchTarget="google";top()},
-        SettingsEntry(tr(R.string.search_engine),tr(R.string.engine_help),"Public"){searchTarget="engine";top()}
+        SettingsEntry(tr(R.string.search_engine),tr(R.string.engine_help),"Public"){searchTarget="engine";top()},
+        SettingsEntry(tr(R.string.open_typed_urls),tr(if(config.openTypedUrls)R.string.setting_on else R.string.setting_off),"Public"){searchTarget="url";top()}
        ))
       } else {
       DetailBack {searchTarget="";top()}
@@ -594,6 +595,16 @@ class ConfigActivity:ComponentActivity() {
        ModeNotice(listOf("search.google"))
        Toggle(tr(R.string.google_input_toggle),config.googleInput){config=config.copy(googleInput=it)}
        ResetOptions(config,listOf(resetOption(R.string.google_input_toggle,"googleInput"))){config=it}
+      }
+      if(searchTarget=="url")SettingCard(tr(R.string.open_typed_urls),tr(R.string.open_typed_urls_help)) {
+       ModeNotice(listOf("search.url"))
+       if(config.googleInput)Text(tr(R.string.open_typed_urls_google_disabled),style=MaterialTheme.typography.bodySmall)
+       CompositionLocalProvider(LocalControlsEnabled provides !config.googleInput) {
+        Column(Modifier.graphicsLayer {alpha=if(config.googleInput).45f else 1f}) {
+         Toggle(tr(R.string.open_typed_urls),config.openTypedUrls){config=config.copy(openTypedUrls=it)}
+         ResetOptions(config,listOf(resetOption(R.string.open_typed_urls,"openTypedUrls"))){config=it}
+        }
+       }
       }
       if(searchTarget=="engine")SettingCard(tr(R.string.search_engine),tr(R.string.engine_help)){
        if(config.googleInput)Text(tr(R.string.google_engine_disabled),style=MaterialTheme.typography.bodySmall)

@@ -119,4 +119,13 @@ class ThemeModesTest {
   assertEquals(c.heightDp,ModeSettings.resolve(ModeSettings.toggle(c,"size.outer",false,false),true).heightDp)
   assertTrue(ModeSettings.hasDifferentValues(WidgetConfig(),"color.field"))
  }
+ @Test fun typedUrlsAreOffByDefaultAndCanBeSeparatedByTheme() {
+  val initial=WidgetConfig()
+  assertFalse(ModeSettings.resolve(initial,false).openTypedUrls)
+  assertFalse(ModeSettings.resolve(initial,true).openTypedUrls)
+  val separated=ModeSettings.toggle(initial,"search.url",true,false)
+  val edited=ModeSettings.edit(separated,ModeSettings.resolve(separated,true).copy(openTypedUrls=true),true)
+  assertFalse(ModeSettings.resolve(edited,false).openTypedUrls)
+  assertTrue(ModeSettings.resolve(edited,true).openTypedUrls)
+ }
 }

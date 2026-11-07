@@ -398,4 +398,7 @@
  <string name="idle_cursor_google_disabled">Turn off search with the Google app to enable the placeholder cursor.</string>
  <string name="idle_cursor_color">Idle cursor color</string>
  <string name="query_cursor_color">Typing cursor and handle color</string>
+ <string name="open_typed_urls">Open typed URLs</string>
+ <string name="open_typed_urls_help">Open web addresses in your default browser instead of searching for them.</string>
+ <string name="open_typed_urls_google_disabled">Turn off Google app search to use this option.</string>
 </resources>

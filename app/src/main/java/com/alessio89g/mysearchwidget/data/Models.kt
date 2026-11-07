@@ -26,6 +26,7 @@ import java.util.Base64
  val outer: Surface = Surface(Tone(opacity=.9f, blur=0f), Tone(opacity=.9f, blur=0f)),
  val field: Surface = Surface(), val hint: TextStyle = TextStyle(), val query: TextStyle = TextStyle(),
  val idleCursorColors:CursorColors=CursorColors(), val queryCursorColors:CursorColors=CursorColors(),
+ val openTypedUrls:Boolean = false,
  val idleCursor:Boolean = false, val googleInput:Boolean = false, val engineId: String = "google", val count: Int = 2,
  val logo: Slot = Slot(icon=IconSpec("Google"), tap=Shortcut("app", "com.google.android.googlequicksearchbox", "Google")),
  val buttons: List<Slot> = listOf(Slot(icon=IconSpec("Chrome"), tap=Shortcut("app","com.android.chrome","Chrome")), Slot(icon=IconSpec("Mic"), tap=Shortcut("builtin","voice","Ricerca vocale")), Slot()),

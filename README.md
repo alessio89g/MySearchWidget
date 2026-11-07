@@ -54,7 +54,7 @@ The preview can use a solid background or your wallpaper and switch between ligh
 
 - **Initial configuration:** 68 dp height, system theme, a full-color Google logo and three buttons for voice search, Chrome and incognito browsing. Material You and opening Google search from the field are off.
 - **Automatic text:** leave the placeholder empty to display “Search with…” followed by the selected engine, including custom engines. Custom placeholder text stays unchanged; switching engines preserves formatting.
-- **Search:** queries open in your browser using the chosen engine. Alternatively, tapping the field opens search in the Google app; search-engine controls are then disabled, but their settings are retained.
+- **Search:** queries open in your browser using the chosen engine. Alternatively, tapping the field opens search in the Google app; search-engine controls are then disabled, but their settings are retained. Enable **Search → Open typed URLs** to open web addresses directly in the default browser. The option is off by default and supports separate light and dark settings.
 - **Colors:** Material You disables manual color and gradient controls. Icons using original colors ignore custom tint. Your manual choices remain stored.
 - **Light/dark:** settings are shared by default, except colors and gradients. Separate them in **Links**; the configurator indicates which mode you are editing.
 - **Resizing:** narrowing the widget adapts the search field to the available width while retaining height and margins, subject to custom settings. Elements can overlap or extend outside the visible area. If the launcher provides insufficient vertical space, the entire composition scales down.
