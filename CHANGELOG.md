@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.16.9 — 2026-11-08
+
+### English
+
+- Clarified the labels for the version you are editing and the theme the widget uses on the Home screen.
+
+### Italiano
+
+- Chiarite le etichette della versione da modificare e del tema del widget sulla Home.
+
 ## 1.16.8 — 2026-11-07
 
 ### English

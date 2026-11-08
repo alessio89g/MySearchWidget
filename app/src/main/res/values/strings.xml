@@ -62,7 +62,7 @@
  <string name="saved">Saved</string>
  <string name="widget_style">Widget style</string>
  <string name="style_help">Choose the theme and base palette.</string>
- <string name="theme">Theme</string>
+ <string name="theme">Widget theme on Home</string>
  <string name="system">System</string>
  <string name="light">Light</string>
  <string name="dark">Dark</string>
@@ -336,7 +336,7 @@
  <string name="new_widget_help">Add a widget to your Home screen. Confirm its placement in your launcher, then customise it and tap Save.</string>
  <string name="mode_tab">Light/Dark linking</string>
  <string name="mode_switch_help">Enable a switch to edit that setting separately in light and dark mode. With it off, changes apply to both. When linking different values, choose which ones to keep. Colors are separate by default. Save to apply.</string>
- <string name="mode_edit_title">Editing mode</string>
+ <string name="mode_edit_title">Version to edit</string>
  <string name="mode_edit_help">Linked settings change in both modes. Only switches enabled in Light/Dark linking allow different values. The preview can be switched independently.</string>
  <string name="mode_sizes">Element dimensions</string>
  <string name="mode_positions">Element positions and links</string>

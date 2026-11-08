@@ -61,7 +61,7 @@
  <string name="saved">Salvato</string>
  <string name="widget_style">Stile del widget</string>
  <string name="style_help">Scegli il tema e la palette di base.</string>
- <string name="theme">Tema</string>
+ <string name="theme">Tema del widget sulla Home</string>
  <string name="system">Sistema</string>
  <string name="light">Chiaro</string>
  <string name="dark">Scuro</string>
@@ -335,7 +335,7 @@
  <string name="new_widget_help">Aggiungi un widget alla Home. Conferma il posizionamento nel launcher, poi personalizzalo e premi Salva.</string>
  <string name="mode_tab">Legame Chiaro/Scuro</string>
  <string name="mode_switch_help">Attiva un interruttore per modificare separatamente quella proprietà in modalità chiara e scura. Se disattivato, le modifiche valgono per entrambe. Quando colleghi valori diversi, scegli quali mantenere. I colori sono separati di default. Premi Salva per applicare.</string>
- <string name="mode_edit_title">Stai modificando</string>
+ <string name="mode_edit_title">Versione da modificare</string>
  <string name="mode_edit_help">Le impostazioni collegate cambiano in entrambe le modalità. Solo gli interruttori attivi in Legame Chiaro/Scuro consentono valori diversi. Puoi cambiare la modalità dell’anteprima indipendentemente.</string>
  <string name="mode_sizes">Dimensioni degli elementi</string>
  <string name="mode_positions">Posizioni e collegamenti degli elementi</string>
