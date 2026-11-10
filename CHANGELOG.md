@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.16.10 — 2026-11-10
+
+### English
+
+- The in-app update dialog shows the release notes before you download.
+
+### Italiano
+
+- La finestra di aggiornamento mostra le novità della release prima del download.
+
 ## 1.16.9 — 2026-11-08
 
 ### English

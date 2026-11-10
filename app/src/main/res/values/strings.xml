@@ -348,6 +348,7 @@
  <string name="mode_count">Number of buttons</string>
  <string name="mode_button_icon">Button %1$d icon</string>
  <string name="update_available">Update available</string>
+ <string name="update_changelog">Release notes</string>
  <string name="update_offer">Version %1$s is available. Download the APK directly? When finished, MySearchWidget will offer to install it. Your saved widgets are kept.</string>
  <string name="update_download">Download APK</string>
  <string name="update_later">Not now</string>

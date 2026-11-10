@@ -347,6 +347,7 @@
  <string name="mode_count">Numero di pulsanti</string>
  <string name="mode_button_icon">Icona pulsante %1$d</string>
  <string name="update_available">Aggiornamento disponibile</string>
+ <string name="update_changelog">Novità della release</string>
  <string name="update_offer">È disponibile la versione %1$s. Scaricare direttamente l’APK? Al termine MySearchWidget proporrà di installarlo. I widget salvati vengono mantenuti.</string>
  <string name="update_download">Scarica APK</string>
  <string name="update_later">Non ora</string>

@@ -189,7 +189,17 @@ class ConfigActivity:ComponentActivity() {
     installFile?.let {file->AlertDialog(onDismissRequest={installFile=null},title={Text(tr(R.string.update_install_title))},text={Text(tr(R.string.update_install_help))},confirmButton={TextButton(onClick={
      runCatching {UpdateInstaller.install(this@ConfigActivity,file)}.onSuccess {started->if(started)installFile=null else message=tr(R.string.update_permission)}.onFailure {message=tr(R.string.update_failure)}
     }){Text(tr(R.string.update_install))}},dismissButton={TextButton(onClick={installFile=null}){Text(tr(R.string.update_later))}})}
-    editorState.availableUpdate?.let {update->AlertDialog(onDismissRequest={editorState.availableUpdate=null},title={Text(tr(R.string.update_available))},text={Text(tr(R.string.update_offer,update.version))},confirmButton={TextButton(onClick={
+    editorState.availableUpdate?.let {update->AlertDialog(onDismissRequest={editorState.availableUpdate=null},title={Text(tr(R.string.update_available))},text={
+     Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
+      Text(tr(R.string.update_offer,update.version))
+      update.changelog?.let {notes->
+       Text(tr(R.string.update_changelog),style=MaterialTheme.typography.titleSmall)
+       Column(Modifier.heightIn(max=220.dp).verticalScroll(rememberScrollState())) {
+        Text(notes)
+       }
+      }
+     }
+    },confirmButton={TextButton(onClick={
      runCatching {UpdateInstaller.remember(this@ConfigActivity,ReleaseUpdates.download(this@ConfigActivity,update))}.onSuccess {editorState.availableUpdate=null;message=tr(R.string.update_started)}.onFailure {message=tr(R.string.operation_failed,errorText(it))}
     }){Text(tr(R.string.update_download))}},dismissButton={TextButton(onClick={editorState.availableUpdate=null}){Text(tr(R.string.update_later))}})}
     Surface(Modifier.fillMaxSize(),color=MaterialTheme.colorScheme.surfaceContainerLow) {

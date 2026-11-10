@@ -11,7 +11,7 @@ import com.alessio89g.mysearchwidget.util.readLimited
 import java.net.HttpURLConnection
 import java.net.URL
 
-data class ReleaseUpdate(val version:String,val url:String,val name:String)
+data class ReleaseUpdate(val version:String,val url:String,val name:String,val changelog:String?=null)
 object ReleaseUpdates {
  fun newer(candidate:String,current:String):Boolean {
   fun parts(v:String):List<Long>?=Regex("^v?(\\d+)\\.(\\d+)\\.(\\d+)$").matchEntire(v)?.groupValues?.drop(1)?.map {it.toLongOrNull() ?: -1L}?.takeIf {v->v.all {it>=0}}
@@ -27,7 +27,9 @@ object ReleaseUpdates {
   val asset=root["assets"]?.jsonArray?.map {it.jsonObject}?.firstOrNull {it["name"]?.jsonPrimitive?.content==name} ?: return null
   val url=asset["browser_download_url"]?.jsonPrimitive?.content ?: return null
   if(url!="https://github.com/alessio89g/MySearchWidget/releases/download/$version/$name")return null
-  return ReleaseUpdate(version,url,name)
+  val changelog=(root["body"] as? JsonPrimitive)?.takeIf {it.isString}
+   ?.content?.trim()?.takeIf {it.isNotEmpty()}
+  return ReleaseUpdate(version,url,name,changelog)
  }
  suspend fun check(context:Context):ReleaseUpdate?=withContext(Dispatchers.IO) {
   val current=context.packageManager.getPackageInfo(context.packageName,0).versionName ?: return@withContext null
